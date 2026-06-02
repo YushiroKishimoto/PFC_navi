@@ -8,9 +8,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id")
     private Integer userId;
 
     @Column(name = "login_id", nullable = false, unique = true, length = 20)
@@ -20,10 +18,6 @@ public class Account {
     private String password;
 
     public Account() {
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public Integer getUserId() {
@@ -38,9 +32,6 @@ public class Account {
         return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public void setUserId(Integer userId) {
         this.userId = userId;

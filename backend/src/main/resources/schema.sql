@@ -1,8 +1,7 @@
 --acounts
 --アカウント情報
 CREATE TABLE accounts (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL UNIQUE,
+    user_id INTEGER PRIMARY KEY,,
     login_id VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
