@@ -1,4 +1,4 @@
-package com.pfc_navi.pfc_navi;
+package com.example.pfc_navi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
