@@ -1,37 +1,56 @@
-import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./mockpages/login/Login";
+import Dashboard from "./mockpages/dashboard/Dashboard";
 
-function App() {
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetch('http://localhost:8080/api/hello')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('API request failed')
-        }
-        return response.text()
-        })
-        .then((data) => {
-          setMessage(data)
-        })
-        .catch((error) => {
-          setError('Spring Boot API に接続できません。backend が起動しているか確認してください。')
-          console.error(error)
-        })
-  }, [])
-
+export default function App() {
   return (
-    <main style={{ padding: '32px', fontFamily: 'sans-serif' }}>
-      <h1>React + Spring Boot</h1>
-      <p>開発分離構成の最小サンプルです。</p>
-      <section style={{ marginTop: '24px' }}>
-        <h2>API Response</h2>
-        {message && <p>{message}</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </section>
-    </main>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+
+
+// 雛型
+// import { useEffect, useState } from 'react'
+
+// function App() {
+//   const [message, setMessage] = useState('')
+//   const [error, setError] = useState('')
+
+//   useEffect(() => {
+//     fetch('http://localhost:8080/api/hello')
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error('API request failed')
+//         }
+//         return response.text()
+//         })
+//         .then((data) => {
+//           setMessage(data)
+//         })
+//         .catch((error) => {
+//           setError('Spring Boot API に接続できません。backend が起動しているか確認してください。')
+//           console.error(error)
+//         })
+//   }, [])
+
+//   return (
+//     <main style={{ padding: '32px', fontFamily: 'sans-serif' }}>
+//       <h1>React + Spring Boot</h1>
+//       <p>開発分離構成の最小サンプルです。</p>
+//       <section style={{ marginTop: '24px' }}>
+//         <h2>API Response</h2>
+//         {message && <p>{message}</p>}
+//         {error && <p style={{ color: 'red' }}>{error}</p>}
+//       </section>
+//     </main>
+//   )
+// }
+
+// export default App
