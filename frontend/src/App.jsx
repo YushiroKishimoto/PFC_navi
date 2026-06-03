@@ -1,56 +1,57 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./mockpages/login/Login";
-import Dashboard from "./mockpages/dashboard/Dashboard";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-export default function App() {
+// pages
+import Login from "./pages/Login";
+import User from "./pages/User";
+import Onboarding from "./pages/Onboarding";
+import Profile from "./pages/profile";
+
+import Dashboard from "./pages/Dashboard/Today";
+import DailyRecord from "./pages/Dashboard/Daily";
+
+import Record from "./pages/Record";
+import ItemRegister from "./pages/Items";
+import SetPage from "./pages/Set";
+import List from "./pages/List";
+
+function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+
+        {/* SCR-001 */}
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* SCR-002 */}
+        <Route path="/user" element={<User />} />
+
+        {/* SCR-003 */}
+        <Route path="/onboarding" element={<Onboarding />} />
+
+        {/* SCR-004 */}
+        <Route path="/profile" element={<Profile />} />
+
+        {/* SCR-005 */}
+        <Route path="/" element={<Dashboard />} />
+
+        {/* SCR-006 */}
+        <Route path="/records/:date" element={<DailyRecord />} />
+
+        {/* SCR-007 */}
+        <Route path="/records/:date/meal" element={<Record />} />
+
+        {/* SCR-008 */}
+        <Route path="/items/register" element={<ItemRegister />} />
+
+        {/* SCR-009 */}
+        <Route path="/set" element={<SetPage />} />
+
+        {/* SCR-010 */}
+        <Route path="/list" element={<List />} />
+
       </Routes>
     </BrowserRouter>
   );
 }
 
-
-
-// 雛型
-// import { useEffect, useState } from 'react'
-
-// function App() {
-//   const [message, setMessage] = useState('')
-//   const [error, setError] = useState('')
-
-//   useEffect(() => {
-//     fetch('http://localhost:8080/api/hello')
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error('API request failed')
-//         }
-//         return response.text()
-//         })
-//         .then((data) => {
-//           setMessage(data)
-//         })
-//         .catch((error) => {
-//           setError('Spring Boot API に接続できません。backend が起動しているか確認してください。')
-//           console.error(error)
-//         })
-//   }, [])
-
-//   return (
-//     <main style={{ padding: '32px', fontFamily: 'sans-serif' }}>
-//       <h1>React + Spring Boot</h1>
-//       <p>開発分離構成の最小サンプルです。</p>
-//       <section style={{ marginTop: '24px' }}>
-//         <h2>API Response</h2>
-//         {message && <p>{message}</p>}
-//         {error && <p style={{ color: 'red' }}>{error}</p>}
-//       </section>
-//     </main>
-//   )
-// }
-
-// export default App
+export default App;
