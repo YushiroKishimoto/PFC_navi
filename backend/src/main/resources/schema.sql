@@ -1,8 +1,7 @@
 --acounts
 --アカウント情報
 CREATE TABLE accounts (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL UNIQUE,
+    user_id INTEGER PRIMARY KEY,,
     login_id VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
@@ -25,7 +24,7 @@ CREATE TABLE users (
 -- 初期登録済み食品マスタ
 CREATE TABLE default_foods (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(3000) NOT NULL,
     amount INTEGER NOT NULL CHECK (amount >= 0),
     pro INTEGER NOT NULL CHECK (pro >= 0),
     fat INTEGER NOT NULL CHECK (fat >= 0),
