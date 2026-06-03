@@ -24,7 +24,7 @@ CREATE TABLE users (
 -- 初期登録済み食品マスタ
 CREATE TABLE default_foods (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(3000) NOT NULL,
     amount INTEGER NOT NULL CHECK (amount >= 0),
     pro INTEGER NOT NULL CHECK (pro >= 0),
     fat INTEGER NOT NULL CHECK (fat >= 0),
