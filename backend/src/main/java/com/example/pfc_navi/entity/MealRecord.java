@@ -1,6 +1,8 @@
 package com.example.pfc_navi.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,6 +18,9 @@ public class MealRecord {
 
     @Column(name = "login_id", nullable = false, length = 20)
     private String loginId;
+
+    @Column(name = "record_date", nullable = false)
+    private LocalDate recordDate;
 
     @Column(name = "meal_type", nullable = false, length = 50)
     private String mealType;
@@ -57,6 +62,10 @@ public class MealRecord {
         return loginId;
     }
 
+    public LocalDate getRecordDate() {
+        return recordDate;
+    }
+
     public String getMealType() {
         return mealType;
     }
@@ -91,6 +100,10 @@ public class MealRecord {
 
     public void setLoginId(String loginId) {
         this.loginId = loginId;
+    }
+
+    public void setRecordDate(LocalDate recordDate) {
+        this.recordDate = recordDate;
     }
 
     public void setMealType(String mealType) {
