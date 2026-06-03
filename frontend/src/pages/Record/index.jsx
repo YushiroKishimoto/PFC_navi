@@ -1,3 +1,3 @@
 export default function Record() {
-  return <div>Record</div>;
+  return <div>7.記録</div>;
 }
