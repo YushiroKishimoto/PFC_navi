@@ -1,6 +1,8 @@
 package com.example.pfc_navi.controller;
 
+import com.example.pfc_navi.dto.RegisterRequest;
 import com.example.pfc_navi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +19,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
-        String loginId = body.get("loginId");
-        String password = body.get("password");
-
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         try {
-            userService.register(loginId, password);
+            userService.register(request.getLoginId(), request.getPassword());
             return ResponseEntity.ok(Map.of("message", "ユーザー登録が完了しました"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
