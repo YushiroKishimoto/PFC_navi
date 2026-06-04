@@ -1,38 +1,45 @@
-package com.example.pfc_navi.entity;
+package com.example.pfc_navi.dto;
 
-import jakarta.persistence.*;
+public class MealRecordItemResponse {
 
-@Entity
-@Table(name = "default_foods")
-public class DefaultFood {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "name", nullable = false, length = 255)
+    private Integer itemId;
     private String name;
-
-    @Column(name = "amount", nullable = false)
     private Integer amount;
-
-    @Column(name = "pro", nullable = false)
+    private Integer cal;
     private Integer pro;
-
-    @Column(name = "fat", nullable = false)
     private Integer fat;
-
-    @Column(name = "car", nullable = false)
     private Integer car;
 
-    @Column(name = "cal", nullable = false)
-    private Integer cal;
+    public MealRecordItemResponse() {
+    }
 
-    public DefaultFood() {
+    public MealRecordItemResponse(
+            Integer id,
+            Integer itemId,
+            String name,
+            Integer amount,
+            Integer cal,
+            Integer pro,
+            Integer fat,
+            Integer car
+    ) {
+        this.id = id;
+        this.itemId = itemId;
+        this.name = name;
+        this.amount = amount;
+        this.cal = cal;
+        this.pro = pro;
+        this.fat = fat;
+        this.car = car;
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getItemId() {
+        return itemId;
     }
 
     public String getName() {
@@ -41,6 +48,10 @@ public class DefaultFood {
 
     public Integer getAmount() {
         return amount;
+    }
+
+    public Integer getCal() {
+        return cal;
     }
 
     public Integer getPro() {
@@ -55,12 +66,12 @@ public class DefaultFood {
         return car;
     }
 
-    public Integer getCal() {
-        return cal;
-    }
-
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
     }
 
     public void setName(String name) {
@@ -69,6 +80,10 @@ public class DefaultFood {
 
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    public void setCal(Integer cal) {
+        this.cal = cal;
     }
 
     public void setPro(Integer pro) {
@@ -81,9 +96,5 @@ public class DefaultFood {
 
     public void setCar(Integer car) {
         this.car = car;
-    }
-
-    public void setCal(Integer cal) {
-        this.cal = cal;
     }
 }

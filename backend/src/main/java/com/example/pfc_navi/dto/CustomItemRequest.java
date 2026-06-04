@@ -1,38 +1,15 @@
-package com.example.pfc_navi.entity;
+package com.example.pfc_navi.dto;
 
-import jakarta.persistence.*;
+public class CustomItemRequest {
 
-@Entity
-@Table(name = "default_foods")
-public class DefaultFood {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "name", nullable = false, length = 255)
     private String name;
-
-    @Column(name = "amount", nullable = false)
     private Integer amount;
-
-    @Column(name = "pro", nullable = false)
     private Integer pro;
-
-    @Column(name = "fat", nullable = false)
     private Integer fat;
-
-    @Column(name = "car", nullable = false)
     private Integer car;
-
-    @Column(name = "cal", nullable = false)
     private Integer cal;
 
-    public DefaultFood() {
-    }
-
-    public Integer getId() {
-        return id;
+    public CustomItemRequest() {
     }
 
     public String getName() {
@@ -57,10 +34,6 @@ public class DefaultFood {
 
     public Integer getCal() {
         return cal;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public void setName(String name) {
