@@ -1,14 +1,15 @@
 package com.example.pfc_navi.controller;
 
 import com.example.pfc_navi.dto.UserRequest;
+import com.example.pfc_navi.repository.AccountRepository;
 import com.example.pfc_navi.dto.RegisterRequest;
 import com.example.pfc_navi.service.UserService;
 import com.example.pfc_navi.service.UserInfoService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -17,13 +18,14 @@ public class UserController {
 
     private final UserService userService;
     private final UserInfoService userInfoService;
+    private final AccountRepository accountRepository;
 
-    public UserController(UserService userService, UserInfoService userInfoService) {
+    public UserController(UserService userService, UserInfoService userInfoService, AccountRepository accountRepository) {
         this.userService = userService;
         this.userInfoService = userInfoService;
+        this.accountRepository = accountRepository;
     }
 
-    // ユーザー登録
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         try {
@@ -34,15 +36,13 @@ public class UserController {
         }
     }
 
-
-    // ユーザー情報初回登録
     @PostMapping("/me")
-    public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest request, HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userId");
-        String loginId = (String) session.getAttribute("loginId");
-        if (userId == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "ログインしてください"));
-        }
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest request, Principal principal) {
+        Integer userId = Integer.parseInt(principal.getName());
+        // loginIdはAccountRepositoryから取得
+        String loginId = accountRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません"))
+                .getLoginId();
         try {
             return ResponseEntity.ok(userInfoService.createUser(userId, loginId, request));
         } catch (IllegalArgumentException e) {
@@ -50,13 +50,9 @@ public class UserController {
         }
     }
 
-    // ユーザー情報取得
     @GetMapping("/me")
-    public ResponseEntity<?> getUser(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "ログインしてください"));
-        }
+    public ResponseEntity<?> getUser(Principal principal) {
+        Integer userId = Integer.parseInt(principal.getName());
         try {
             return ResponseEntity.ok(userInfoService.getUser(userId));
         } catch (IllegalArgumentException e) {
@@ -64,13 +60,9 @@ public class UserController {
         }
     }
 
-    // ユーザー情報更新
     @PutMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody @Valid UserRequest request, HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "ログインしてください"));
-        }
+    public ResponseEntity<?> updateUser(@RequestBody @Valid UserRequest request, Principal principal) {
+        Integer userId = Integer.parseInt(principal.getName());
         try {
             return ResponseEntity.ok(userInfoService.updateUser(userId, request));
         } catch (IllegalArgumentException e) {
