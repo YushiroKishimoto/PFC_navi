@@ -1,21 +1,43 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Onboarding.module.css";
+import {
+  getMyUserInfo,
+  createMyUserInfo,
+  updateMyUserInfo,
+} from "../../api/user";
 
 export default function Onboarding() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     age: "",
-    gender: "",
-    weight: "",
-    targetWeight: "",
+    sex: "",
     height: "",
-    period: "",
-    activityCount: "",
-    activityTime: "",
-    goal: "",
+    weight: "",
+    burnCal: "",
+    // targetCal: "",
+    pfcCourse: "",
   });
+
+  const [isExist, setIsExist] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMyUserInfo();
+
+        setForm(data);
+        setIsExist(true);
+      } catch (e) {
+        // 404なら未登録
+        setIsExist(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     setForm({
@@ -24,10 +46,30 @@ export default function Onboarding() {
     });
   };
 
-  const handleSubmit = () => {
-    console.log("onboarding:", form);
-    alert("PFC計算完了（mock）");
-    navigate("/");
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        age: Number(form.age),
+        sex: form.sex,
+        height: Number(form.height),
+        weight: Number(form.weight),
+        burnCal: Number(form.burnCal),
+        // targetCal: Number(form.targetCal),
+        pfcCourse: Number(form.pfcCourse),
+      };
+
+      if (isExist) {
+        await updateMyUserInfo(payload);
+        setMessage("更新しました");
+        navigate("/");
+      } else {
+        await createMyUserInfo(payload);
+        setMessage("登録しました");
+        navigate("/");
+      }
+    } catch (e) {
+      setMessage("エラーが発生しました");
+    }
   };
 
   return (
@@ -43,14 +85,15 @@ export default function Onboarding() {
           placeholder="年齢"
           className={styles.input}
           onChange={handleChange}
+          value={form.age}
         />
 
         {/* 性別（選択式） */}
         <select
-          name="gender"
-          value={form.gender}
+          name="sex"
           className={styles.input}
           onChange={handleChange}
+          value={form.sex}
         >
           <option value="" disabled hidden>
             性別を選択
@@ -59,24 +102,6 @@ export default function Onboarding() {
           <option value="female">女</option>
         </select>
 
-        {/* 現在体重 */}
-        <input
-          name="weight"
-          type="number"
-          placeholder="現在体重(kg)"
-          className={styles.input}
-          onChange={handleChange}
-        />
-
-        {/* 目標体重 */}
-        <input
-          name="targetWeight"
-          type="number"
-          placeholder="目標体重(kg)"
-          className={styles.input}
-          onChange={handleChange}
-        />
-
         {/* 身長 */}
         <input
           name="height"
@@ -84,70 +109,66 @@ export default function Onboarding() {
           placeholder="身長(cm)"
           className={styles.input}
           onChange={handleChange}
+          value={form.height}
         />
 
-        {/* 期間 */}
+        {/* 現在体重 */}
         <input
-          name="period"
+          name="weight"
           type="number"
-          placeholder="期間(日)"
+          placeholder="現在体重(kg)"
           className={styles.input}
           onChange={handleChange}
+          value={form.weight}
         />
 
         {/* 活動回数（選択） */}
         <select
-          name="activityCount"
-          value={form.activityCount}
+          name="burnCal"
           className={styles.input}
           onChange={handleChange}
+          value={form.burnCal}
         >
           <option value="" disabled hidden>
             活動回数を選択
           </option>
-          {[0,1,2,3,4,5,6,7].map((n) => (
+          {[1,2,3,4,5].map((n) => (
             <option key={n} value={n}>
               {n}回/週
             </option>
           ))}
         </select>
 
-        {/* 活動時間（選択） */}
-        <select
-          name="activityTime"
-          value={form.activityTime}
+        {/* 目標カロリー */}
+        {/* <input
+          name="targetCal"
+          type="number"
+          placeholder="目標カロリー"
           className={styles.input}
           onChange={handleChange}
-        >
-          <option value="" disabled hidden>
-            活動時間を選択
-          </option>
-          {[10,20,30,40,50,60,90,120].map((n) => (
-            <option key={n} value={n}>
-              {n}分
-            </option>
-          ))}
-        </select>
+          value={form.targetCal}
+        /> */}
 
-        {/* 目標 */}
+        {/* PFCコース */}
         <select
-          name="goal"
-          value={form.goal}
+          name="pfcCourse"
           className={styles.input}
           onChange={handleChange}
+          value={form.pfcCourse}
         >
           <option value="" disabled hidden>
             目標コースを選択
           </option>
-          <option value="cut">減量</option>
-          <option value="maintain">維持</option>
-          <option value="bulk">増量</option>
+          <option value="1">減量</option>
+          <option value="2">維持</option>
+          <option value="3">増量</option>
         </select>
 
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           登録
         </button>
 
+        <p>{message}</p>
       </div>
     </div>
   );
