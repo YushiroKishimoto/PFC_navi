@@ -13,7 +13,7 @@ export default function Register() {
     try {
       const res = await register(loginId, password);
       setMessage(res.message);
-      
+
       if (res?.message === "ユーザー登録が完了しました") {
         navigate("/login");
         return;
@@ -47,7 +47,3 @@ export default function Register() {
     </div>
   );
 }
-
-// export default function User() {
-//   return <div>2.新規登録</div>;
-// }
