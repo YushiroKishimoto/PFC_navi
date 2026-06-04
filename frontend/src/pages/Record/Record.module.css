@@ -1,0 +1,33 @@
+.container {
+  padding: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 300px;
+}
+
+input, select {
+  padding: 6px;
+}
+
+button {
+  padding: 8px;
+  background: #4caf50;
+  color: white;
+  border: none;
+}
+
+.list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
