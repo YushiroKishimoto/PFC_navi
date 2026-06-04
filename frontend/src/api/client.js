@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "/api",
+  baseURL: "http://localhost:8080/api",
   withCredentials: true, // ★これが超重要（Cookie認証）
   headers: {
     "Content-Type": "application/json",
