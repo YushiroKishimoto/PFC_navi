@@ -53,8 +53,32 @@ public class DashboardService {
         int diffCar = targetCar - actualCar;
         int diffCal = targetCal - actualCal;
 
-        // 達成率（カロリーベース）
-        int achievementRate = targetCal > 0 ? (int)((double) actualCal / targetCal * 100) : 0;
+        // 達成度スコア（60点満点）
+        double calScore = calcNutrientScore(actualCal, targetCal, 30);
+        double proScore = calcNutrientScore(actualPro, targetPro, 30);
+        double fatScore = calcNutrientScore(actualFat, targetFat, 20);
+        double carScore = calcNutrientScore(actualCar, targetCar, 20);
+        double achievementScore = calScore + proScore + fatScore + carScore;
+
+        // バランススコア（40点満点）
+        double balanceScore = 0;
+        if (actualCal > 0) {
+            double actualProRatio = (actualPro * 4.0) / actualCal;
+            double actualFatRatio = (actualFat * 9.0) / actualCal;
+            double actualCarRatio = (actualCar * 4.0) / actualCal;
+
+            double targetProRatio = (targetPro * 4.0) / targetCal;
+            double targetFatRatio = (targetFat * 9.0) / targetCal;
+            double targetCarRatio = (targetCar * 4.0) / targetCal;
+
+            double diff = Math.abs(actualProRatio - targetProRatio)
+                        + Math.abs(actualFatRatio - targetFatRatio)
+                        + Math.abs(actualCarRatio - targetCarRatio);
+
+            balanceScore = Math.max(0, 40 - diff * 200);
+        }
+
+        int achievementRate = (int)(achievementScore + balanceScore);
 
         // レスポンス組み立て
         DashboardResponse response = new DashboardResponse();
@@ -73,5 +97,15 @@ public class DashboardService {
         response.setAchievementRate(achievementRate);
 
         return response;
+    }
+
+    private double calcNutrientScore(int actual, int target, int maxScore) {
+        if (target <= 0) return 0;
+        double ratio = (double) actual / target;
+        if (ratio <= 1.0) {
+            return ratio * maxScore;
+        } else {
+            return Math.max(0, (2.0 - ratio) * maxScore);
+        }
     }
 }
