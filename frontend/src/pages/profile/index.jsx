@@ -1,18 +1,43 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Profile.module.css";
+import {
+  getMyUserInfo,
+  createMyUserInfo,
+  updateMyUserInfo,
+} from "../../api/user";
 
-export default function Profile() {
+export default function Onboarding() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     age: "",
-    gender: "",
-    weight: "",
-    targetWeight: "",
+    sex: "",
     height: "",
-    period: "",
-    activityCount: "",
-    activityTime: "",
-    goal: "",
+    weight: "",
+    burnCal: "",
+    // targetCal: "",
+    pfcCourse: "",
   });
+
+  const [isExist, setIsExist] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMyUserInfo();
+
+        setForm(data);
+        setIsExist(true);
+      } catch (e) {
+        // 404なら未登録
+        setIsExist(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     setForm({
@@ -21,62 +46,129 @@ export default function Profile() {
     });
   };
 
-  const handleSubmit = () => {
-    console.log("profile update:", form);
-    alert("更新完了（mock）");
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        age: Number(form.age),
+        sex: form.sex,
+        height: Number(form.height),
+        weight: Number(form.weight),
+        burnCal: Number(form.burnCal),
+        // targetCal: Number(form.targetCal),
+        pfcCourse: Number(form.pfcCourse),
+      };
+
+      if (isExist) {
+        await updateMyUserInfo(payload);
+        setMessage("更新しました");
+        navigate("/");
+      } else {
+        await createMyUserInfo(payload);
+        setMessage("登録しました");
+        navigate("/");
+      }
+    } catch (e) {
+      setMessage("エラーが発生しました");
+    }
   };
 
   return (
     <div className={styles.container}>
+      <h2 className={styles.title}>3. ユーザー情報登録</h2>
 
-      <h2 className={styles.title}>4. ユーザー情報</h2>
+      <div className={styles.form}>
 
-      <div className={styles.card}>
+        {/* 年齢 */}
+        <input
+          name="age"
+          type="number"
+          placeholder="年齢"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.age}
+        />
 
-        <div className={styles.form}>
+        {/* 性別（選択式） */}
+        <select
+          name="sex"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.sex}
+        >
+          <option value="" disabled hidden>
+            性別を選択
+          </option>
+          <option value="male">男</option>
+          <option value="female">女</option>
+        </select>
 
-          <input name="age" type="number" placeholder="年齢" className={styles.input} onChange={handleChange} />
+        {/* 身長 */}
+        <input
+          name="height"
+          type="number"
+          placeholder="身長(cm)"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.height}
+        />
 
-          <select name="gender" value={form.gender} className={styles.input} onChange={handleChange}>
-            <option value="">性別を選択</option>
-            <option value="male">男</option>
-            <option value="female">女</option>
-          </select>
+        {/* 現在体重 */}
+        <input
+          name="weight"
+          type="number"
+          placeholder="現在体重(kg)"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.weight}
+        />
 
-          <input name="weight" type="number" placeholder="現在体重(kg)" className={styles.input} onChange={handleChange} />
+        {/* 活動回数（選択） */}
+        <select
+          name="burnCal"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.burnCal}
+        >
+          <option value="" disabled hidden>
+            活動回数を選択
+          </option>
+          {[1,2,3,4,5].map((n) => (
+            <option key={n} value={n}>
+              {n}回/週
+            </option>
+          ))}
+        </select>
 
-          <input name="targetWeight" type="number" placeholder="目標体重(kg)" className={styles.input} onChange={handleChange} />
+        {/* 目標カロリー */}
+        {/* <input
+          name="targetCal"
+          type="number"
+          placeholder="目標カロリー"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.targetCal}
+        /> */}
 
-          <input name="height" type="number" placeholder="身長(cm)" className={styles.input} onChange={handleChange} />
+        {/* PFCコース */}
+        <select
+          name="pfcCourse"
+          className={styles.input}
+          onChange={handleChange}
+          value={form.pfcCourse}
+        >
+          <option value="" disabled hidden>
+            目標コースを選択
+          </option>
+          <option value="1">減量</option>
+          <option value="2">維持</option>
+          <option value="3">増量</option>
+        </select>
 
-          <input name="period" type="number" placeholder="期間(日)" className={styles.input} onChange={handleChange} />
+        <button className={styles.buttonPrimary} onClick={handleSubmit}>
+          更新
+        </button>
 
-          <select name="activityCount" value={form.activityCount} className={styles.input} onChange={handleChange}>
-            <option value="">活動回数</option>
-            {[0,1,2,3,4,5,6,7].map((n) => (
-              <option key={n} value={n}>{n}回/週</option>
-            ))}
-          </select>
-
-          <select name="activityTime" value={form.activityTime} className={styles.input} onChange={handleChange}>
-            <option value="">活動時間</option>
-            {[10,20,30,40,50,60,90,120].map((n) => (
-              <option key={n} value={n}>{n}分</option>
-            ))}
-          </select>
-
-          <select name="goal" value={form.goal} className={styles.input} onChange={handleChange}>
-            <option value="">目標</option>
-            <option value="cut">減量</option>
-            <option value="maintain">維持</option>
-            <option value="bulk">増量</option>
-          </select>
-
-          <button className={styles.buttonPrimary} onClick={handleSubmit}>
-            更新
-          </button>
-
-        </div>
+        <p>{message}</p>
       </div>
     </div>
   );
