@@ -4,13 +4,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import User from "./pages/User";
 import Onboarding from "./pages/Onboarding";
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile";
 
 import Dashboard from "./pages/Dashboard/Today";
-import DailyRecord from "./pages/Dashboard/Daily";
+import Daily from "./pages/Dashboard/Daily";
 
 import Record from "./pages/Record";
-import ItemRegister from "./pages/Items";
+import Items from "./pages/Items";
 import SetPage from "./pages/Set";
 import List from "./pages/List";
 
@@ -35,13 +35,13 @@ function App() {
         <Route path="/" element={<Dashboard />} />
 
         {/* SCR-006 */}
-        <Route path="/records/:date" element={<DailyRecord />} />
+        <Route path="/records/:date" element={<Daily />} />
 
         {/* SCR-007 */}
         <Route path="/records/:date/meal" element={<Record />} />
 
         {/* SCR-008 */}
-        <Route path="/items/register" element={<ItemRegister />} />
+        <Route path="/items" element={<Items />} />
 
         {/* SCR-009 */}
         <Route path="/set" element={<SetPage />} />
