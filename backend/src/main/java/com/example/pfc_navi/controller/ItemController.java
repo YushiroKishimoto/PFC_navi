@@ -9,6 +9,7 @@ import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.service.ItemService;
 import org.springframework.web.bind.annotation.*;
+import com.example.pfc_navi.dto.CustomItemUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,96 +19,131 @@ import java.util.Map;
 @RequestMapping("/api/items")
 public class ItemController {
 
-    private final DefaultFoodRepository defaultFoodRepository;
-    private final CustomFoodRepository customFoodRepository;
-    private final ItemService itemService;
+        private final DefaultFoodRepository defaultFoodRepository;
+        private final CustomFoodRepository customFoodRepository;
+        private final ItemService itemService;
 
-    public ItemController(
-            DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository,
-            ItemService itemService
-    ) {
-        this.defaultFoodRepository = defaultFoodRepository;
-        this.customFoodRepository = customFoodRepository;
-        this.itemService = itemService;
-    }
-
-    @GetMapping("/search")
-    public ApiResponse<Map<String, List<ItemSearchResponse>>> searchItems(
-            @RequestParam String keyword
-    ) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return ApiResponse.validationError(
-                    "検索キーワードを入力してください。",
-                    Map.of("items", List.of())
-            );
+        public ItemController(
+                        DefaultFoodRepository defaultFoodRepository,
+                        CustomFoodRepository customFoodRepository,
+                        ItemService itemService) {
+                this.defaultFoodRepository = defaultFoodRepository;
+                this.customFoodRepository = customFoodRepository;
+                this.itemService = itemService;
         }
 
-        String searchKeyword = keyword.trim();
+        @GetMapping("/search")
+        public ApiResponse<Map<String, List<ItemSearchResponse>>> searchItems(
+                        @RequestParam String keyword) {
+                if (keyword == null || keyword.trim().isEmpty()) {
+                        return ApiResponse.validationError(
+                                        "検索キーワードを入力してください。",
+                                        Map.of("items", List.of()));
+                }
 
-        List<ItemSearchResponse> items = new ArrayList<>();
+                String searchKeyword = keyword.trim();
 
-        List<DefaultFood> defaultFoods =
-                defaultFoodRepository.findByNameContaining(searchKeyword);
+                List<ItemSearchResponse> items = new ArrayList<>();
 
-        for (DefaultFood food : defaultFoods) {
-            items.add(new ItemSearchResponse(
-                    "default",
-                    food.getId(),
-                    food.getName(),
-                    food.getAmount(),
-                    food.getPro(),
-                    food.getFat(),
-                    food.getCar(),
-                    food.getCal()
-            ));
+                List<DefaultFood> defaultFoods = defaultFoodRepository.findByNameContaining(searchKeyword);
+
+                for (DefaultFood food : defaultFoods) {
+                        items.add(new ItemSearchResponse(
+                                        "default",
+                                        food.getId(),
+                                        food.getName(),
+                                        food.getAmount(),
+                                        food.getPro(),
+                                        food.getFat(),
+                                        food.getCar(),
+                                        food.getCal()));
+                }
+
+                List<CustomFood> customFoods = customFoodRepository.findByNameContaining(searchKeyword);
+
+                for (CustomFood food : customFoods) {
+                        items.add(new ItemSearchResponse(
+                                        "custom",
+                                        food.getId(),
+                                        food.getName(),
+                                        food.getAmount(),
+                                        food.getPro(),
+                                        food.getFat(),
+                                        food.getCar(),
+                                        food.getCal()));
+                }
+
+                return ApiResponse.success(
+                                "検索完了",
+                                Map.of("items", items));
         }
 
-        List<CustomFood> customFoods =
-                customFoodRepository.findByNameContaining(searchKeyword);
-
-        for (CustomFood food : customFoods) {
-            items.add(new ItemSearchResponse(
-                    "custom",
-                    food.getId(),
-                    food.getName(),
-                    food.getAmount(),
-                    food.getPro(),
-                    food.getFat(),
-                    food.getCar(),
-                    food.getCal()
-            ));
+        @PostMapping
+        public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request) {
+                try {
+                        return ApiResponse.success(
+                                        "自前食材・料理を登録しました。",
+                                        itemService.createCustomItem(request));
+                } catch (IllegalArgumentException e) {
+                        return ApiResponse.validationError(e.getMessage(), Map.of());
+                }
         }
 
-        return ApiResponse.success(
-                "検索完了",
-                Map.of("items", items)
-        );
-    }
+        @DeleteMapping("/{id}")
+        public ApiResponse<?> deleteCustomItem(@PathVariable Integer id) {
+                try {
+                        itemService.deleteCustomItem(id);
 
-    @PostMapping
-    public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request) {
-        try {
-            return ApiResponse.success(
-                    "自前食材・料理を登録しました。",
-                    itemService.createCustomItem(request)
-            );
-        } catch (IllegalArgumentException e) {
-            return ApiResponse.validationError(e.getMessage(), Map.of());
+                        return ApiResponse.success(
+                                        "自前食材・料理を削除しました。",
+                                        Map.of());
+                } catch (IllegalArgumentException e) {
+                        return ApiResponse.validationError(e.getMessage(), Map.of());
+                }
         }
-    }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<?> deleteCustomItem(@PathVariable Integer id) {
-        try {
-            itemService.deleteCustomItem(id);
-
-            return ApiResponse.success(
-                    "自前食材・料理を削除しました。",
-                    Map.of()
-            );
-        } catch (IllegalArgumentException e) {
-            return ApiResponse.validationError(e.getMessage(), Map.of());
+        @PutMapping("/{id}")
+        public ApiResponse<?> updateCustomItem(
+                        @PathVariable Integer id,
+                        @RequestBody CustomItemUpdateRequest request) {
+                try {
+                        return ApiResponse.success(
+                                        "自前食材・料理を更新しました。",
+                                        itemService.updateCustomItem(id, request));
+                } catch (IllegalArgumentException e) {
+                        return ApiResponse.validationError(e.getMessage(), Map.of());
+                }
         }
-    }
+
+        @GetMapping("/custom/search")
+        public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
+                        @RequestParam String keyword) {
+                if (keyword == null || keyword.trim().isEmpty()) {
+                        return ApiResponse.validationError(
+                                        "検索キーワードを入力してください。",
+                                        Map.of("items", List.of()));
+                }
+
+                String searchKeyword = keyword.trim();
+
+                List<ItemSearchResponse> items = new ArrayList<>();
+
+                List<CustomFood> customFoods = customFoodRepository.findByNameContaining(searchKeyword);
+
+                for (CustomFood food : customFoods) {
+                        items.add(new ItemSearchResponse(
+                                        "custom",
+                                        food.getId(),
+                                        food.getName(),
+                                        food.getAmount(),
+                                        food.getPro(),
+                                        food.getFat(),
+                                        food.getCar(),
+                                        food.getCal()));
+                }
+
+                return ApiResponse.success(
+                                "自前食材・料理の検索完了",
+                                Map.of("items", items));
+        }
 }
