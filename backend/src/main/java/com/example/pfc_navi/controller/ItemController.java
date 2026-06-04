@@ -1,15 +1,14 @@
 package com.example.pfc_navi.controller;
 
 import com.example.pfc_navi.dto.ApiResponse;
+import com.example.pfc_navi.dto.CustomItemRequest;
 import com.example.pfc_navi.dto.ItemSearchResponse;
 import com.example.pfc_navi.entity.CustomFood;
 import com.example.pfc_navi.entity.DefaultFood;
 import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.pfc_navi.service.ItemService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +20,16 @@ public class ItemController {
 
     private final DefaultFoodRepository defaultFoodRepository;
     private final CustomFoodRepository customFoodRepository;
+    private final ItemService itemService;
 
     public ItemController(
             DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository
+            CustomFoodRepository customFoodRepository,
+            ItemService itemService
     ) {
         this.defaultFoodRepository = defaultFoodRepository;
         this.customFoodRepository = customFoodRepository;
+        this.itemService = itemService;
     }
 
     @GetMapping("/search")
@@ -81,5 +83,31 @@ public class ItemController {
                 "検索完了",
                 Map.of("items", items)
         );
+    }
+
+    @PostMapping
+    public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request) {
+        try {
+            return ApiResponse.success(
+                    "自前食材・料理を登録しました。",
+                    itemService.createCustomItem(request)
+            );
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.validationError(e.getMessage(), Map.of());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<?> deleteCustomItem(@PathVariable Integer id) {
+        try {
+            itemService.deleteCustomItem(id);
+
+            return ApiResponse.success(
+                    "自前食材・料理を削除しました。",
+                    Map.of()
+            );
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.validationError(e.getMessage(), Map.of());
+        }
     }
 }

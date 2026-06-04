@@ -23,7 +23,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users/register", "/api/auth/login", "/api/auth/logout",
-                "/api/meal-records/**"//認証用に追加しました
+                "/api/meal-records/**"//認証用に追加しました,
             ).permitAll()
                 .anyRequest().authenticated()
             )
