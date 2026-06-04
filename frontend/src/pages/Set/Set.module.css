@@ -1,0 +1,51 @@
+.container {
+  padding: 20px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+}
+
+.searchList {
+  margin-top: 10px;
+}
+
+.searchItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.total {
+  margin-top: 16px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
