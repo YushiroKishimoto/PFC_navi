@@ -1,0 +1,79 @@
+.container {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.score {
+  font-weight: bold;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.calendarMock {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dayBox {
+  border: 1px solid #ccc;
+  text-align: center;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.mealCard {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.foodList {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.addButton {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: rgb(255, 0, 0);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.addButton:hover {
+  background: #7d0000;
+}

@@ -1,0 +1,84 @@
+.container {
+  padding: 16px;
+  background: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.score {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.calendarMock {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dayBox {
+  background: #eee;
+  padding: 4px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.mealCard {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.foodList {
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.addButton {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: rgb(255, 0, 0);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.addButton:hover {
+  background: #7d0000;
+}
