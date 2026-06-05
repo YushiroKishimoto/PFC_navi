@@ -1,0 +1,23 @@
+.wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.open {
+  width: 220px;
+  transition: 0.2s;
+  background: #222;
+}
+
+.closed {
+  width: 60px;
+  transition: 0.2s;
+  background: #222;
+}
+
+.main {
+  flex: 1;
+  overflow: auto;
+  background: #f5f5f5;
+}
