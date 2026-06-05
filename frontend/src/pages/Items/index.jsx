@@ -89,7 +89,7 @@ export default function Items() {
         {/* 標準量 */}
         <div className={styles.row}>
           <div>
-            <label>標準量</label>
+            <label>標準量（ｇ）</label>
             <input
               name="amount"
               placeholder="100"
@@ -98,20 +98,6 @@ export default function Items() {
               value={form.amount}
             />
             {/* {errors.amount && <p className={styles.error}>{errors.amount}</p>} */}
-          </div>
-
-          <div>
-            <label>単位</label>
-            <select
-              name="unit"
-              value={form.unit}
-              className={styles.input}
-              onChange={handleChange}
-            >
-              <option value="g">g</option>
-              <option value="ml">ml</option>
-              <option value="piece">個</option>
-            </select>
           </div>
         </div>
 
