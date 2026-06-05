@@ -1,0 +1,46 @@
+.sidebar {
+  height: 100vh;
+  background: #222;
+  color: white;
+  transition: 0.2s;
+  overflow: hidden;
+}
+
+/* 上部 */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.title {
+  font-weight: bold;
+}
+
+/* メニュー */
+.menu {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #333;
+}

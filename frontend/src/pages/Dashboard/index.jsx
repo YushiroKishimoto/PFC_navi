@@ -1,24 +1,53 @@
-import styles from "./Today.module.css";
+import styles from "./Dashboard.module.css";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import {
   PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
 
-export default function Today() {
+export default function Dashboard() {
   const navigate = useNavigate();
 
-  const today = new Date();
+  const [date, setDate] = useState(new Date());
 
+  // =========================
+  // 日付変更
+  // =========================
+  const handleChange = (newDate) => {
+    setDate(newDate);
+
+    const y = newDate.getFullYear();
+    const m = String(newDate.getMonth() + 1).padStart(2, "0");
+    const d = String(newDate.getDate()).padStart(2, "0");
+
+    const formatted = `${y}-${m}-${d}`;
+
+    // ★ 修正：/:date に統一
+    navigate(`/${formatted}`);
+  };
+
+  // =========================
+  // 表示用日付
+  // =========================
   const formattedDate = new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     weekday: "long",
-  }).format(today);
+  }).format(date);
 
+  // =========================
+  // 仮スコア
+  // =========================
   const score = 100;
 
+  // =========================
+  // PFC
+  // =========================
   const pfc = {
     target: { p: 120, f: 60, c: 200 },
     intake: { p: 90, f: 50, c: 180 },
@@ -36,24 +65,21 @@ export default function Today() {
     { name: "C", target: pfc.target.c, intake: pfc.intake.c },
   ];
 
+  // =========================
+  // 仮食事
+  // =========================
   const meals = {
     breakfast: {
       title: "朝食",
-      items: [
-        { name: "オートミール", kcal: 300, p: 15, f: 8, c: 40 },
-      ],
+      items: [{ name: "オートミール", kcal: 300, p: 15, f: 8, c: 40 }],
     },
     lunch: {
       title: "昼食",
-      items: [
-        { name: "鶏むね肉", kcal: 400, p: 35, f: 10, c: 20 },
-      ],
+      items: [{ name: "鶏むね肉", kcal: 400, p: 35, f: 10, c: 20 }],
     },
     dinner: {
       title: "夕食",
-      items: [
-        { name: "魚", kcal: 350, p: 25, f: 15, c: 5 },
-      ],
+      items: [{ name: "魚", kcal: 350, p: 25, f: 15, c: 5 }],
     },
   };
 
@@ -62,22 +88,21 @@ export default function Today() {
   return (
     <div className={styles.container}>
 
-      <div className={styles.header}>
-        <h2>{formattedDate}</h2>
-        <div className={styles.score}>今日の得点 {score}点</div>
+      {/* =========================
+          カレンダー
+      ========================= */}
+      <div className={styles.calendar}>
+        <DatePicker
+          selected={date}
+          onChange={handleChange}
+          inline
+        />
       </div>
 
+      {/* =========================
+          上段グラフ
+      ========================= */}
       <div className={styles.topGrid}>
-        <div className={styles.card}>
-          <h3>カレンダー</h3>
-          <div className={styles.calendarMock}>
-            {Array.from({ length: 30 }).map((_, i) => (
-              <div key={i} className={styles.dayBox}>
-                {i + 1}
-              </div>
-            ))}
-          </div>
-        </div>
 
         <div className={styles.card}>
           <h3>PFC比率</h3>
@@ -104,12 +129,16 @@ export default function Today() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+
       </div>
 
+      {/* =========================
+          食事リスト
+      ========================= */}
       <div className={styles.bottomGrid}>
+
         {Object.entries(meals).map(([key, meal]) => (
           <div key={key} className={styles.mealCard}>
-
             <h4>{meal.title}</h4>
 
             <div className={styles.foodList}>
@@ -122,16 +151,25 @@ export default function Today() {
               ))}
             </div>
 
-            {/* 追加ボタン */}
+            {/* ★ 修正：/:date/meal に統一 */}
             <button
               className={styles.addButton}
-              onClick={() => navigate("/items")}
+              onClick={() => {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, "0");
+                const d = String(date.getDate()).padStart(2, "0");
+
+                const formatted = `${y}-${m}-${d}`;
+
+                navigate(`/${formatted}/meal`);
+              }}
             >
               ＋ 追加
             </button>
 
           </div>
         ))}
+
       </div>
 
     </div>

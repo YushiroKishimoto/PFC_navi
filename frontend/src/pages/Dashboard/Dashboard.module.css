@@ -1,37 +1,34 @@
 .container {
   padding: 16px;
+  width: 100%;
+  height: 100%;
   background: #f5f5f5;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 16px;
 }
 
 .score {
-  font-size: 18px;
   font-weight: bold;
 }
 
+/* ★横3列固定 */
 .topGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.bottomGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+  width: 100%;
 }
 
 .card {
+  flex: 1;
+  min-width: 0;
   background: white;
   padding: 12px;
   border-radius: 8px;
+  height: 280px;
 }
 
 .calendarMock {
@@ -42,22 +39,23 @@
 
 .dayBox {
   background: #eee;
-  padding: 4px;
   text-align: center;
+  padding: 4px;
   font-size: 12px;
-  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bottomGrid {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .mealCard {
+  flex: 1;
   background: white;
   padding: 12px;
   border-radius: 8px;
-}
-
-.foodList {
-  margin-top: 8px;
-  border-top: 1px solid #eee;
-  padding-top: 8px;
 }
 
 .foodItem {
@@ -65,20 +63,15 @@
   justify-content: space-between;
   font-size: 12px;
   padding: 4px 0;
-  border-bottom: 1px dashed #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .addButton {
   margin-top: 10px;
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: rgb(255, 0, 0);
+  background: red;
+  color: white;
+  border: none;
   cursor: pointer;
-  font-weight: bold;
-}
-
-.addButton:hover {
-  background: #7d0000;
 }

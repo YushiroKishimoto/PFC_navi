@@ -1,84 +1,203 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
 
 export default function Record() {
+  const navigate = useNavigate();
+  const { date } = useParams();
 
-  const [mealType, setMealType] = useState("");
-  const [name, setName] = useState("");
-  const [kcal, setKcal] = useState("");
-  const [p, setP] = useState("");
-  const [f, setF] = useState("");
-  const [c, setC] = useState("");
+  // =========================
+  // 日付（URL優先）
+  // =========================
+  const currentDate = date ?? new Date().toISOString().split("T")[0];
 
-  const [items, setItems] = useState([]);
+  // =========================
+  // 仮DB
+  // =========================
+  const foodDB = [
+    { id: 1, name: "卵", kcal: 90, p: 7, f: 6, c: 1 },
+    { id: 2, name: "鶏むね肉", kcal: 200, p: 30, f: 5, c: 0 },
+    { id: 3, name: "白米", kcal: 250, p: 5, f: 1, c: 55 },
+  ];
 
-  const handleAdd = () => {
-    if (!mealType || !name) return;
+  const setDB = [
+    {
+      id: 1,
+      name: "朝食セット",
+      items: [
+        { name: "卵", kcal: 90, p: 7, f: 6, c: 1 },
+        { name: "白米", kcal: 250, p: 5, f: 1, c: 55 },
+      ],
+    },
+  ];
 
-    const newItem = {
-      id: Date.now(),
-      mealType,
-      name,
-      kcal: Number(kcal),
-      p: Number(p),
-      f: Number(f),
-      c: Number(c),
+  // =========================
+  // state
+  // =========================
+  const [foodSearch, setFoodSearch] = useState("");
+  const [setSearch, setSetSearch] = useState("");
+  const [selected, setSelected] = useState([]);
+
+  // =========================
+  // filter
+  // =========================
+  const filteredFoods = useMemo(() => {
+    return foodDB.filter((i) => i.name.includes(foodSearch));
+  }, [foodSearch]);
+
+  const filteredSets = useMemo(() => {
+    return setDB.filter((i) => i.name.includes(setSearch));
+  }, [setSearch]);
+
+  // =========================
+  // add
+  // =========================
+  const addFood = (item) => {
+    setSelected([...selected, { ...item, id: Date.now() }]);
+  };
+
+  const addSet = (set) => {
+    const expanded = set.items.map((i) => ({
+      ...i,
+      id: Date.now() + Math.random(),
+    }));
+
+    setSelected([...selected, ...expanded]);
+  };
+
+  // =========================
+  // total
+  // =========================
+  const total = selected.reduce(
+    (acc, cur) => {
+      acc.kcal += cur.kcal;
+      acc.p += cur.p;
+      acc.f += cur.f;
+      acc.c += cur.c;
+      return acc;
+    },
+    { kcal: 0, p: 0, f: 0, c: 0 }
+  );
+
+  // =========================
+  // recent
+  // =========================
+  const recent = [
+    { name: "卵焼き", qty: "2個" },
+    { name: "ごはん", qty: "150g" },
+  ];
+
+  // =========================
+  // 保存（追加）
+  // =========================
+  const handleSave = () => {
+    const payload = {
+      date: currentDate,
+      items: selected,
+      total,
     };
 
-    setItems([...items, newItem]);
+    console.log("SAVE:", payload);
 
-    setName("");
-    setKcal("");
-    setP("");
-    setF("");
-    setC("");
+    // TODO: API保存に置き換え
+    // await api.post("/records", payload);
+
+    // ダッシュボードへ戻る
+    navigate(`/${currentDate}`);
   };
 
   return (
     <div className={styles.container}>
 
-      <h2>食事記録</h2>
+      {/* ヘッダー */}
+      <div className={styles.header}>
+        <h2>{currentDate} の記録</h2>
+      </div>
 
-      {/* ■ 入力 */}
-      <div className={styles.form}>
+      {/* メイン */}
+      <div className={styles.grid}>
 
-        <select value={mealType} onChange={(e) => setMealType(e.target.value)}>
-          <option value="">食事を選択</option>
-          <option value="朝">朝</option>
-          <option value="昼">昼</option>
-          <option value="夜">夜</option>
-        </select>
+        {/* 左 */}
+        <div className={styles.left}>
+          <h3>食材検索</h3>
 
-        <input placeholder="食べたもの" value={name}
-          onChange={(e) => setName(e.target.value)} />
+          <input
+            value={foodSearch}
+            onChange={(e) => setFoodSearch(e.target.value)}
+          />
 
-        <input placeholder="kcal" value={kcal}
-          onChange={(e) => setKcal(e.target.value)} />
+          <div className={styles.list}>
+            {filteredFoods.map((item) => (
+              <div key={item.id} className={styles.item}>
+                <span>{item.name}</span>
+                <button onClick={() => addFood(item)}>＋</button>
+              </div>
+            ))}
+          </div>
 
-        <input placeholder="P" value={p}
-          onChange={(e) => setP(e.target.value)} />
+          <div className={styles.selectedBox}>
+            {selected.map((i) => (
+              <div key={i.id}>
+                {i.name} {i.kcal}kcal
+              </div>
+            ))}
+          </div>
 
-        <input placeholder="F" value={f}
-          onChange={(e) => setF(e.target.value)} />
+          <div className={styles.total}>
+            合計 P:{total.p} F:{total.f} C:{total.c}
+          </div>
 
-        <input placeholder="C" value={c}
-          onChange={(e) => setC(e.target.value)} />
+          <div className={styles.recent}>
+            <h4>最近の食事</h4>
+            {recent.map((r, i) => (
+              <div key={i}>{r.name} {r.qty}</div>
+            ))}
+          </div>
+        </div>
 
-        <button onClick={handleAdd}>追加</button>
+        {/* 右 */}
+        <div className={styles.right}>
+          <h3>セット検索</h3>
+
+          <input
+            value={setSearch}
+            onChange={(e) => setSetSearch(e.target.value)}
+          />
+
+          <div className={styles.setList}>
+            {filteredSets.map((set) => (
+              <div key={set.id} className={styles.setCard}>
+                <div>{set.name}</div>
+                <button onClick={() => addSet(set)}>追加</button>
+              </div>
+            ))}
+          </div>
+        </div>
 
       </div>
 
-      {/* ■ 一覧 */}
-      <div className={styles.list}>
+      {/* フッター */}
+      <div className={styles.footer}>
 
-        {items.map((item) => (
-          <div key={item.id} className={styles.card}>
-            <div>{item.mealType}</div>
-            <div>{item.name}</div>
-            <div>{item.kcal} kcal</div>
-            <div>P:{item.p} F:{item.f} C:{item.c}</div>
-          </div>
-        ))}
+        <button className={styles.primary}
+          onClick={() => navigate("/items")}
+        >
+          食材登録
+        </button>
+
+        <button className={styles.secondary}
+          onClick={() => navigate("/set")}
+        >
+          セット登録
+        </button>
+
+        {/* 保存ボタン追加 */}
+        <button
+          className={styles.saveButton}
+          onClick={handleSave}
+        >
+          保存
+        </button>
 
       </div>
 
