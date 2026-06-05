@@ -1,6 +1,7 @@
 import styles from "./Dashboard.module.css";
 import { useState, useEffect } from "react";
 import { getDashboard } from "../../api/dashboard";
+import { getMealRecords } from "../../api/mealRecord";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,11 +11,18 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
 
+const MEAL_TYPES = [
+  { key: "breakfast", label: "朝食" },
+  { key: "lunch",     label: "昼食" },
+  { key: "dinner",    label: "夕食" },
+];
+
 export default function Dashboard() {
   const navigate = useNavigate();
 
   const [date, setDate] = useState(new Date());
   const [dashboard, setDashboard] = useState(null);
+  const [meals, setMeals] = useState([]);
 
   // =========================
   // API取得
@@ -26,6 +34,7 @@ export default function Dashboard() {
     const formatted = `${y}-${m}-${d}`;
 
     getDashboard(formatted).then((data) => setDashboard(data));
+    getMealRecords(formatted).then((data) => setMeals(data.meals ?? []));
   }, [date]);
 
   // =========================
@@ -38,9 +47,7 @@ export default function Dashboard() {
     const m = String(newDate.getMonth() + 1).padStart(2, "0");
     const d = String(newDate.getDate()).padStart(2, "0");
 
-    const formatted = `${y}-${m}-${d}`;
-
-    navigate(`/${formatted}`);
+    navigate(`/${y}-${m}-${d}`);
   };
 
   // =========================
@@ -75,24 +82,6 @@ export default function Dashboard() {
     { name: "F", target: pfc.target.f, intake: pfc.intake.f },
     { name: "C", target: pfc.target.c, intake: pfc.intake.c },
   ];
-
-  // =========================
-  // 仮食事
-  // =========================
-  const meals = {
-    breakfast: {
-      title: "朝食",
-      items: [{ name: "オートミール", kcal: 300, p: 15, f: 8, c: 40 }],
-    },
-    lunch: {
-      title: "昼食",
-      items: [{ name: "鶏むね肉", kcal: 400, p: 35, f: 10, c: 20 }],
-    },
-    dinner: {
-      title: "夕食",
-      items: [{ name: "魚", kcal: 350, p: 25, f: 15, c: 5 }],
-    },
-  };
 
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
@@ -155,37 +144,42 @@ export default function Dashboard() {
       ========================= */}
       <div className={styles.bottomGrid}>
 
-        {Object.entries(meals).map(([key, meal]) => (
-          <div key={key} className={styles.mealCard}>
-            <h4>{meal.title}</h4>
+        {MEAL_TYPES.map(({ key, label }) => {
+          const meal = meals.find((m) => m.mealType === key);
 
-            <div className={styles.foodList}>
-              {meal.items.map((item, i) => (
-                <div key={i} className={styles.foodItem}>
-                  <span>{item.name}</span>
-                  <span>{item.kcal} kcal</span>
-                  <span>P:{item.p} F:{item.f} C:{item.c}</span>
-                </div>
-              ))}
+          return (
+            <div key={key} className={styles.mealCard}>
+              <h4>{label}</h4>
+
+              <div className={styles.foodList}>
+                {meal ? (
+                  meal.items.map((item) => (
+                    <div key={item.id} className={styles.foodItem}>
+                      <span>{item.name}</span>
+                      <span>{item.cal} kcal</span>
+                      <span>P:{item.pro} F:{item.fat} C:{item.car}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.empty}>記録なし</div>
+                )}
+              </div>
+
+              <button
+                className={styles.addButton}
+                onClick={() => {
+                  const y = date.getFullYear();
+                  const m = String(date.getMonth() + 1).padStart(2, "0");
+                  const d = String(date.getDate()).padStart(2, "0");
+                  navigate(`/${y}-${m}-${d}/meal`);
+                }}
+              >
+                ＋ 追加
+              </button>
+
             </div>
-
-            <button
-              className={styles.addButton}
-              onClick={() => {
-                const y = date.getFullYear();
-                const m = String(date.getMonth() + 1).padStart(2, "0");
-                const d = String(date.getDate()).padStart(2, "0");
-
-                const formatted = `${y}-${m}-${d}`;
-
-                navigate(`/${formatted}/meal`);
-              }}
-            >
-              ＋ 追加
-            </button>
-
-          </div>
-        ))}
+          );
+        })}
 
       </div>
 

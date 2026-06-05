@@ -5,10 +5,12 @@ import com.example.pfc_navi.entity.CustomFood;
 import com.example.pfc_navi.entity.DefaultFood;
 import com.example.pfc_navi.entity.MealRecord;
 import com.example.pfc_navi.entity.MealRecordItem;
+import com.example.pfc_navi.entity.User;
 import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.repository.MealRecordItemRepository;
 import com.example.pfc_navi.repository.MealRecordRepository;
+import com.example.pfc_navi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,28 +25,31 @@ public class MealRecordService {
     private final MealRecordItemRepository mealRecordItemRepository;
     private final DefaultFoodRepository defaultFoodRepository;
     private final CustomFoodRepository customFoodRepository;
+    private final UserRepository userRepository;
 
     public MealRecordService(
             MealRecordRepository mealRecordRepository,
             MealRecordItemRepository mealRecordItemRepository,
             DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository) {
+            CustomFoodRepository customFoodRepository,
+            UserRepository userRepository) {
         this.mealRecordRepository = mealRecordRepository;
         this.mealRecordItemRepository = mealRecordItemRepository;
         this.defaultFoodRepository = defaultFoodRepository;
         this.customFoodRepository = customFoodRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public MealRecordCreateResponse createMealRecord(MealRecordRequest request) {
+    public MealRecordCreateResponse createMealRecord(MealRecordRequest request, Integer userId) {
         validateRequest(request);
 
-        Integer userId = 1; // TODO Cookie認証完成後にログインユーザーIDへ変更
-        String loginId = "test"; // TODO Cookie認証完成後にログインIDへ変更
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません"));
 
         MealRecord mealRecord = new MealRecord();
         mealRecord.setUserId(userId);
-        mealRecord.setLoginId(loginId);
+        mealRecord.setLoginId(user.getLoginId());
         mealRecord.setRecordDate(request.getRecordDate());
         mealRecord.setMealType(request.getMealType());
 
@@ -88,12 +93,10 @@ public class MealRecordService {
                 dailyTotal);
     }
 
-    public MealRecordListResponse getMealRecordsByDate(LocalDate date) {
+    public MealRecordListResponse getMealRecordsByDate(LocalDate date, Integer userId) {
         if (date == null) {
             throw new IllegalArgumentException("dateは必須です。");
         }
-
-        Integer userId = 1; // TODO Cookie認証完成後にログインユーザーIDへ変更
 
         List<MealRecord> records = mealRecordRepository.findByUserIdAndRecordDate(userId, date);
 
@@ -169,6 +172,24 @@ public class MealRecordService {
         }
 
         return new NutritionTotalResponse(totalCal, totalPro, totalFat, totalCar);
+    }
+
+    @Transactional
+    public NutritionTotalResponse deleteMealRecord(Integer mealRecordId, Integer userId) {
+        if (mealRecordId == null) {
+            throw new IllegalArgumentException("mealRecordIdは必須です。");
+        }
+
+        MealRecord mealRecord = mealRecordRepository.findById(mealRecordId)
+                .orElseThrow(() -> new IllegalArgumentException("対象の食事記録が存在しません。"));
+
+        LocalDate recordDate = mealRecord.getRecordDate();
+
+        mealRecordItemRepository.deleteByMealRecordId(mealRecordId);
+
+        mealRecordRepository.delete(mealRecord);
+
+        return calculateDailyTotal(userId, recordDate);
     }
 
     private MealRecordItem createCalculatedMealRecordItem(
@@ -304,24 +325,5 @@ public class MealRecordService {
                 throw new IllegalArgumentException("items[].amountは1以上で指定してください。");
             }
         }
-    }
-
-    @Transactional
-    public NutritionTotalResponse deleteMealRecord(Integer mealRecordId) {
-        if (mealRecordId == null) {
-            throw new IllegalArgumentException("mealRecordIdは必須です。");
-        }
-
-        MealRecord mealRecord = mealRecordRepository.findById(mealRecordId)
-                .orElseThrow(() -> new IllegalArgumentException("対象の食事記録が存在しません。"));
-
-        Integer userId = mealRecord.getUserId();
-        LocalDate recordDate = mealRecord.getRecordDate();
-
-        mealRecordItemRepository.deleteByMealRecordId(mealRecordId);
-
-        mealRecordRepository.delete(mealRecord);
-
-        return calculateDailyTotal(userId, recordDate);
     }
 }

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
+import { createMealRecord } from "../../api/mealRecord";
 
 export default function Record() {
   const navigate = useNavigate();
