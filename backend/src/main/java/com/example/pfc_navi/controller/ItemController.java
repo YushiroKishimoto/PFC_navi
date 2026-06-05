@@ -78,7 +78,7 @@ public class ItemController {
                                 Map.of("items", items));
         }
 
-        @PostMapping
+        @PostMapping("/register")
         public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request) {
                 try {
                         return ApiResponse.success(
