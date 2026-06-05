@@ -16,15 +16,26 @@ export default function Set() {
 
   const [selected, setSelected] = useState([]);
 
+  // =========================
+  // フィルタ
+  // =========================
   const filteredItems = useMemo(() => {
     return items.filter((i) => i.name.includes(search));
   }, [search, items]);
 
+  // =========================
+  // 追加（安全更新）
+  // =========================
   const addItem = (item) => {
-    if (selected.find((i) => i.id === item.id)) return;
-    setSelected([...selected, { ...item }]);
+    setSelected((prev) => {
+      if (prev.some((i) => i.id === item.id)) return prev;
+      return [...prev, { ...item }];
+    });
   };
 
+  // =========================
+  // 更新（安全な関数型更新）
+  // =========================
   const updateItem = (id, field, value) => {
     setSelected((prev) =>
       prev.map((item) =>
@@ -33,16 +44,18 @@ export default function Set() {
     );
   };
 
-  // 合計計算
+  // =========================
+  // 合計（安全計算）
+  // =========================
   const total = useMemo(() => {
     return selected.reduce(
       (acc, cur) => {
-        const ratio = cur.amount / 100;
+        const ratio = Number(cur.amount || 0) / 100;
 
-        acc.kcal += cur.kcal * ratio;
-        acc.p += cur.p * ratio;
-        acc.f += cur.f * ratio;
-        acc.c += cur.c * ratio;
+        acc.kcal += (Number(cur.kcal) || 0) * ratio;
+        acc.p += (Number(cur.p) || 0) * ratio;
+        acc.f += (Number(cur.f) || 0) * ratio;
+        acc.c += (Number(cur.c) || 0) * ratio;
 
         return acc;
       },
@@ -50,26 +63,39 @@ export default function Set() {
     );
   }, [selected]);
 
-  // ✅ 登録処理（将来API化ポイント）
-  const handleRegister = () => {
-    if (!setName || selected.length === 0) {
-      alert("セット名と食材を入力してください");
-      return;
-    }
-
-    const payload = {
+  // =========================
+  // payload生成（分離）
+  // =========================
+  const createPayload = () => {
+    return {
       setName,
       items: selected,
       total,
       createdAt: new Date().toISOString(),
     };
+  };
 
-    // ★ここが将来APIになる
+  // =========================
+  // 登録（安全遷移）
+  // =========================
+  const handleRegister = () => {
+    if (!setName.trim() || selected.length === 0) {
+      alert("セット名と食材を入力してください");
+      return;
+    }
+
+    const payload = createPayload();
+
     console.log("SET_DB_REGISTER:", payload);
 
-    // mock成功後遷移
     alert("セット登録完了");
-    navigate("/");
+
+    // 安全遷移（戻れるなら戻る / 無理ならホーム）
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -160,7 +186,7 @@ export default function Set() {
         </div>
       </div>
 
-      {/* ✅ 登録ボタン */}
+      {/* 登録 */}
       <button className={styles.button} onClick={handleRegister}>
         セットを登録
       </button>
