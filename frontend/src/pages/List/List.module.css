@@ -1,34 +1,54 @@
 .container {
-  padding: 20px;
-}
-
-.input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.list {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
+/* タブ */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* 通常ボタン */
+.tab {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* 選択中 */
+.activeTab {
+  padding: 8px 12px;
+  border: 1px solid #4caf50;
+  background: #4caf50;
+  color: #fff;
+}
+
+/* 検索 */
+.input {
+  margin-bottom: 10px;
+  padding: 6px;
+}
+
+/* ★ここが重要：一覧だけスクロール */
+.listScroll {
+  flex: 1;              /* 残り領域を使う */
+  overflow-y: auto;     /* 縦スクロール */
+  padding-right: 6px;   /* スクロールバー余白 */
+}
+
+/* カード */
 .card {
   border: 1px solid #ddd;
   padding: 10px;
+  margin-bottom: 8px;
   border-radius: 6px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
+/* 行 */
 .row {
   display: flex;
   gap: 6px;

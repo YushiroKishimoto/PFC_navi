@@ -50,20 +50,29 @@ export default function List() {
     <div className={styles.container}>
       <h2>一覧・編集</h2>
 
-      {/* 検索 */}
+      {/* タブ */}
+      <div className={styles.tabs}>
+        <button
+          className={tab === "item" ? styles.activeTab : styles.tab}
+          onClick={() => setTab("item")}
+        >
+          食材・料理
+        </button>
+
+        <button
+          className={tab === "set" ? styles.activeTab : styles.tab}
+          onClick={() => setTab("set")}
+        >
+          セット
+        </button>
+      </div>
+            {/* 検索 */}
       <input
         className={styles.input}
         placeholder="検索"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-
-      {/* タブ */}
-      <div className={styles.tabs}>
-        <button onClick={() => setTab("item")}>食材・料理</button>
-        <button onClick={() => setTab("set")}>セット</button>
-      </div>
-
       {/* 食材一覧 */}
       {tab === "item" && (
         <div className={styles.list}>
