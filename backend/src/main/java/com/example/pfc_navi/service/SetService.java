@@ -13,6 +13,9 @@ import com.example.pfc_navi.repository.MealSetItemRepository;
 import com.example.pfc_navi.repository.MealSetRepository;
 import com.example.pfc_navi.dto.SetSearchItemResponse;
 import com.example.pfc_navi.dto.SetSearchResponse;
+import com.example.pfc_navi.dto.SetUpdateItemRequest;
+import com.example.pfc_navi.dto.SetUpdateRequest;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -251,6 +254,102 @@ public class SetService {
             if (item.getItemId() == null) {
                 throw new IllegalArgumentException("items[].itemIdは必須です。");
             }
+            if (item.getAmount() == null || item.getAmount() <= 0) {
+                throw new IllegalArgumentException("items[].amountは1以上で指定してください。");
+            }
+        }
+    }
+
+    @Transactional
+    public SetSearchResponse updateSet(Integer id, SetUpdateRequest request) {
+        if (id == null) {
+            throw new IllegalArgumentException("idは必須です。");
+        }
+
+        validateUpdateRequest(request);
+
+        MealSet mealSet = mealSetRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
+
+        mealSetItemRepository.deleteBySetFoodId(id);
+
+        int totalCal = 0;
+        int totalPro = 0;
+        int totalFat = 0;
+        int totalCar = 0;
+
+        for (SetUpdateItemRequest itemRequest : request.getItems()) {
+            SetRegisterItemRequest registerItemRequest = new SetRegisterItemRequest();
+            registerItemRequest.setSource(itemRequest.getSource());
+            registerItemRequest.setItemId(itemRequest.getItemId());
+            registerItemRequest.setAmount(itemRequest.getAmount());
+
+            MealSetItem item = createCalculatedSetItem(id, registerItemRequest);
+
+            mealSetItemRepository.save(item);
+
+            totalCal += item.getCal();
+            totalPro += item.getPro();
+            totalFat += item.getFat();
+            totalCar += item.getCar();
+        }
+
+        mealSet.setName(request.getName());
+        mealSet.setTotalCal(totalCal);
+        mealSet.setTotalPro(totalPro);
+        mealSet.setTotalFat(totalFat);
+        mealSet.setTotalCar(totalCar);
+
+        mealSetRepository.save(mealSet);
+
+        return getSetDetail(id);
+    }
+
+    @Transactional
+    public void deleteSet(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("idは必須です。");
+        }
+
+        MealSet mealSet = mealSetRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
+
+        mealSetItemRepository.deleteBySetFoodId(id);
+
+        mealSetRepository.delete(mealSet);
+    }
+
+    private void validateUpdateRequest(SetUpdateRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("リクエストが空です。");
+        }
+
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new IllegalArgumentException("セット名は必須です。");
+        }
+
+        if (request.getName().length() > 50) {
+            throw new IllegalArgumentException("セット名は50文字以内で入力してください。");
+        }
+
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new IllegalArgumentException("itemsは1件以上必要です。");
+        }
+
+        for (SetUpdateItemRequest item : request.getItems()) {
+            if (item.getSource() == null || item.getSource().isBlank()) {
+                throw new IllegalArgumentException("items[].sourceは必須です。");
+            }
+
+            if (!item.getSource().equals("default")
+                    && !item.getSource().equals("custom")) {
+                throw new IllegalArgumentException("items[].sourceは default / custom のいずれかを指定してください。");
+            }
+
+            if (item.getItemId() == null) {
+                throw new IllegalArgumentException("items[].itemIdは必須です。");
+            }
+
             if (item.getAmount() == null || item.getAmount() <= 0) {
                 throw new IllegalArgumentException("items[].amountは1以上で指定してください。");
             }
