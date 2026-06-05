@@ -11,6 +11,8 @@ import com.example.pfc_navi.repository.MealRecordItemRepository;
 import com.example.pfc_navi.repository.MealRecordRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.pfc_navi.entity.MealSet;
+import com.example.pfc_navi.repository.MealSetRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,16 +25,19 @@ public class MealRecordService {
     private final MealRecordItemRepository mealRecordItemRepository;
     private final DefaultFoodRepository defaultFoodRepository;
     private final CustomFoodRepository customFoodRepository;
+    private final MealSetRepository mealSetRepository;
 
     public MealRecordService(
             MealRecordRepository mealRecordRepository,
             MealRecordItemRepository mealRecordItemRepository,
             DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository) {
+            CustomFoodRepository customFoodRepository,
+            MealSetRepository mealSetRepository) {
         this.mealRecordRepository = mealRecordRepository;
         this.mealRecordItemRepository = mealRecordItemRepository;
         this.defaultFoodRepository = defaultFoodRepository;
         this.customFoodRepository = customFoodRepository;
+        this.mealSetRepository = mealSetRepository;
     }
 
     @Transactional
@@ -207,7 +212,19 @@ public class MealRecordService {
         }
 
         if ("set".equals(itemRequest.getSource())) {
-            throw new IllegalArgumentException("set_foodsの食事記録登録は未実装です。");
+            MealSet mealSet = mealSetRepository.findById(itemRequest.getItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("meal_setsに対象データが存在しません。"));
+
+            return buildMealRecordItem(
+                    mealRecordId,
+                    "set",
+                    mealSet.getId(),
+                    itemRequest.getAmount(),
+                    1,
+                    mealSet.getTotalCal(),
+                    mealSet.getTotalPro(),
+                    mealSet.getTotalFat(),
+                    mealSet.getTotalCar());
         }
 
         throw new IllegalArgumentException("sourceは default / custom / set のいずれかを指定してください。");
@@ -256,7 +273,9 @@ public class MealRecordService {
         }
 
         if ("set".equals(item.getItemType())) {
-            return "食事セット";
+            return mealSetRepository.findById(item.getItemId())
+                    .map(MealSet::getName)
+                    .orElse("不明なセット");
         }
 
         return "不明な食品";
