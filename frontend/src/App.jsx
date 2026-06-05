@@ -1,4 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
+// layout
+import Layout from "./components/Layout/Layout";
 
 // pages
 import Login from "./pages/Login";
@@ -12,32 +15,50 @@ import Items from "./pages/Items";
 import Set from "./pages/Set";
 import List from "./pages/List";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
+function AppRoutes() {
+  const location = useLocation();
 
-        {/* ログイン系 */}
+  // Sidebarを出さないページ
+  const hideLayout = ["/login", "/user", "/onboarding"];
+
+  const isHidden = hideLayout.includes(location.pathname);
+
+  if (isHidden) {
+    return (
+      <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/user" element={<User />} />
         <Route path="/onboarding" element={<Onboarding />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <Layout>
+      <Routes>
+        {/* ログイン系 */}
         <Route path="/profile" element={<Profile />} />
 
-        {/* ダッシュボード（今日 or 日付） */}
+        {/* ダッシュボード */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/:date" element={<Dashboard />} />
 
-        {/* 食事記録（特定日） */}
+        {/* 食事記録 */}
         <Route path="/:date/meal" element={<Record />} />
 
         {/* マスタ系 */}
         <Route path="/items" element={<Items />} />
         <Route path="/set" element={<Set />} />
         <Route path="/list" element={<List />} />
-
       </Routes>
-    </BrowserRouter>
+    </Layout>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}

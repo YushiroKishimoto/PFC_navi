@@ -8,13 +8,15 @@ export default function Layout({ children }) {
   return (
     <div className={styles.wrapper}>
 
-      <div className={open ? styles.open : styles.closed}>
+      {/* サイドバー */}
+      <aside className={open ? styles.sidebarOpen : styles.sidebarClosed}>
         <Sidebar open={open} setOpen={setOpen} />
-      </div>
+      </aside>
 
-      <div className={styles.main}>
+      {/* メイン */}
+      <main className={styles.main}>
         {children}
-      </div>
+      </main>
 
     </div>
   );
