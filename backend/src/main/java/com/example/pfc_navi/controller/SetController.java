@@ -2,6 +2,7 @@ package com.example.pfc_navi.controller;
 
 import com.example.pfc_navi.dto.ApiResponse;
 import com.example.pfc_navi.dto.SetRegisterRequest;
+import com.example.pfc_navi.dto.SetUpdateRequest;
 import com.example.pfc_navi.service.SetService;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,32 @@ public class SetController {
             return ApiResponse.success(
                     "セット詳細取得成功",
                     setService.getSetDetail(id));
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.validationError(e.getMessage(), Map.of());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<?> updateSet(
+            @PathVariable Integer id,
+            @RequestBody SetUpdateRequest request) {
+        try {
+            return ApiResponse.success(
+                    "セットを更新しました。",
+                    setService.updateSet(id, request));
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.validationError(e.getMessage(), Map.of());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<?> deleteSet(@PathVariable Integer id) {
+        try {
+            setService.deleteSet(id);
+
+            return ApiResponse.success(
+                    "セットを削除しました。",
+                    Map.of());
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
