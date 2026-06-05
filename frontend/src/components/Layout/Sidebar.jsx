@@ -17,31 +17,34 @@ export default function Sidebar({ open, setOpen }) {
         {open && <span className={styles.title}>MENU</span>}
       </div>
 
-      <hr />
 
       {/* メニュー */}
       <div className={styles.menu}>
 
         <Link to="/" className={styles.item}>
           <span>🏠</span>
-          {open && <span>Home</span>}
+          {open && <span>ダッシュボード</span>}
         </Link>
 
         <Link to="/items" className={styles.item}>
           <span>🍱</span>
-          {open && <span>Items</span>}
+          {open && <span>食材・料理の登録</span>}
         </Link>
 
         <Link to="/set" className={styles.item}>
           <span>📦</span>
-          {open && <span>Sets</span>}
+          {open && <span>セット登録</span>}
         </Link>
 
         <Link to="/profile" className={styles.item}>
           <span>👤</span>
-          {open && <span>profile</span>}
+          {open && <span>プロフィール</span>}
         </Link>        
 
+        <Link to="/list" className={styles.item}>
+          <span>📚</span>
+          {open && <span>登録一覧</span>}
+        </Link>        
       </div>
 
     </div>

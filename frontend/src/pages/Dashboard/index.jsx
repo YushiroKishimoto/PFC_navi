@@ -99,28 +99,12 @@ export default function Dashboard() {
   return (
     <div className={styles.container}>
 
-      {/* =========================
-          スコア
-      ========================= */}
-      <div className={styles.score}>
-        今日の得点 {score}点
-      </div>
-
-      {/* =========================
-          カレンダー
-      ========================= */}
-      <div className={styles.calendar}>
-        <DatePicker
-          selected={date}
-          onChange={handleChange}
-          inline
-        />
-      </div>
-
-      {/* =========================
-          上段グラフ
-      ========================= */}
       <div className={styles.topGrid}>
+        <div className={styles.calendar}>
+        <DatePicker selected={date}
+        onChange={handleChange}
+        inline/>
+        </div>
 
         <div className={styles.card}>
           <h3>PFC比率</h3>
