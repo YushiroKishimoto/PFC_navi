@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/meal-records")
+@RequestMapping("/api/records")
 public class MealRecordController {
     private final MealRecordService mealRecordService;
 

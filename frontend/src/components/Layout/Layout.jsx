@@ -8,7 +8,7 @@ export default function Layout({ children }) {
   return (
     <div className={styles.wrapper}>
 
-      <div className={open ? styles.open : styles.closed}>
+      <div className={open ? styles.sidebarOpen : styles.sidebarClosed}>
         <Sidebar open={open} setOpen={setOpen} />
       </div>
 
