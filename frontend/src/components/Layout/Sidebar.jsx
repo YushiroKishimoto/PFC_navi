@@ -17,7 +17,6 @@ export default function Sidebar({ open, setOpen }) {
         {open && <span className={styles.title}>MENU</span>}
       </div>
 
-      <hr />
 
       {/* メニュー */}
       <div className={styles.menu}>

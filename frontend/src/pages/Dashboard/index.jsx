@@ -88,21 +88,12 @@ export default function Dashboard() {
   return (
     <div className={styles.container}>
 
-      {/* =========================
-          カレンダー
-      ========================= */}
-      <div className={styles.calendar}>
-        <DatePicker
-          selected={date}
-          onChange={handleChange}
-          inline
-        />
-      </div>
-
-      {/* =========================
-          上段グラフ
-      ========================= */}
       <div className={styles.topGrid}>
+        <div className={styles.calendar}>
+        <DatePicker selected={date}
+        onChange={handleChange}
+        inline/>
+        </div>
 
         <div className={styles.card}>
           <h3>PFC比率</h3>
