@@ -6,12 +6,10 @@ import User from "./pages/User";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 
-import Dashboard from "./pages/Dashboard/Today";
-import Daily from "./pages/Dashboard/Daily";
-
+import Dashboard from "./pages/Dashboard";
 import Record from "./pages/Record";
 import Items from "./pages/Items";
-import SetPage from "./pages/Set";
+import Set from "./pages/Set";
 import List from "./pages/List";
 
 function App() {
@@ -19,34 +17,22 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* SCR-001 */}
+        {/* ログイン系 */}
         <Route path="/login" element={<Login />} />
-
-        {/* SCR-002 */}
         <Route path="/user" element={<User />} />
-
-        {/* SCR-003 */}
         <Route path="/onboarding" element={<Onboarding />} />
-
-        {/* SCR-004 */}
         <Route path="/profile" element={<Profile />} />
 
-        {/* SCR-005 */}
+        {/* ダッシュボード（今日 or 日付） */}
         <Route path="/" element={<Dashboard />} />
+        <Route path="/:date" element={<Dashboard />} />
 
-        {/* SCR-006 */}
-        <Route path="/records/:date" element={<Daily />} />
+        {/* 食事記録（特定日） */}
+        <Route path="/:date/meal" element={<Record />} />
 
-        {/* SCR-007 */}
-        <Route path="/records/:date/meal" element={<Record />} />
-
-        {/* SCR-008 */}
+        {/* マスタ系 */}
         <Route path="/items" element={<Items />} />
-
-        {/* SCR-009 */}
-        <Route path="/set" element={<SetPage />} />
-
-        {/* SCR-010 */}
+        <Route path="/set" element={<Set />} />
         <Route path="/list" element={<List />} />
 
       </Routes>
