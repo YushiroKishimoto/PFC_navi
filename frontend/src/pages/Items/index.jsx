@@ -1,6 +1,9 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Items.module.css";
+import {
+  createItem,
+} from "../../api/item";
 
 export default function Items() {
   const navigate = useNavigate();
@@ -8,14 +11,16 @@ export default function Items() {
   const [form, setForm] = useState({
     name: "",
     amount: "",
-    unit: "g",
-    kcal: "",
-    protein: "",
+    // unit: "g",
+    pro: "",
     fat: "",
-    carb: "",
+    car: "",
+    cal: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState({});
+  // const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({
@@ -24,30 +29,44 @@ export default function Items() {
     });
   };
 
-  const validate = () => {
-    const newErrors = {};
+  // const validate = () => {
+  //   const newErrors = {};
 
-    if (!form.name) newErrors.name = "食材名を入力してください";
-    if (!form.amount) newErrors.amount = "標準量を入力してください";
-    if (!form.kcal) newErrors.kcal = "カロリーを入力してください";
-    if (!form.protein) newErrors.protein = "Pを入力してください";
-    if (!form.fat) newErrors.fat = "Fを入力してください";
-    if (!form.carb) newErrors.carb = "Cを入力してください";
+  //   if (!form.name) newErrors.name = "食材名を入力してください";
+  //   if (!form.amount) newErrors.amount = "標準量を入力してください";
+  //   if (!form.cal) newErrors.cal = "カロリーを入力してください";
+  //   if (!form.pro) newErrors.pro = "Pを入力してください";
+  //   if (!form.fat) newErrors.fat = "Fを入力してください";
+  //   if (!form.car) newErrors.car = "Cを入力してください";
 
-    setErrors(newErrors);
+  //   setErrors(newErrors);
 
-    return Object.keys(newErrors).length === 0;
-  };
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
-  const handleSubmit = () => {
-    if (!validate()) return;
+  const handleSubmit = async () => {
+      try {
+        const payload = {
+          name: form.name,
+          amount: form.amount === "" ? null : Number(form.amount),
+          pro: form.pro === "" ? null : Number(form.pro),
+          fat: form.fat === "" ? null : Number(form.fat),
+          car: form.car === "" ? null : Number(form.car),
+          cal: form.cal === "" ? null : Number(form.cal),
+        };
+  
+        const res = await createItem(payload);
+        console.log("register response:", res)
 
-    console.log("item register:", form);
+        if (res?.message === "自前食材・料理を登録しました。") {
+          navigate("/");
+        }
+        setMessage(res.message);
 
-    alert("登録完了（mock）");
-
-    navigate("/");
-  };
+      } catch (e) {
+        setMessage("登録に失敗しました");
+      }
+    };
 
   return (
     <div className={styles.container}>
@@ -63,8 +82,9 @@ export default function Items() {
           placeholder="例：鶏むね肉"
           className={styles.input}
           onChange={handleChange}
+          value={form.name}
         />
-        {errors.name && <p className={styles.error}>{errors.name}</p>}
+        {/* {errors.name && <p className={styles.error}>{errors.name}</p>} */}
 
         {/* 標準量 */}
         <div className={styles.row}>
@@ -75,8 +95,9 @@ export default function Items() {
               placeholder="100"
               className={styles.input}
               onChange={handleChange}
+              value={form.amount}
             />
-            {errors.amount && <p className={styles.error}>{errors.amount}</p>}
+            {/* {errors.amount && <p className={styles.error}>{errors.amount}</p>} */}
           </div>
 
           <div>
@@ -100,26 +121,46 @@ export default function Items() {
         <div className={styles.grid}>
           <div>
             <label>カロリー</label>
-            <input name="kcal" className={styles.input} onChange={handleChange} />
-            {errors.kcal && <p className={styles.error}>{errors.kcal}</p>}
+            <input
+              name="cal"
+              className={styles.input}
+              onChange={handleChange}
+              value={form.cal}
+            />
+            {/* {errors.cal && <p className={styles.error}>{errors.cal}</p>} */}
           </div>
 
           <div>
             <label>P</label>
-            <input name="protein" className={styles.input} onChange={handleChange} />
-            {errors.protein && <p className={styles.error}>{errors.protein}</p>}
+            <input
+              name="pro"
+              className={styles.input}
+              onChange={handleChange}
+              value={form.pro}
+            />
+            {/* {errors.pro && <p className={styles.error}>{errors.pro}</p>} */}
           </div>
 
           <div>
             <label>F</label>
-            <input name="fat" className={styles.input} onChange={handleChange} />
-            {errors.fat && <p className={styles.error}>{errors.fat}</p>}
+            <input
+              name="fat"
+              className={styles.input}
+              onChange={handleChange}
+              value={form.fat}
+            />
+            {/* {errors.fat && <p className={styles.error}>{errors.fat}</p>} */}
           </div>
 
           <div>
             <label>C</label>
-            <input name="carb" className={styles.input} onChange={handleChange} />
-            {errors.carb && <p className={styles.error}>{errors.carb}</p>}
+            <input
+              name="car"
+              className={styles.input}
+              onChange={handleChange}
+              value={form.car}
+            />
+            {/* {errors.car && <p className={styles.error}>{errors.car}</p>} */}
           </div>
         </div>
 
@@ -127,6 +168,7 @@ export default function Items() {
           登録
         </button>
 
+        <p>{message}</p>
       </div>
     </div>
   );

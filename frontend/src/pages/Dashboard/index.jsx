@@ -1,5 +1,6 @@
 import styles from "./Dashboard.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getDashboard } from "../../api/dashboard";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,6 +14,19 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const [date, setDate] = useState(new Date());
+  const [dashboard, setDashboard] = useState(null);
+
+  // =========================
+  // API取得
+  // =========================
+  useEffect(() => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    const formatted = `${y}-${m}-${d}`;
+
+    getDashboard(formatted).then((data) => setDashboard(data));
+  }, [date]);
 
   // =========================
   // 日付変更
@@ -26,31 +40,28 @@ export default function Dashboard() {
 
     const formatted = `${y}-${m}-${d}`;
 
-    // ★ 修正：/:date に統一
     navigate(`/${formatted}`);
   };
 
   // =========================
-  // 表示用日付
+  // スコア
   // =========================
-  const formattedDate = new Intl.DateTimeFormat("ja-JP", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    weekday: "long",
-  }).format(date);
-
-  // =========================
-  // 仮スコア
-  // =========================
-  const score = 100;
+  const score = dashboard?.achievementRate ?? 0;
 
   // =========================
   // PFC
   // =========================
   const pfc = {
-    target: { p: 120, f: 60, c: 200 },
-    intake: { p: 90, f: 50, c: 180 },
+    target: {
+      p: dashboard?.targetPro ?? 0,
+      f: dashboard?.targetFat ?? 0,
+      c: dashboard?.targetCar ?? 0,
+    },
+    intake: {
+      p: dashboard?.actualPro ?? 0,
+      f: dashboard?.actualFat ?? 0,
+      c: dashboard?.actualCar ?? 0,
+    },
   };
 
   const pieData = [
@@ -142,7 +153,6 @@ export default function Dashboard() {
               ))}
             </div>
 
-            {/* ★ 修正：/:date/meal に統一 */}
             <button
               className={styles.addButton}
               onClick={() => {
