@@ -113,7 +113,7 @@ export default function Set() {
       {/* 検索 */}
       <input
         className={styles.input}
-        placeholder="食材検索"
+        placeholder="食材・料理検索"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
