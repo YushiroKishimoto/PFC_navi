@@ -2,55 +2,159 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  background: #f7f7f7;
+    overflow: hidden;
 }
 
-/* タブ */
+/* =====================
+   タブ
+===================== */
 .tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
 }
 
-/* 通常ボタン */
 .tab {
-  padding: 8px 12px;
+  padding: 8px 14px;
   border: 1px solid #ccc;
   background: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  transition: 0.2s;
 }
 
-/* 選択中 */
+.tab:hover {
+  border-color: #4caf50;
+}
+
 .activeTab {
-  padding: 8px 12px;
+  padding: 8px 14px;
   border: 1px solid #4caf50;
   background: #4caf50;
   color: #fff;
-}
-
-/* 検索 */
-.input {
-  margin-bottom: 10px;
-  padding: 6px;
-}
-
-/* ★ここが重要：一覧だけスクロール */
-.listScroll {
-  flex: 1;              /* 残り領域を使う */
-  overflow-y: auto;     /* 縦スクロール */
-  padding-right: 6px;   /* スクロールバー余白 */
-}
-
-/* カード */
-.card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 8px;
+  cursor: pointer;
   border-radius: 6px;
 }
 
-/* 行 */
+/* =====================
+   検索
+===================== */
+.input {
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* =====================
+   一覧スクロール領域
+===================== */
+.listScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+  min-height: 0; /* ★flexスクロールで必須 */
+}
+
+/* =====================
+   カード
+===================== */
+.card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* =====================
+   上段（タイトル + ボタン）
+===================== */
 .row {
   display: flex;
-  gap: 6px;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+}
+
+/* =====================
+   ボタン共通
+===================== */
+button {
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+/* 編集ボタン */
+.editBtn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.editBtn:hover {
+  background-color: #43a047;
+}
+
+/* 保存ボタン */
+.saveBtn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: #1e88e5;
+}
+
+/* 削除ボタン */
+.deleteBtn {
+  background-color: #e53935;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background-color: #d32f2f;
+}
+
+/* =====================
+   入力エリア（横一列）
+===================== */
+.editArea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;   /* 横一列固定 */
+  overflow-x: auto;    /* はみ出し時スクロール */
+}
+
+.editArea input {
+  width: 70px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: right;
+}
+
+/* 単位 */
+.unit {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* =====================
+   セット内リスト
+===================== */
+.setItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
 }

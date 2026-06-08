@@ -13,8 +13,8 @@ import {
 
 const MEAL_TYPES = [
   { key: "breakfast", label: "朝食" },
-  { key: "lunch",     label: "昼食" },
-  { key: "dinner",    label: "夕食" },
+  { key: "lunch", label: "昼食" },
+  { key: "dinner", label: "夕食" },
 ];
 
 export default function Dashboard() {
@@ -88,11 +88,60 @@ export default function Dashboard() {
   return (
     <div className={styles.container}>
 
+      {/* =========================
+          上部ヘッダー
+      ========================= */}
+      <div className={styles.header}>
+        <div className={styles.dateText}>
+          {date.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            weekday: "long",
+          })}
+        </div>
+
+        <div className={styles.scoreBox}>
+          <span>スコア</span>
+          <span className={styles.score}>{score}%</span>
+        </div>
+      </div>
+
+      {/* =========================
+          日付直下サマリー（追加）
+      ========================= */}
+      <div className={styles.summaryBox}>
+        <div className={styles.summaryRow}>
+
+          <div className={styles.summaryItem}>
+            <span>総カロリー</span>
+            <strong>{dashboard?.totalKcal ?? 0} kcal</strong>
+          </div>
+
+          <div className={styles.summaryItem}>
+            <span>P</span>
+            <strong>{pfc.intake.p} / {pfc.target.p}</strong>
+          </div>
+
+          <div className={styles.summaryItem}>
+            <span>F</span>
+            <strong>{pfc.intake.f} / {pfc.target.f}</strong>
+          </div>
+
+          <div className={styles.summaryItem}>
+            <span>C</span>
+            <strong>{pfc.intake.c} / {pfc.target.c}</strong>
+          </div>
+
+        </div>
+      </div>
+
+      {/* =========================
+          グラフ
+      ========================= */}
       <div className={styles.topGrid}>
         <div className={styles.calendar}>
-        <DatePicker selected={date}
-        onChange={handleChange}
-        inline/>
+          <DatePicker selected={date} onChange={handleChange} inline />
         </div>
 
         <div className={styles.card}>
@@ -120,14 +169,12 @@ export default function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-
       </div>
 
       {/* =========================
           食事リスト
       ========================= */}
       <div className={styles.bottomGrid}>
-
         {MEAL_TYPES.map(({ key, label }) => {
           const meal = meals.find((m) => m.mealType === key);
 
@@ -141,7 +188,9 @@ export default function Dashboard() {
                     <div key={item.id} className={styles.foodItem}>
                       <span>{item.name}</span>
                       <span>{item.cal} kcal</span>
-                      <span>P:{item.pro} F:{item.fat} C:{item.car}</span>
+                      <span>
+                        P:{item.pro} F:{item.fat} C:{item.car}
+                      </span>
                     </div>
                   ))
                 ) : (
@@ -164,7 +213,6 @@ export default function Dashboard() {
             </div>
           );
         })}
-
       </div>
 
     </div>
