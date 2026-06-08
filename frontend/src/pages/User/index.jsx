@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../api/auth";
+import styles from "./User.module.css";
 
 export default function Register() {
   const [loginId, setLoginId] = useState("");
@@ -16,34 +17,38 @@ export default function Register() {
 
       if (res?.message === "ユーザー登録が完了しました") {
         navigate("/login");
-        return;
       }
-
     } catch (e) {
       setMessage("登録失敗");
     }
   };
 
   return (
-    <div>
-      <h2>ユーザー登録</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>ユーザー登録</h2>
 
-      <input
-        placeholder="loginId"
-        value={loginId}
-        onChange={(e) => setLoginId(e.target.value)}
-      />
+      <div className={styles.form}>
+        <input
+          className={styles.input}
+          placeholder="loginId"
+          value={loginId}
+          onChange={(e) => setLoginId(e.target.value)}
+        />
 
-      <input
-        type="password"
-        placeholder="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          className={styles.input}
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button onClick={handleRegister}>登録</button>
+        <button className={styles.buttonPrimary} onClick={handleRegister}>
+          登録
+        </button>
 
-      <p>{message}</p>
+        <p>{message}</p>
+      </div>
     </div>
   );
 }
