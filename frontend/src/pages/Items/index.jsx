@@ -117,7 +117,7 @@ export default function Items() {
 
         <div className={styles.row}>
           <div>
-            <label>標準量</label>
+            <label>標準量（ｇ）</label>
             <input
               name="amount"
               type="number"

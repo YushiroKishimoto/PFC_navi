@@ -7,7 +7,7 @@ import { searchSets } from "../../api/set";
 
 export default function Record() {
   const navigate = useNavigate();
-  const { date } = useParams();
+  const { date, mealType } = useParams(); // ← mealType追加
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
@@ -20,6 +20,16 @@ export default function Record() {
   const [setResults, setSetResults] = useState([]);
 
   const [selected, setSelected] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+
+  // =========================
+  // レコメンド取得
+  // =========================
+  useEffect(() => {
+    getRecommendations(currentDate)
+      .then((data) => setRecommendations(data))
+      .catch(() => setRecommendations([]));
+  }, [currentDate]);
 
   const [message, setMessage] = useState("");
 
@@ -139,6 +149,11 @@ export default function Record() {
     }
   };
 
+  // =========================
+  // mealTypeの日本語ラベル
+  // =========================
+  const mealLabel = { breakfast: "朝食", lunch: "昼食", dinner: "夕食" };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -158,7 +173,6 @@ export default function Record() {
       <div className={styles.grid}>
         <div className={styles.left}>
           <h3>食材検索</h3>
-
           <input
             value={foodSearch}
             onChange={(e) => setFoodSearch(e.target.value)}
@@ -204,7 +218,6 @@ export default function Record() {
 
         <div className={styles.right}>
           <h3>セット検索</h3>
-
           <input
             value={setSearch}
             onChange={(e) => setSetSearch(e.target.value)}
@@ -235,6 +248,22 @@ export default function Record() {
                 <button onClick={() => addSet(set)}>追加</button>
               </div>
             ))}
+          </div>
+
+          {/* レコメンド */}
+          <h3>おすすめセット</h3>
+          <div className={styles.setList}>
+            {recommendations.length === 0 ? (
+              <div>おすすめはありません</div>
+            ) : (
+              recommendations.map((rec) => (
+                <div key={rec.id} className={styles.setCard}>
+                  <div>{rec.name}</div>
+                  <div>P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar}</div>
+                  <button onClick={() => addRecommendation(rec)}>追加</button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

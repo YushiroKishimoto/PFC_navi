@@ -46,6 +46,22 @@
   align-items: center;
 }
 
+.tab:hover {
+  border-color: #4caf50;
+}
+
+.activeTab {
+  padding: 8px 14px;
+  border: 1px solid #4caf50;
+  background: #4caf50;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* =====================
+   検索
+===================== */
 .input {
   width: 100%;
   padding: 10px 12px;
@@ -107,7 +123,40 @@
   gap: 10px;
 }
 
-.row {
+/* 編集ボタン */
+.editBtn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.editBtn:hover {
+  background-color: #43a047;
+}
+
+/* 保存ボタン */
+.saveBtn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: #1e88e5;
+}
+
+/* 削除ボタン */
+.deleteBtn {
+  background-color: #e53935;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background-color: #d32f2f;
+}
+
+/* =====================
+   入力エリア（横一列）
+===================== */
+.editArea {
   display: flex;
   gap: 12px;
   align-items: center;
