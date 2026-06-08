@@ -1,36 +1,142 @@
 .container {
-  padding: 20px;
+  padding: 40px 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.message {
+  margin: 12px 0;
+  font-weight: bold;
+}
+
+.searchArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.searchColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.labelText {
+  margin: 0;
+  font-size: 16px;
+}
+
+.searchRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
 }
 
-.tabs {
+.searchButton {
+  padding: 9px 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.resultList {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.list {
+.resultButton {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.resultButtonActive {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background: #f2f2f2;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.editArea {
+  margin-top: 24px;
+  border-top: 2px solid #222;
+  padding-top: 24px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 6px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .row {
   display: flex;
-  gap: 6px;
+  gap: 12px;
   align-items: center;
+  margin-top: 8px;
+}
+
+.amountInput {
+  width: 120px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+}
+
+.deleteButton {
+  padding: 8px 24px;
+  cursor: pointer;
+}
+
+.saveButton {
+  padding: 8px 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .searchArea {
+    grid-template-columns: 1fr;
+  }
+
+  .searchRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

@@ -47,12 +47,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("===== SecurityConfig loaded =====");
+
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/register", "/api/auth/login","/api/items/**","/api/sets/**","/api/records/**").permitAll()
+                .requestMatchers("/api/**","/error").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable());

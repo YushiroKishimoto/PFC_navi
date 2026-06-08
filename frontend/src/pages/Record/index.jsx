@@ -24,6 +24,8 @@ export default function Record() {
   const [message, setMessage] = useState("");
 
   const handleFoodSearch = async () => {
+    console.log("食材検索ボタン押下:", foodSearch);
+
     if (!foodSearch.trim()) {
       setFoodResults([]);
       return;
@@ -31,9 +33,11 @@ export default function Record() {
 
     try {
       const res = await searchItems(foodSearch);
+      console.log("食材検索結果:", res);
+
       setFoodResults(res?.data?.items ?? []);
     } catch (e) {
-      console.error(e);
+      console.error("食材検索エラー:", e);
       setMessage("食材検索に失敗しました");
     }
   };
