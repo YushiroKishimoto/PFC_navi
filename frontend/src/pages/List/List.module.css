@@ -1,29 +1,49 @@
 .container {
-  height: 100vh;
+  padding: 40px 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.message {
+  margin: 12px 0;
+  font-weight: bold;
+}
+
+.searchArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.searchColumn {
   display: flex;
   flex-direction: column;
-  padding: 12px;
-  box-sizing: border-box;
-  background: #f7f7f7;
-    overflow: hidden;
+  gap: 12px;
 }
 
-/* =====================
-   タブ
-===================== */
-.tabs {
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.labelText {
+  margin: 0;
+  font-size: 16px;
+}
+
+.searchRow {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
-}
-
-.tab {
-  padding: 8px 14px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: 0.2s;
+  align-items: center;
 }
 
 .tab:hover {
@@ -43,54 +63,64 @@
    検索
 ===================== */
 .input {
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
+  width: 100%;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 16px;
 }
 
-/* =====================
-   一覧スクロール領域
-===================== */
-.listScroll {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 6px;
-  min-height: 0; /* ★flexスクロールで必須 */
-}
-
-/* =====================
-   カード
-===================== */
-.card {
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* =====================
-   上段（タイトル + ボタン）
-===================== */
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-/* =====================
-   ボタン共通
-===================== */
-button {
-  border: none;
+.searchButton {
+  padding: 9px 16px;
+  white-space: nowrap;
   cursor: pointer;
+}
+
+.resultList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.resultButton {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 12px;
-  transition: 0.2s;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.resultButtonActive {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background: #f2f2f2;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.editArea {
+  margin-top: 24px;
+  border-top: 2px solid #222;
+  padding-top: 24px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* 編集ボタン */
@@ -128,33 +158,34 @@ button {
 ===================== */
 .editArea {
   display: flex;
+  gap: 12px;
   align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;   /* 横一列固定 */
-  overflow-x: auto;    /* はみ出し時スクロール */
+  margin-top: 8px;
 }
 
-.editArea input {
-  width: 70px;
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-align: right;
+.amountInput {
+  width: 120px;
+  padding: 8px 10px;
+  box-sizing: border-box;
 }
 
-/* 単位 */
-.unit {
-  font-size: 12px;
-  color: #666;
-  white-space: nowrap;
+.deleteButton {
+  padding: 8px 24px;
+  cursor: pointer;
 }
 
-/* =====================
-   セット内リスト
-===================== */
-.setItem {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px dashed #eee;
+.saveButton {
+  padding: 8px 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .searchArea {
+    grid-template-columns: 1fr;
+  }
+
+  .searchRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
