@@ -24,9 +24,6 @@ export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [meals, setMeals] = useState([]);
 
-  // =========================
-  // API取得
-  // =========================
   useEffect(() => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -37,27 +34,16 @@ export default function Dashboard() {
     getMealRecords(formatted).then((data) => setMeals(data.meals ?? []));
   }, [date]);
 
-  // =========================
-  // 日付変更
-  // =========================
   const handleChange = (newDate) => {
     setDate(newDate);
-
     const y = newDate.getFullYear();
     const m = String(newDate.getMonth() + 1).padStart(2, "0");
     const d = String(newDate.getDate()).padStart(2, "0");
-
     navigate(`/${y}-${m}-${d}`);
   };
 
-  // =========================
-  // スコア
-  // =========================
   const score = dashboard?.achievementRate ?? 0;
 
-  // =========================
-  // PFC
-  // =========================
   const pfc = {
     target: {
       p: dashboard?.targetPro ?? 0,
@@ -88,9 +74,6 @@ export default function Dashboard() {
   return (
     <div className={styles.container}>
 
-      {/* =========================
-          上部ヘッダー
-      ========================= */}
       <div className={styles.header}>
         <div className={styles.dateText}>
           {date.toLocaleDateString("ja-JP", {
@@ -100,50 +83,37 @@ export default function Dashboard() {
             weekday: "long",
           })}
         </div>
-
         <div className={styles.scoreBox}>
           <span>スコア</span>
           <span className={styles.score}>{score}%</span>
         </div>
       </div>
 
-      {/* =========================
-          日付直下サマリー（追加）
-      ========================= */}
       <div className={styles.summaryBox}>
         <div className={styles.summaryRow}>
-
           <div className={styles.summaryItem}>
             <span>総カロリー</span>
             <strong>{dashboard?.totalKcal ?? 0} kcal</strong>
           </div>
-
           <div className={styles.summaryItem}>
             <span>P</span>
             <strong>{pfc.intake.p} / {pfc.target.p}</strong>
           </div>
-
           <div className={styles.summaryItem}>
             <span>F</span>
             <strong>{pfc.intake.f} / {pfc.target.f}</strong>
           </div>
-
           <div className={styles.summaryItem}>
             <span>C</span>
             <strong>{pfc.intake.c} / {pfc.target.c}</strong>
           </div>
-
         </div>
       </div>
 
-      {/* =========================
-          グラフ
-      ========================= */}
       <div className={styles.topGrid}>
         <div className={styles.calendar}>
           <DatePicker selected={date} onChange={handleChange} inline />
         </div>
-
         <div className={styles.card}>
           <h3>PFC比率</h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -156,7 +126,6 @@ export default function Dashboard() {
             </PieChart>
           </ResponsiveContainer>
         </div>
-
         <div className={styles.card}>
           <h3>PFC比較</h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -171,45 +140,36 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* =========================
-          食事リスト
-      ========================= */}
       <div className={styles.bottomGrid}>
         {MEAL_TYPES.map(({ key, label }) => {
           const meal = meals.find((m) => m.mealType === key);
-
           return (
             <div key={key} className={styles.mealCard}>
               <h4>{label}</h4>
-
               <div className={styles.foodList}>
                 {meal ? (
                   meal.items.map((item) => (
                     <div key={item.id} className={styles.foodItem}>
                       <span>{item.name}</span>
                       <span>{item.cal} kcal</span>
-                      <span>
-                        P:{item.pro} F:{item.fat} C:{item.car}
-                      </span>
+                      <span>P:{item.pro} F:{item.fat} C:{item.car}</span>
                     </div>
                   ))
                 ) : (
                   <div className={styles.empty}>記録なし</div>
                 )}
               </div>
-
               <button
                 className={styles.addButton}
                 onClick={() => {
                   const y = date.getFullYear();
                   const m = String(date.getMonth() + 1).padStart(2, "0");
                   const d = String(date.getDate()).padStart(2, "0");
-                  navigate(`/${y}-${m}-${d}/meal`);
+                  navigate(`/${y}-${m}-${d}/meal/${key}`); // ← ここを修正
                 }}
               >
                 ＋ 追加
               </button>
-
             </div>
           );
         })}

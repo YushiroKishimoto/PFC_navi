@@ -1,19 +1,17 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
 import { createMealRecord } from "../../api/mealRecord";
+import { getRecommendations } from "../../api/recommendation";
 
 export default function Record() {
   const navigate = useNavigate();
-  const { date } = useParams();
+  const { date, mealType } = useParams(); // ← mealType追加
 
-  // =========================
-  // 日付（URL優先）
-  // =========================
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
   // =========================
-  // 仮DB
+  // 仮DB（食材・セット検索API完成後に置き換え）
   // =========================
   const foodDB = [
     { id: 1, name: "卵", kcal: 90, p: 7, f: 6, c: 1 },
@@ -38,6 +36,16 @@ export default function Record() {
   const [foodSearch, setFoodSearch] = useState("");
   const [setSearch, setSetSearch] = useState("");
   const [selected, setSelected] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+
+  // =========================
+  // レコメンド取得
+  // =========================
+  useEffect(() => {
+    getRecommendations(currentDate)
+      .then((data) => setRecommendations(data))
+      .catch(() => setRecommendations([]));
+  }, [currentDate]);
 
   // =========================
   // filter
@@ -62,8 +70,19 @@ export default function Record() {
       ...i,
       id: Date.now() + Math.random(),
     }));
-
     setSelected([...selected, ...expanded]);
+  };
+
+  // バックエンドのフィールド名（totalPro等）をローカル形式（p等）にマッピング
+  const addRecommendation = (rec) => {
+    setSelected([...selected, {
+      id: Date.now(),
+      name: rec.name,
+      kcal: rec.totalCal,
+      p: rec.totalPro,
+      f: rec.totalFat,
+      c: rec.totalCar,
+    }]);
   };
 
   // =========================
@@ -89,44 +108,54 @@ export default function Record() {
   ];
 
   // =========================
-  // 保存（追加）
+  // 保存
   // =========================
-  const handleSave = () => {
+  const handleSave = async () => {
     const payload = {
-      date: currentDate,
-      items: selected,
-      total,
+      recordDate: currentDate,
+      mealType: mealType,
+      items: selected.map((i) => ({
+        name: i.name,
+        cal: i.kcal,
+        pro: i.p,
+        fat: i.f,
+        car: i.c,
+      })),
+      totalCal: total.kcal,
+      totalPro: total.p,
+      totalFat: total.f,
+      totalCar: total.c,
     };
 
-    console.log("SAVE:", payload);
-
-    // TODO: API保存に置き換え
-    // await api.post("/records", payload);
-
-    // ダッシュボードへ戻る
-    navigate(`/${currentDate}`);
+    try {
+      await createMealRecord(payload);
+      navigate(`/${currentDate}`);
+    } catch (e) {
+      console.error("保存失敗:", e);
+    }
   };
+
+  // =========================
+  // mealTypeの日本語ラベル
+  // =========================
+  const mealLabel = { breakfast: "朝食", lunch: "昼食", dinner: "夕食" };
 
   return (
     <div className={styles.container}>
 
-      {/* ヘッダー */}
       <div className={styles.header}>
-        <h2>{currentDate} の記録</h2>
+        <h2>{currentDate} {mealLabel[mealType] ?? ""} の記録</h2>
       </div>
 
-      {/* メイン */}
       <div className={styles.grid}>
 
         {/* 左 */}
         <div className={styles.left}>
           <h3>食材検索</h3>
-
           <input
             value={foodSearch}
             onChange={(e) => setFoodSearch(e.target.value)}
           />
-
           <div className={styles.list}>
             {filteredFoods.map((item) => (
               <div key={item.id} className={styles.item}>
@@ -159,12 +188,10 @@ export default function Record() {
         {/* 右 */}
         <div className={styles.right}>
           <h3>セット検索</h3>
-
           <input
             value={setSearch}
             onChange={(e) => setSetSearch(e.target.value)}
           />
-
           <div className={styles.setList}>
             {filteredSets.map((set) => (
               <div key={set.id} className={styles.setCard}>
@@ -173,33 +200,36 @@ export default function Record() {
               </div>
             ))}
           </div>
+
+          {/* レコメンド */}
+          <h3>おすすめセット</h3>
+          <div className={styles.setList}>
+            {recommendations.length === 0 ? (
+              <div>おすすめはありません</div>
+            ) : (
+              recommendations.map((rec) => (
+                <div key={rec.id} className={styles.setCard}>
+                  <div>{rec.name}</div>
+                  <div>P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar}</div>
+                  <button onClick={() => addRecommendation(rec)}>追加</button>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
       </div>
 
-      {/* フッター */}
       <div className={styles.footer}>
-
-        <button className={styles.primary}
-          onClick={() => navigate("/items")}
-        >
+        <button className={styles.primary} onClick={() => navigate("/items")}>
           食材登録
         </button>
-
-        <button className={styles.secondary}
-          onClick={() => navigate("/set")}
-        >
+        <button className={styles.secondary} onClick={() => navigate("/set")}>
           セット登録
         </button>
-
-        {/* 保存ボタン追加 */}
-        <button
-          className={styles.saveButton}
-          onClick={handleSave}
-        >
+        <button className={styles.saveButton} onClick={handleSave}>
           保存
         </button>
-
       </div>
 
     </div>
