@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
 import { createMealRecord } from "../../api/mealRecord";
-import { getRecommendations } from "../../api/recommendation";
+import { searchItems } from "../../api/item";
+import { searchSets } from "../../api/set";
 
 export default function Record() {
   const navigate = useNavigate();
@@ -10,31 +11,12 @@ export default function Record() {
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
-  // =========================
-  // 仮DB（食材・セット検索API完成後に置き換え）
-  // =========================
-  const foodDB = [
-    { id: 1, name: "卵", kcal: 90, p: 7, f: 6, c: 1 },
-    { id: 2, name: "鶏むね肉", kcal: 200, p: 30, f: 5, c: 0 },
-    { id: 3, name: "白米", kcal: 250, p: 5, f: 1, c: 55 },
-  ];
-
-  const setDB = [
-    {
-      id: 1,
-      name: "朝食セット",
-      items: [
-        { name: "卵", kcal: 90, p: 7, f: 6, c: 1 },
-        { name: "白米", kcal: 250, p: 5, f: 1, c: 55 },
-      ],
-    },
-  ];
-
-  // =========================
-  // state
-  // =========================
   const [foodSearch, setFoodSearch] = useState("");
   const [setSearch, setSetSearch] = useState("");
+
+  const [foodResults, setFoodResults] = useState([]);
+  const [setResults, setSetResults] = useState([]);
+
   const [selected, setSelected] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
 
@@ -47,91 +29,121 @@ export default function Record() {
       .catch(() => setRecommendations([]));
   }, [currentDate]);
 
-  // =========================
-  // filter
-  // =========================
-  const filteredFoods = useMemo(() => {
-    return foodDB.filter((i) => i.name.includes(foodSearch));
-  }, [foodSearch]);
+  const [message, setMessage] = useState("");
 
-  const filteredSets = useMemo(() => {
-    return setDB.filter((i) => i.name.includes(setSearch));
-  }, [setSearch]);
+  const handleFoodSearch = async () => {
+    console.log("食材検索ボタン押下:", foodSearch);
 
-  // =========================
-  // add
-  // =========================
+    if (!foodSearch.trim()) {
+      setFoodResults([]);
+      return;
+    }
+
+    try {
+      const res = await searchItems(foodSearch);
+      console.log("食材検索結果:", res);
+
+      setFoodResults(res?.data?.items ?? []);
+    } catch (e) {
+      console.error("食材検索エラー:", e);
+      setMessage("食材検索に失敗しました");
+    }
+  };
+
+  const handleSetSearch = async () => {
+    if (!setSearch.trim()) {
+      setSetResults([]);
+      return;
+    }
+
+    try {
+      const res = await searchSets(setSearch);
+      setSetResults(res?.data?.sets ?? []);
+    } catch (e) {
+      console.error(e);
+      setMessage("セット検索に失敗しました");
+    }
+  };
+
   const addFood = (item) => {
-    setSelected([...selected, { ...item, id: Date.now() }]);
+    setSelected([
+      ...selected,
+      {
+        key: `${item.source}-${item.id}-${Date.now()}`,
+        source: item.source,
+        itemId: item.id,
+        name: item.name,
+        amount: item.amount,
+        baseAmount: item.amount,
+        cal: item.cal,
+        pro: item.pro,
+        fat: item.fat,
+        car: item.car,
+      },
+    ]);
   };
 
   const addSet = (set) => {
-    const expanded = set.items.map((i) => ({
-      ...i,
-      id: Date.now() + Math.random(),
-    }));
-    setSelected([...selected, ...expanded]);
+    setSelected([
+      ...selected,
+      {
+        key: `set-${set.id}-${Date.now()}`,
+        source: "set",
+        itemId: set.id,
+        name: set.name,
+        amount: 1,
+        baseAmount: 1,
+        cal: set.totalCal,
+        pro: set.totalPro,
+        fat: set.totalFat,
+        car: set.totalCar,
+      },
+    ]);
   };
 
-  // バックエンドのフィールド名（totalPro等）をローカル形式（p等）にマッピング
-  const addRecommendation = (rec) => {
-    setSelected([...selected, {
-      id: Date.now(),
-      name: rec.name,
-      kcal: rec.totalCal,
-      p: rec.totalPro,
-      f: rec.totalFat,
-      c: rec.totalCar,
-    }]);
+  const removeSelected = (key) => {
+    setSelected(selected.filter((item) => item.key !== key));
   };
 
-  // =========================
-  // total
-  // =========================
   const total = selected.reduce(
     (acc, cur) => {
-      acc.kcal += cur.kcal;
-      acc.p += cur.p;
-      acc.f += cur.f;
-      acc.c += cur.c;
+      acc.cal += Number(cur.cal);
+      acc.pro += Number(cur.pro);
+      acc.fat += Number(cur.fat);
+      acc.car += Number(cur.car);
       return acc;
     },
-    { kcal: 0, p: 0, f: 0, c: 0 }
+    { cal: 0, pro: 0, fat: 0, car: 0 }
   );
 
-  // =========================
-  // recent
-  // =========================
-  const recent = [
-    { name: "卵焼き", qty: "2個" },
-    { name: "ごはん", qty: "150g" },
-  ];
-
-  // =========================
-  // 保存
-  // =========================
   const handleSave = async () => {
-    const payload = {
-      recordDate: currentDate,
-      mealType: mealType,
-      items: selected.map((i) => ({
-        name: i.name,
-        cal: i.kcal,
-        pro: i.p,
-        fat: i.f,
-        car: i.c,
-      })),
-      totalCal: total.kcal,
-      totalPro: total.p,
-      totalFat: total.f,
-      totalCar: total.c,
-    };
+    if (selected.length === 0) {
+      setMessage("記録する食材またはセットを追加してください");
+      return;
+    }
 
     try {
-      await createMealRecord(payload);
-      navigate(`/${currentDate}`);
+      const payload = {
+        recordDate: currentDate,
+        mealType: mealType,
+        items: selected.map((item) => ({
+          source: item.source,
+          itemId: item.itemId,
+          amount: item.amount,
+        })),
+      };
+
+      const res = await createMealRecord(payload);
+      console.log("record response:", res);
+
+      if (res?.resultCode === "SUCCESS") {
+        navigate(`/${currentDate}`);
+      } else {
+        setMessage(res?.message || "保存に失敗しました");
+      }
     } catch (e) {
-      console.error("保存失敗:", e);
+      console.error(e);
+      setMessage("保存に失敗しました");
     }
   };
 
@@ -142,60 +154,95 @@ export default function Record() {
 
   return (
     <div className={styles.container}>
-
       <div className={styles.header}>
-        <h2>{currentDate} {mealLabel[mealType] ?? ""} の記録</h2>
+        <h2>{currentDate} の記録</h2>
+
+        <select
+          value={mealType}
+          onChange={(e) => setMealType(e.target.value)}
+          className={styles.input}
+        >
+          <option value="breakfast">朝食</option>
+          <option value="lunch">昼食</option>
+          <option value="dinner">夕食</option>
+        </select>
       </div>
 
       <div className={styles.grid}>
-
-        {/* 左 */}
         <div className={styles.left}>
           <h3>食材検索</h3>
           <input
             value={foodSearch}
             onChange={(e) => setFoodSearch(e.target.value)}
+            placeholder="食材名を入力"
           />
+
+          <button onClick={handleFoodSearch}>検索</button>
+
           <div className={styles.list}>
-            {filteredFoods.map((item) => (
-              <div key={item.id} className={styles.item}>
-                <span>{item.name}</span>
+            {foodResults.map((item) => (
+              <div key={`${item.source}-${item.id}`} className={styles.item}>
+                <div>
+                  <span>{item.name}</span>
+                  <div>
+                    {item.source} / {item.amount}g / {item.cal}kcal
+                  </div>
+                  <div>
+                    P:{item.pro} F:{item.fat} C:{item.car}
+                  </div>
+                </div>
+
                 <button onClick={() => addFood(item)}>＋</button>
               </div>
             ))}
           </div>
 
           <div className={styles.selectedBox}>
-            {selected.map((i) => (
-              <div key={i.id}>
-                {i.name} {i.kcal}kcal
+            <h4>追加した内容</h4>
+
+            {selected.map((item) => (
+              <div key={item.key}>
+                {item.name} / {item.amount}
+                {item.source === "set" ? "セット" : "g"} / {item.cal}kcal
+                <button onClick={() => removeSelected(item.key)}>削除</button>
               </div>
             ))}
           </div>
 
           <div className={styles.total}>
-            合計 P:{total.p} F:{total.f} C:{total.c}
-          </div>
-
-          <div className={styles.recent}>
-            <h4>最近の食事</h4>
-            {recent.map((r, i) => (
-              <div key={i}>{r.name} {r.qty}</div>
-            ))}
+            合計 P:{total.pro} F:{total.fat} C:{total.car} / {total.cal}kcal
           </div>
         </div>
 
-        {/* 右 */}
         <div className={styles.right}>
           <h3>セット検索</h3>
           <input
             value={setSearch}
             onChange={(e) => setSetSearch(e.target.value)}
+            placeholder="セット名を入力"
           />
+
+          <button onClick={handleSetSearch}>検索</button>
+
           <div className={styles.setList}>
-            {filteredSets.map((set) => (
+            {setResults.map((set) => (
               <div key={set.id} className={styles.setCard}>
                 <div>{set.name}</div>
+                <div>{set.totalCal}kcal</div>
+                <div>
+                  P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}
+                </div>
+
+                {set.items && set.items.length > 0 && (
+                  <div>
+                    {set.items.map((item) => (
+                      <div key={item.id}>
+                        ・{item.name} {item.amount}g
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <button onClick={() => addSet(set)}>追加</button>
               </div>
             ))}
@@ -217,21 +264,23 @@ export default function Record() {
             )}
           </div>
         </div>
-
       </div>
 
       <div className={styles.footer}>
         <button className={styles.primary} onClick={() => navigate("/items")}>
           食材登録
         </button>
+
         <button className={styles.secondary} onClick={() => navigate("/set")}>
           セット登録
         </button>
+
         <button className={styles.saveButton} onClick={handleSave}>
           保存
         </button>
       </div>
 
+      {message && <p>{message}</p>}
     </div>
   );
 }
