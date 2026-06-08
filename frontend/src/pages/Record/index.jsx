@@ -11,8 +11,6 @@ export default function Record() {
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
-  const [mealType, setMealType] = useState("breakfast");
-
   const [foodSearch, setFoodSearch] = useState("");
   const [setSearch, setSetSearch] = useState("");
 
