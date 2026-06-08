@@ -44,7 +44,7 @@ function AppRoutes() {
         <Route path="/:date" element={<Dashboard />} />
 
         {/* 食事記録 */}
-        <Route path="/:date/meal" element={<Record />} />
+        <Route path="/:date/meal/:mealType" element={<Record />} /> 
 
         {/* マスタ系 */}
         <Route path="/items" element={<Items />} />
