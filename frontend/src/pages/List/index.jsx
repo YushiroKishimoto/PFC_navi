@@ -6,9 +6,10 @@ import {
   deleteItem,
 } from "../../api/item";
 import {
-  searchSets,
-  updateSet,
-  deleteSet,
+  getSetitem,
+  getDetailsetitem,
+  updateSetitem,
+  deleteSetitem,
 } from "../../api/set";
 
 export default function List() {
@@ -65,7 +66,7 @@ export default function List() {
     }
 
     try {
-      const res = await searchSets(setSearch);
+      const res = await getSetitem(setSearch);
       const resultSets = res?.data?.sets ?? [];
 
       setSets(resultSets.slice(0, 5));
@@ -183,7 +184,7 @@ export default function List() {
         })),
       };
 
-      const res = await updateSet(set.id, payload);
+      const res = await updateSetitem(set.id, payload);
 
       if (res?.resultCode === "SUCCESS") {
         setMessage("セットを更新しました");
@@ -202,7 +203,7 @@ export default function List() {
     }
 
     try {
-      const res = await deleteSet(id);
+      const res = await deleteSetitem(id);
 
       if (res?.resultCode === "SUCCESS") {
         setSets((prev) => prev.filter((set) => set.id !== id));

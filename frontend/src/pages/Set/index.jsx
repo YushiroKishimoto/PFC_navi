@@ -1,19 +1,41 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Set.module.css";
 import { createSetitem } from "../../api/set";
+import { searchItems } from "../../api/item";
 
 export default function Set() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [setName, setSetName] = useState("");
+  const [items, setItems] = useState([]);
 
-  const [items] = useState([
-    { id: 1, name: "鶏むね肉", cal: 200, pro: 30, fat: 5, car: 0, amount: 100 },
-    { id: 2, name: "白米", cal: 250, pro: 5, fat: 1, car: 55, amount: 150 },
-    { id: 3, name: "卵", cal: 150, pro: 12, fat: 10, car: 1, amount: 1 },
-  ]);
+  // const [items] = useState([
+  //   { id: 1, name: "鶏むね肉", cal: 200, pro: 30, fat: 5, car: 0, amount: 100 },
+  //   { id: 2, name: "白米", cal: 250, pro: 5, fat: 1, car: 55, amount: 150 },
+  //   { id: 3, name: "卵", cal: 150, pro: 12, fat: 10, car: 1, amount: 1 },
+  // ]);
+
+  // キーワードが変わるたびにAPI実行
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const res = await searchItems(search);
+        const resultItems = res?.data?.items ?? [];
+
+        setItems(resultItems.slice(0, 5));
+
+        // if (resultItems.length === 0) {
+        //   setMessage("該当するセットがありません");
+        // }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchItems();
+  }, [search]);
 
   const [selected, setSelected] = useState([]);
 
@@ -69,17 +91,18 @@ export default function Set() {
   // =========================
   const createPayload = () => {
     return {
-      setName,
-      items: selected,
-      total,
-      createdAt: new Date().toISOString(),
+      name: setName,
+      items: selected.map(({ name, cal, pro, fat, car, id, ...rest }) => ({
+        itemId: id,
+        ...rest
+      }))
     };
   };
 
   // =========================
   // 登録（安全遷移）
   // =========================
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!setName.trim() || selected.length === 0) {
       alert("セット名と食材を入力してください");
       return;
@@ -87,6 +110,7 @@ export default function Set() {
 
     const payload = createPayload();
 
+    const res = await createSetitem(payload);
     console.log("SET_DB_REGISTER:", payload);
 
     alert("セット登録完了");
