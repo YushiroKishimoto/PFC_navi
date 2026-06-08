@@ -1,39 +1,51 @@
 import client from "./client";
 
-// セット登録
-// POST /api/sets/register
-export const createSet = async (setData) => {
-  const response = await client.post("/sets/register", setData);
-  return response.data;
+// 新規登録
+export const createSetitem = async (data) => {
+  const res = await client.post("/sets/register", data);
+  return res.data;
 };
 
-// セット検索
-// GET /api/sets/search?keyword=xxx
-export const searchSets = async (keyword) => {
-  const response = await client.get("/sets/search", {
-    params: { keyword },
+// 一覧取得
+export const getSetitem = async (keyword) => {
+  const res = await client.get("/sets/search", {
+    params: {
+      keyword
+    }
   });
-
-  return response.data;
+  return res.data;
 };
 
-// セット詳細取得
-// GET /api/sets/{id}
-export const getSetDetail = async (id) => {
-  const response = await client.get(`/sets/${id}`);
-  return response.data;
+// 詳細取得
+export const getDetailsetitem = async (id) => {
+  const res = await client.get(`/sets/${id}`);
+  return res.data;
 };
 
-// セット編集
-// PUT /api/sets/{id}
-export const updateSet = async (id, setData) => {
-  const response = await client.put(`/sets/${id}`, setData);
-  return response.data;
+// 更新
+// 必要データ例:
+// const payload = {
+//     name: "朝食セット12",
+//     items: [
+//       {
+//         source: "default",
+//         itemId: 3,
+//         amount: 150
+//       },
+//       {
+//         source: "custom",
+//         itemId: 1,
+//         amount: 100
+//       }
+//     ]
+//   };
+export const updateSetitem = async (id, data) => {
+  const res = await client.put(`/sets/${id}`, data);
+  return res.data;
 };
 
-// セット削除
-// DELETE /api/sets/{id}
-export const deleteSet = async (id) => {
-  const response = await client.delete(`/sets/${id}`);
-  return response.data;
+// 削除
+export const deleteSetitem = async (id) => {
+  const res = await client.delete(`/sets/${id}`);
+  return res.data;
 };
