@@ -16,7 +16,6 @@ export default function Onboarding() {
     height: "",
     weight: "",
     burnCal: "",
-    // targetCal: "",
     pfcCourse: "",
   });
 
@@ -27,11 +26,9 @@ export default function Onboarding() {
     const fetchData = async () => {
       try {
         const data = await getMyUserInfo();
-
         setForm(data);
         setIsExist(true);
       } catch (e) {
-        // 404なら未登録
         setIsExist(false);
       }
     };
@@ -54,7 +51,6 @@ export default function Onboarding() {
         height: Number(form.height),
         weight: Number(form.weight),
         burnCal: Number(form.burnCal),
-        // targetCal: Number(form.targetCal),
         pfcCourse: Number(form.pfcCourse),
       };
 
@@ -72,13 +68,18 @@ export default function Onboarding() {
     }
   };
 
+  // ★追加（ここだけ新規）
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.clear();
+    navigate("/login");
+  };
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>3. ユーザー情報登録</h2>
 
       <div className={styles.form}>
-
-        {/* 年齢 */}
         <input
           name="age"
           type="number"
@@ -88,7 +89,6 @@ export default function Onboarding() {
           value={form.age}
         />
 
-        {/* 性別（選択式） */}
         <select
           name="sex"
           className={styles.input}
@@ -102,7 +102,6 @@ export default function Onboarding() {
           <option value="female">女</option>
         </select>
 
-        {/* 身長 */}
         <input
           name="height"
           type="number"
@@ -112,7 +111,6 @@ export default function Onboarding() {
           value={form.height}
         />
 
-        {/* 現在体重 */}
         <input
           name="weight"
           type="number"
@@ -122,7 +120,6 @@ export default function Onboarding() {
           value={form.weight}
         />
 
-        {/* 活動回数（選択） */}
         <select
           name="burnCal"
           className={styles.input}
@@ -132,24 +129,13 @@ export default function Onboarding() {
           <option value="" disabled hidden>
             活動回数を選択
           </option>
-          {[1,2,3,4,5].map((n) => (
+          {[1, 2, 3, 4, 5].map((n) => (
             <option key={n} value={n}>
               {n}回/週
             </option>
           ))}
         </select>
 
-        {/* 目標カロリー */}
-        {/* <input
-          name="targetCal"
-          type="number"
-          placeholder="目標カロリー"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.targetCal}
-        /> */}
-
-        {/* PFCコース */}
         <select
           name="pfcCourse"
           className={styles.input}
@@ -166,6 +152,11 @@ export default function Onboarding() {
 
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           更新
+        </button>
+
+        {/* ★追加ここだけ */}
+        <button onClick={handleLogout}>
+          ログアウト
         </button>
 
         <p>{message}</p>
