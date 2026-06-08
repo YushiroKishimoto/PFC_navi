@@ -2,14 +2,11 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  overflow-x: hidden; /* 横はみ出し停止 */
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
-  border: none; /* ← これが余白の原因になりやすい */
-  display: flex;
+  min-height: 100vh;
 }
