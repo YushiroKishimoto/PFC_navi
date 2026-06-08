@@ -1,24 +1,24 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
 import { createMealRecord } from "../../api/mealRecord";
 import { searchItems } from "../../api/item";
 import { searchSets } from "../../api/set";
+import { getRecommendations } from "../../api/recommendation";
 
 export default function Record() {
   const navigate = useNavigate();
-  const { date, mealType } = useParams(); // ← mealType追加
+  const { date, mealType } = useParams();
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
   const [foodSearch, setFoodSearch] = useState("");
   const [setSearch, setSetSearch] = useState("");
-
   const [foodResults, setFoodResults] = useState([]);
   const [setResults, setSetResults] = useState([]);
-
   const [selected, setSelected] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
+  const [message, setMessage] = useState("");
 
   // =========================
   // レコメンド取得
@@ -29,20 +29,16 @@ export default function Record() {
       .catch(() => setRecommendations([]));
   }, [currentDate]);
 
-  const [message, setMessage] = useState("");
-
+  // =========================
+  // 食材検索
+  // =========================
   const handleFoodSearch = async () => {
-    console.log("食材検索ボタン押下:", foodSearch);
-
     if (!foodSearch.trim()) {
       setFoodResults([]);
       return;
     }
-
     try {
       const res = await searchItems(foodSearch);
-      console.log("食材検索結果:", res);
-
       setFoodResults(res?.data?.items ?? []);
     } catch (e) {
       console.error("食材検索エラー:", e);
@@ -50,12 +46,14 @@ export default function Record() {
     }
   };
 
+  // =========================
+  // セット検索
+  // =========================
   const handleSetSearch = async () => {
     if (!setSearch.trim()) {
       setSetResults([]);
       return;
     }
-
     try {
       const res = await searchSets(setSearch);
       setSetResults(res?.data?.sets ?? []);
@@ -65,6 +63,9 @@ export default function Record() {
     }
   };
 
+  // =========================
+  // add
+  // =========================
   const addFood = (item) => {
     setSelected([
       ...selected,
@@ -74,7 +75,6 @@ export default function Record() {
         itemId: item.id,
         name: item.name,
         amount: item.amount,
-        baseAmount: item.amount,
         cal: item.cal,
         pro: item.pro,
         fat: item.fat,
@@ -92,7 +92,6 @@ export default function Record() {
         itemId: set.id,
         name: set.name,
         amount: 1,
-        baseAmount: 1,
         cal: set.totalCal,
         pro: set.totalPro,
         fat: set.totalFat,
@@ -101,10 +100,30 @@ export default function Record() {
     ]);
   };
 
+  const addRecommendation = (rec) => {
+    setSelected([
+      ...selected,
+      {
+        key: `rec-${rec.id}-${Date.now()}`,
+        source: "set",
+        itemId: rec.id,
+        name: rec.name,
+        amount: 1,
+        cal: rec.totalCal,
+        pro: rec.totalPro,
+        fat: rec.totalFat,
+        car: rec.totalCar,
+      },
+    ]);
+  };
+
   const removeSelected = (key) => {
     setSelected(selected.filter((item) => item.key !== key));
   };
 
+  // =========================
+  // total
+  // =========================
   const total = selected.reduce(
     (acc, cur) => {
       acc.cal += Number(cur.cal);
@@ -116,12 +135,14 @@ export default function Record() {
     { cal: 0, pro: 0, fat: 0, car: 0 }
   );
 
+  // =========================
+  // 保存
+  // =========================
   const handleSave = async () => {
     if (selected.length === 0) {
       setMessage("記録する食材またはセットを追加してください");
       return;
     }
-
     try {
       const payload = {
         recordDate: currentDate,
@@ -132,10 +153,7 @@ export default function Record() {
           amount: item.amount,
         })),
       };
-
       const res = await createMealRecord(payload);
-      console.log("record response:", res);
-
       if (res?.resultCode === "SUCCESS") {
         navigate(`/${currentDate}`);
       } else {
@@ -147,28 +165,18 @@ export default function Record() {
     }
   };
 
-  // =========================
-  // mealTypeの日本語ラベル
-  // =========================
   const mealLabel = { breakfast: "朝食", lunch: "昼食", dinner: "夕食" };
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>{currentDate} の記録</h2>
 
-        <select
-          value={mealType}
-          onChange={(e) => setMealType(e.target.value)}
-          className={styles.input}
-        >
-          <option value="breakfast">朝食</option>
-          <option value="lunch">昼食</option>
-          <option value="dinner">夕食</option>
-        </select>
+      <div className={styles.header}>
+        <h2>{currentDate} {mealLabel[mealType] ?? ""} の記録</h2>
       </div>
 
       <div className={styles.grid}>
+
+        {/* 左 */}
         <div className={styles.left}>
           <h3>食材検索</h3>
           <input
@@ -176,7 +184,6 @@ export default function Record() {
             onChange={(e) => setFoodSearch(e.target.value)}
             placeholder="食材名を入力"
           />
-
           <button onClick={handleFoodSearch}>検索</button>
 
           <div className={styles.list}>
@@ -184,14 +191,9 @@ export default function Record() {
               <div key={`${item.source}-${item.id}`} className={styles.item}>
                 <div>
                   <span>{item.name}</span>
-                  <div>
-                    {item.source} / {item.amount}g / {item.cal}kcal
-                  </div>
-                  <div>
-                    P:{item.pro} F:{item.fat} C:{item.car}
-                  </div>
+                  <div>{item.source} / {item.amount}g / {item.cal}kcal</div>
+                  <div>P:{item.pro} F:{item.fat} C:{item.car}</div>
                 </div>
-
                 <button onClick={() => addFood(item)}>＋</button>
               </div>
             ))}
@@ -199,11 +201,9 @@ export default function Record() {
 
           <div className={styles.selectedBox}>
             <h4>追加した内容</h4>
-
             {selected.map((item) => (
               <div key={item.key}>
-                {item.name} / {item.amount}
-                {item.source === "set" ? "セット" : "g"} / {item.cal}kcal
+                {item.name} / {item.amount}{item.source === "set" ? "セット" : "g"} / {item.cal}kcal
                 <button onClick={() => removeSelected(item.key)}>削除</button>
               </div>
             ))}
@@ -214,6 +214,7 @@ export default function Record() {
           </div>
         </div>
 
+        {/* 右 */}
         <div className={styles.right}>
           <h3>セット検索</h3>
           <input
@@ -221,7 +222,6 @@ export default function Record() {
             onChange={(e) => setSetSearch(e.target.value)}
             placeholder="セット名を入力"
           />
-
           <button onClick={handleSetSearch}>検索</button>
 
           <div className={styles.setList}>
@@ -229,26 +229,19 @@ export default function Record() {
               <div key={set.id} className={styles.setCard}>
                 <div>{set.name}</div>
                 <div>{set.totalCal}kcal</div>
-                <div>
-                  P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}
-                </div>
-
-                {set.items && set.items.length > 0 && (
+                <div>P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}</div>
+                {set.items?.length > 0 && (
                   <div>
                     {set.items.map((item) => (
-                      <div key={item.id}>
-                        ・{item.name} {item.amount}g
-                      </div>
+                      <div key={item.id}>・{item.name} {item.amount}g</div>
                     ))}
                   </div>
                 )}
-
                 <button onClick={() => addSet(set)}>追加</button>
               </div>
             ))}
           </div>
 
-          {/* レコメンド */}
           <h3>おすすめセット</h3>
           <div className={styles.setList}>
             {recommendations.length === 0 ? (
@@ -264,23 +257,23 @@ export default function Record() {
             )}
           </div>
         </div>
+
       </div>
 
       <div className={styles.footer}>
         <button className={styles.primary} onClick={() => navigate("/items")}>
           食材登録
         </button>
-
         <button className={styles.secondary} onClick={() => navigate("/set")}>
           セット登録
         </button>
-
         <button className={styles.saveButton} onClick={handleSave}>
           保存
         </button>
       </div>
 
       {message && <p>{message}</p>}
+
     </div>
   );
 }
