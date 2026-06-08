@@ -305,3 +305,140 @@ export default function List() {
     </div>
   );
 }
+
+
+
+// MOCK
+// import { useState } from "react";
+// import {
+//   getSetitem,
+//   getDetailsetitem,
+//   updateSetitem,
+//   deleteSetitem
+// } from "../../api/set";
+
+// export default function SetSearchSimple() {
+//   const [keyword, setKeyword] = useState("");
+//   const [id, setId] = useState("");
+//   const [result, setResult] = useState(null);
+
+//   const payload = {
+//     name: "朝食セット6",
+//     items: [
+//       {
+//         source: "default",
+//         itemId: 3,
+//         amount: 150
+//       },
+//       {
+//         source: "custom",
+//         itemId: 1,
+//         amount: 100
+//       }
+//     ]
+//   };
+
+//   const handleSearch = async () => {
+//     try {
+//       const data = await getSetitem(keyword);
+//       console.log("API結果:", data); // ←まず確認用
+//       setResult(data);
+//     } catch (err) {
+//       console.error("エラー:", err);
+//     }
+//   };
+
+//   const handleSearchid = async () => {
+//     try {
+//       const data = await getDetailsetitem(id);
+//       console.log("API結果:", data); // ←まず確認用
+//       setResult(data);
+//     } catch (err) {
+//       console.error("エラー:", err);
+//     }
+//   };
+
+//   const handleDelete = async () => {
+//     try {
+//       const data = await deleteSetitem(id);
+//       console.log("API結果:", data); // ←まず確認用
+//       setResult(data);
+//     } catch (err) {
+//       console.error("エラー:", err);
+//     }
+//   };
+
+//   const handleUpdate = async () => {
+//     try {
+//       const res = await updateSetitem(id, payload);
+//       console.log("成功:", res.data);
+//       return res.data;
+//     } catch (err) {
+//       console.error("失敗:", err);
+//     }
+//   }
+
+//   return (
+//     <div>
+//       <h2>セット検索（簡易表示）</h2>
+
+//       {/* 入力 */}
+//       <input
+//         value={keyword}
+//         onChange={(e) => setKeyword(e.target.value)}
+//         placeholder="キーワード"
+//       />
+
+//       <button onClick={handleSearch}>
+//         検索
+//       </button>
+
+//       {/* そのまま表示 */}
+//       <pre style={{ marginTop: "20px", background: "#eee", padding: "10px" }}>
+//         {JSON.stringify(result, null, 2)}
+//       </pre>
+
+//       {/* 入力 */}
+//       <input
+//         value={id}
+//         onChange={(e) => setId(e.target.value)}
+//         placeholder="id"
+//       />
+
+//       <button onClick={handleSearchid}>
+//         検索
+//       </button>
+
+//       {/* そのまま表示 */}
+//       <pre style={{ marginTop: "20px", background: "#eee", padding: "10px" }}>
+//         {JSON.stringify(result, null, 2)}
+//       </pre>
+
+//       {/* 入力 */}
+//       <input
+//         value={id}
+//         onChange={(e) => setId(e.target.value)}
+//         placeholder="id"
+//       />
+
+//       <button onClick={handleDelete}>
+//         検索
+//       </button>
+
+//       {/* そのまま表示 */}
+//       <pre style={{ marginTop: "20px", background: "#eee", padding: "10px" }}>
+//         {JSON.stringify(result, null, 2)}
+//       </pre>
+
+//       {/* 入力 */}
+//       <input
+//         value={id}
+//         onChange={(e) => setId(e.target.value)}
+//         placeholder="id"
+//       />
+//       <button onClick={handleUpdate}>
+//         食品セット更新テスト
+//       </button>
+//     </div>
+//   );
+// }

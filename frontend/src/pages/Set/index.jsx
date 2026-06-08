@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Set.module.css";
+import { createSetitem } from "../../api/set";
 
 export default function Set() {
   const navigate = useNavigate();
@@ -9,9 +10,9 @@ export default function Set() {
   const [setName, setSetName] = useState("");
 
   const [items] = useState([
-    { id: 1, name: "鶏むね肉", kcal: 200, p: 30, f: 5, c: 0, amount: 100 },
-    { id: 2, name: "白米", kcal: 250, p: 5, f: 1, c: 55, amount: 150 },
-    { id: 3, name: "卵", kcal: 150, p: 12, f: 10, c: 1, amount: 1 },
+    { id: 1, name: "鶏むね肉", cal: 200, pro: 30, fat: 5, car: 0, amount: 100 },
+    { id: 2, name: "白米", cal: 250, pro: 5, fat: 1, car: 55, amount: 150 },
+    { id: 3, name: "卵", cal: 150, pro: 12, fat: 10, car: 1, amount: 1 },
   ]);
 
   const [selected, setSelected] = useState([]);
@@ -52,14 +53,14 @@ export default function Set() {
       (acc, cur) => {
         const ratio = Number(cur.amount || 0) / 100;
 
-        acc.kcal += (Number(cur.kcal) || 0) * ratio;
-        acc.p += (Number(cur.p) || 0) * ratio;
-        acc.f += (Number(cur.f) || 0) * ratio;
-        acc.c += (Number(cur.c) || 0) * ratio;
+        acc.cal += (Number(cur.cal) || 0) * ratio;
+        acc.pro += (Number(cur.pro) || 0) * ratio;
+        acc.fat += (Number(cur.fat) || 0) * ratio;
+        acc.car += (Number(cur.car) || 0) * ratio;
 
         return acc;
       },
-      { kcal: 0, p: 0, f: 0, c: 0 }
+      { cal: 0, pro: 0, fat: 0, car: 0 }
     );
   }, [selected]);
 
@@ -144,33 +145,33 @@ export default function Set() {
 
             <input
               type="number"
-              value={item.kcal}
+              value={item.cal}
               onChange={(e) =>
-                updateItem(item.id, "kcal", Number(e.target.value))
+                updateItem(item.id, "cal", Number(e.target.value))
               }
             />
 
             <input
               type="number"
-              value={item.p}
+              value={item.pro}
               onChange={(e) =>
-                updateItem(item.id, "p", Number(e.target.value))
+                updateItem(item.id, "pro", Number(e.target.value))
               }
             />
 
             <input
               type="number"
-              value={item.f}
+              value={item.fat}
               onChange={(e) =>
-                updateItem(item.id, "f", Number(e.target.value))
+                updateItem(item.id, "fat", Number(e.target.value))
               }
             />
 
             <input
               type="number"
-              value={item.c}
+              value={item.car}
               onChange={(e) =>
-                updateItem(item.id, "c", Number(e.target.value))
+                updateItem(item.id, "car", Number(e.target.value))
               }
             />
           </div>
@@ -180,9 +181,9 @@ export default function Set() {
       {/* 合計 */}
       <div className={styles.total}>
         <h3>合計</h3>
-        <div>{total.kcal.toFixed(0)} kcal</div>
+        <div>{total.cal.toFixed(0)} cal</div>
         <div>
-          P:{total.p.toFixed(1)} F:{total.f.toFixed(1)} C:{total.c.toFixed(1)}
+          P:{total.pro.toFixed(1)} F:{total.fat.toFixed(1)} C:{total.car.toFixed(1)}
         </div>
       </div>
 
@@ -193,3 +194,48 @@ export default function Set() {
     </div>
   );
 }
+
+
+// MOCK
+// import { useEffect, useState } from "react";
+// import { createSetitem } from "../../api/set";
+
+// export default function TestPage() {
+//   const testRegisterFood = async () => {
+//     const payload = {
+//       name: "朝食セット2",
+//       items: [
+//         {
+//           source: "default",
+//           itemId: 1,
+//           amount: 150
+//         },
+//         {
+//           source: "custom",
+//           itemId: 1,
+//           amount: 100
+//         }
+//       ]
+//     };
+
+//     try {
+//       const res = await createSetitem(payload);
+//       console.log("成功:", res.data);
+//       return res.data;
+//     } catch (err) {
+//       console.error("失敗:", err);
+//     }
+//   };
+
+//   const handleClick = async () => {
+//     await testRegisterFood();
+//   };
+
+//   return (
+//     <div>
+//       <button onClick={handleClick}>
+//         食品セット登録テスト
+//       </button>
+//     </div>
+//   );
+// }
