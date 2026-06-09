@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import { login } from "../../api/auth"; // ← パスは環境に合わせて調整
+import { login } from "../../api/auth";
 
 export default function Login() {
   const [loginId, setLoginId] = useState("");
@@ -10,21 +10,22 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-const handleLogin = async () => {
-  setError("");
+  const handleLogin = async () => {
+    setError("");
 
-  const res = await login(loginId, password);
+    const res = await login(loginId, password);
 
-  // ★ここに入れる
-  console.log("LOGIN RESPONSE =", res);
+    if (res?.resultCode === "SUCCESS") {
+      if (res?.needsOnboarding) {
+        navigate("/onboarding");
+      } else {
+        navigate("/");
+      }
+      return;
+    }
 
-  if (res?.resultCode === "SUCCESS") {
-    navigate("/");
-    return;
-  }
-
-  setError(res?.message || "ログイン失敗");
-};
+    setError(res?.message || "ログイン失敗");
+  };
 
   const handleRegister = () => {
     navigate("/user");
@@ -52,7 +53,6 @@ const handleLogin = async () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* エラー表示 */}
         {error && (
           <div style={{ color: "red", fontSize: 12 }}>
             {error}
