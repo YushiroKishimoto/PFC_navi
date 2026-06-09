@@ -14,8 +14,19 @@ import java.util.Map;
 public class MealRecordController {
     private final MealRecordService mealRecordService;
 
+    
     public MealRecordController(MealRecordService mealRecordService) {
         this.mealRecordService = mealRecordService;
+    }
+
+    //開発中のログイン認証のために仮でuserID_1を保持する
+    private Integer getUserId(Principal principal) {
+        if (principal == null) {
+            // 開発用の仮ユーザーID
+            return 1;
+        }
+
+        return Integer.parseInt(principal.getName());
     }
 
     @PostMapping
@@ -23,7 +34,10 @@ public class MealRecordController {
             @RequestBody MealRecordRequest request,
             Principal principal) {
         try {
-            Integer userId = Integer.parseInt(principal.getName());
+            //結合時にファイルここを追加し、上記のこめんとあうとを削除する
+            //Integer userId = Integer.parseInt(principal.getName());
+
+            Integer userId = getUserId(principal);
             return ApiResponse.success("食事記録を保存しました。", mealRecordService.createMealRecord(request, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
@@ -35,7 +49,8 @@ public class MealRecordController {
             @RequestParam LocalDate date,
             Principal principal) {
         try {
-            Integer userId = Integer.parseInt(principal.getName());
+            //Integer userId = Integer.parseInt(principal.getName());
+            Integer userId = getUserId(principal);
             return ApiResponse.success("取得成功", mealRecordService.getMealRecordsByDate(date, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
@@ -47,7 +62,8 @@ public class MealRecordController {
             @PathVariable Integer id,
             Principal principal) {
         try {
-            Integer userId = Integer.parseInt(principal.getName());
+            //Integer userId = Integer.parseInt(principal.getName());
+            Integer userId = getUserId(principal);
             return ApiResponse.success(
                     "食事記録を削除しました。",
                     mealRecordService.deleteMealRecord(id, userId));
