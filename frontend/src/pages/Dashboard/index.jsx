@@ -10,12 +10,12 @@ import {
   PieChart,
   Pie,
   Cell,
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 
 const MEAL_TYPES = [
@@ -24,39 +24,51 @@ const MEAL_TYPES = [
   { key: "dinner", label: "夕食" },
 ];
 
+const safe = (v) => (typeof v === "number" ? v : 0);
+
+// ★追加：mealType揺れ対策
+const normalize = (v) => String(v ?? "").trim().toLowerCase();
+
 export default function Dashboard() {
   const navigate = useNavigate();
 
   const [date, setDate] = useState(new Date());
-  const [dashboard, setDashboard] = useState(null);
+  const [dashboard, setDashboard] = useState({});
   const [meals, setMeals] = useState([]);
 
   useEffect(() => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    const formatted = `${y}-${m}-${d}`;
+    let ignore = false;
 
-    getDashboard(formatted)
-      .then((res) => {
-        console.log("ダッシュボード取得レスポンス", res);
-        setDashboard(res.data ?? res);
-      })
-      .catch((e) => {
-        console.error("ダッシュボード取得失敗", e);
-      });
+    const fetchData = async () => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      const formatted = `${y}-${m}-${d}`;
 
-    getMealRecords(formatted)
-      .then((res) => {
-        console.log("食事記録取得レスポンス", res);
+      try {
+        const [dashRes, mealRes] = await Promise.all([
+          getDashboard(formatted),
+          getMealRecords(formatted),
+        ]);
 
-        const mealData = res.data?.meals ?? res.meals ?? [];
-        setMeals(mealData);
-      })
-      .catch((e) => {
-        console.error("食事記録取得失敗", e);
-        setMeals([]);
-      });
+        if (ignore) return;
+
+        setDashboard(dashRes?.data ?? dashRes ?? {});
+        setMeals(mealRes?.data?.meals ?? mealRes?.meals ?? []);
+      } catch (e) {
+        console.error(e);
+        if (!ignore) {
+          setDashboard({});
+          setMeals([]);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      ignore = true;
+    };
   }, [date]);
 
   const handleChange = (newDate) => {
@@ -66,21 +78,19 @@ export default function Dashboard() {
     const m = String(newDate.getMonth() + 1).padStart(2, "0");
     const d = String(newDate.getDate()).padStart(2, "0");
 
-    navigate(`/${y}-${m}-${d}`);
+    navigate(`/dashboard?date=${y}-${m}-${d}`);
   };
-
-  const score = dashboard?.achievementRate ?? 0;
 
   const pfc = {
     target: {
-      p: dashboard?.targetPro ?? 0,
-      f: dashboard?.targetFat ?? 0,
-      c: dashboard?.targetCar ?? 0,
+      p: safe(dashboard?.targetPro),
+      f: safe(dashboard?.targetFat),
+      c: safe(dashboard?.targetCar),
     },
     intake: {
-      p: dashboard?.actualPro ?? 0,
-      f: dashboard?.actualFat ?? 0,
-      c: dashboard?.actualCar ?? 0,
+      p: safe(dashboard?.actualPro),
+      f: safe(dashboard?.actualFat),
+      c: safe(dashboard?.actualCar),
     },
   };
 
@@ -100,8 +110,10 @@ export default function Dashboard() {
 
   return (
     <div className={styles.container}>
+
+      {/* ヘッダー */}
       <div className={styles.header}>
-        <div className={styles.dateText}>
+        <div>
           {date.toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "2-digit",
@@ -111,97 +123,122 @@ export default function Dashboard() {
         </div>
 
         <div className={styles.scoreBox}>
-          <span>スコア</span>
-          <span className={styles.score}>{score}%</span>
+          達成率{" "}
+          <span className={styles.score}>
+            {safe(dashboard?.achievementRate)}%
+          </span>
         </div>
       </div>
 
-      <div className={styles.summaryBox}>
-        <div className={styles.summaryRow}>
-          <div className={styles.summaryItem}>
-            <span>総カロリー</span>
-            <strong>{dashboard?.actualCal ?? 0} kcal</strong>
-          </div>
-
-          <div className={styles.summaryItem}>
-            <span>P</span>
-            <strong>
-              {pfc.intake.p} / {pfc.target.p}
-            </strong>
-          </div>
-
-          <div className={styles.summaryItem}>
-            <span>F</span>
-            <strong>
-              {pfc.intake.f} / {pfc.target.f}
-            </strong>
-          </div>
-
-          <div className={styles.summaryItem}>
-            <span>C</span>
-            <strong>
-              {pfc.intake.c} / {pfc.target.c}
-            </strong>
-          </div>
-        </div>
-      </div>
-
+      {/* 上段 */}
       <div className={styles.topGrid}>
+
+        {/* カレンダー */}
         <div className={styles.calendar}>
           <DatePicker selected={date} onChange={handleChange} inline />
         </div>
 
-        <div className={styles.card}>
-          <h3>PFC比率</h3>
+        {/* サマリー */}
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryMini}>
+            <span>総カロリー</span>
+            <strong>{safe(dashboard?.actualCal)} kcal</strong>
+          </div>
 
-          <ResponsiveContainer width="100%" height={200}>
+          <div className={styles.summaryMini}>
+            <span>P</span>
+            <strong>{pfc.intake.p} / {pfc.target.p}</strong>
+          </div>
+
+          <div className={styles.summaryMini}>
+            <span>F</span>
+            <strong>{pfc.intake.f} / {pfc.target.f}</strong>
+          </div>
+
+          <div className={styles.summaryMini}>
+            <span>C</span>
+            <strong>{pfc.intake.c} / {pfc.target.c}</strong>
+          </div>
+        </div>
+
+        {/* 円＋棒グラフ */}
+        <div className={styles.chartCard}>
+
+          <ResponsiveContainer width="100%" height={180}>
             <PieChart>
-              <Pie data={pieData} dataKey="value" outerRadius={80}>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                outerRadius={65}
+                innerRadius={40}
+              >
                 {pieData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i]} />
                 ))}
               </Pie>
+
+              <text
+                x="50%"
+                y="50%"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="14"
+                fontWeight="bold"
+              >
+                PFC
+              </text>
             </PieChart>
           </ResponsiveContainer>
-        </div>
 
-        <div className={styles.card}>
-          <h3>PFC比較</h3>
-
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={barData}>
-              <XAxis dataKey="name" />
-              <YAxis />
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart
+              data={barData}
+              layout="vertical"
+              margin={{ top: 10, right: 30, left: 30, bottom: 10 }}
+            >
+              <XAxis type="number" />
+              <YAxis type="category" dataKey="name" />
               <Tooltip />
-              <Bar dataKey="target" />
-              <Bar dataKey="intake" />
+
+              <Bar dataKey="target" fill="#e0e0e0" barSize={16} />
+              <Bar dataKey="intake" fill="#82ca9d" barSize={16} />
             </BarChart>
           </ResponsiveContainer>
+
         </div>
       </div>
 
+      {/* 食事 */}
       <div className={styles.bottomGrid}>
         {MEAL_TYPES.map(({ key, label }) => {
+
           const meal = meals.find(
-            (m) => String(m.mealType).toLowerCase() === key
+            (m) => normalize(m?.mealType) === key
           );
+
+          // ★追加：複数形式対応
+          const items =
+            meal?.items ??
+            meal?.mealItems ??
+            meal?.foods ??
+            [];
 
           return (
             <div key={key} className={styles.mealCard}>
               <h4>{label}</h4>
 
               <div className={styles.foodList}>
-                {meal && meal.items && meal.items.length > 0 ? (
-                  meal.items.map((item) => (
+                {items.length > 0 ? (
+                  items.map((item) => (
                     <div key={item.id} className={styles.foodItem}>
                       <span>
                         {item.name ?? item.foodName ?? item.itemName ?? "名称未設定"}
                       </span>
 
-                      <span>{item.cal ?? 0} kcal</span>
+                      <span>{safe(item.cal)} kcal</span>
 
                       <span>
-                        P:{item.pro ?? 0} F:{item.fat ?? 0} C:{item.car ?? 0}
+                        P:{safe(item.pro)} F:{safe(item.fat)} C:{safe(item.car)}
                       </span>
                     </div>
                   ))

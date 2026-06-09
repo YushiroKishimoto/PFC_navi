@@ -1,157 +1,42 @@
-.container {
-  padding: 16px;
-  width: 100%;
-  height: 100%;
-  background: #f5f5f5;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.score {
-  font-weight: bold;
-}
-
-/* ★横3列固定 */
-.topGrid {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-}
-
-.card {
-  flex: 1;
-  min-width: 0;
-  background: white;
-  padding: 12px;
-  border-radius: 8px;
-  height: 280px;
-}
-
-.calendarMock {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.dayBox {
-  background: #eee;
-  text-align: center;
-  padding: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.bottomGrid {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.mealCard {
-  flex: 1;
-  background: white;
-  padding: 12px;
-  border-radius: 8px;
-}
-
-.foodItem {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  padding: 4px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.addButton {
-  margin-top: 10px;
-  width: 100%;
-  padding: 8px;
-  background: red;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.container {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 16px;
-  overflow-x: hidden; /* はみ出し防止 */
-}
-
 /* =========================
-   上段（カレンダー + グラフ）
+   base
 ========================= */
-.topGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-
-  margin-bottom: 16px;
-
-  min-width: 0;
-}
-
-/* カレンダー・カード共通 */
-.calendar,
-.card {
-  min-width: 0;
-  width: 100%;
-}
-
-/* =========================
-   下段（食事カード）
-========================= */
-.bottomGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-
-  min-width: 0;
-}
-
-/* 食事カード */
-.mealCard {
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* 食事リスト */
-.foodList {
-  overflow: hidden;
-}
-
 * {
   box-sizing: border-box;
 }
 
-/* 横スクロール完全防止 */
-body {
-  overflow-x: hidden;
+.container {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  padding: 10px;
+  background: #f5f5f5;
 }
+
+/* =========================
+   header
+========================= */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  margin-bottom: 12px;
+
+  padding: 10px 14px;
+  margin: 0 0 10px 0;
+
   background: #fff;
   border-radius: 8px;
+
+  font-size: 15px;
 }
 
 .dateText {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: #333;
 }
@@ -159,44 +44,159 @@ body {
 .scoreBox {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 6px;
+
+  font-size: 13px;
   color: #666;
 }
 
 .score {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   color: #2f80ed;
 }
 
-.summaryBox {
-  margin: 12px 0 20px;
-  padding: 12px 16px;
+/* =========================
+   top grid
+========================= */
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+
+  height: 45vh;
+}
+
+/* calendar */
+.calendar {
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
+  padding: 8px;
+  border-radius: 8px;
 
-.summaryRow {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+  justify-content: center;
+  align-items: center;
 }
 
-.summaryItem {
+/* summary */
+.summaryCard {
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+
   display: flex;
   flex-direction: column;
-  min-width: 120px;
+  gap: 8px;
+
+  overflow: hidden;
 }
 
-.summaryItem span {
+.summaryMini {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+/* chart */
+.chartCard {
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   bottom grid
+========================= */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+
+  height: 45vh;
+  margin-top: 12px;
+
+  min-height: 0; /* 追加 */
+}
+
+/* meal card */
+.mealCard {
+  background: #fff;
+  padding: 14px;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  overflow: hidden;
+
+  min-height: 0; /* 必須 */
+}
+
+.foodList {
+  flex: 1;
+  overflow-y: auto;
+
+  min-height: 0; /* 必須 */
+}
+
+/* scrollbar (optional) */
+.foodList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.foodList::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.foodList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* item */
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+
   font-size: 12px;
-  color: var(--text);
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
 }
 
-.summaryItem strong {
-  font-size: 16px;
-  color: var(--text-h);
+/* =========================
+   button fixed bottom
+========================= */
+.addButton {
+  margin-top: auto;
+
+  padding: 9px;
+  font-size: 13px;
+
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
+/* =========================
+   responsive
+========================= */
+@media (max-width: 1024px) {
+  .topGrid,
+  .bottomGrid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+.empty {
+  font-size: 12px;
+  color: #999;
+  padding: 10px 0;
 }
