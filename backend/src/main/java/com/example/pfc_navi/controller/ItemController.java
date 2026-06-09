@@ -9,8 +9,10 @@ import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.service.ItemService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 import com.example.pfc_navi.dto.CustomItemUpdateRequest;
 
+// import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,11 +81,12 @@ public class ItemController {
         }
 
         @PostMapping("/register")
-        public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request) {
+        public ApiResponse<?> createCustomItem(@RequestBody CustomItemRequest request, Authentication authentication) {
                 try {
+                        Integer userId = Integer.parseInt(authentication.getName());
                         return ApiResponse.success(
                                         "自前食材・料理を登録しました。",
-                                        itemService.createCustomItem(request));
+                                        itemService.createCustomItem(request, userId));
                 } catch (IllegalArgumentException e) {
                         return ApiResponse.validationError(e.getMessage(), Map.of());
                 }
