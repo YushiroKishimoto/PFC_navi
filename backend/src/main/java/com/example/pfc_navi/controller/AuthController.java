@@ -1,5 +1,6 @@
 package com.example.pfc_navi.controller;
 
+import com.example.pfc_navi.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,9 +19,12 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -36,16 +40,18 @@ public class AuthController {
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            // SessionにSecurityContextを保存
             HttpSession session = request.getSession(true);
             session.setAttribute(
                     HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                     SecurityContextHolder.getContext()
             );
 
+            boolean needsOnboarding = !userRepository.existsByLoginId(loginId);
+
             return ResponseEntity.ok(Map.of(
                     "resultCode", "SUCCESS",
-                    "message", "ログインに成功しました"
+                    "message", "ログインに成功しました",
+                    "needsOnboarding", needsOnboarding
             ));
         } catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of(
