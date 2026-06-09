@@ -10,6 +10,8 @@ import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.example.pfc_navi.dto.CustomItemUpdateRequest;
 
 // import java.security.Principal;

@@ -7,10 +7,12 @@ import com.example.pfc_navi.entity.CustomFood;
 import com.example.pfc_navi.entity.DefaultFood;
 import com.example.pfc_navi.entity.MealSet;
 import com.example.pfc_navi.entity.MealSetItem;
+import com.example.pfc_navi.entity.User;
 import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.repository.MealSetItemRepository;
 import com.example.pfc_navi.repository.MealSetRepository;
+import com.example.pfc_navi.repository.UserRepository;
 import com.example.pfc_navi.dto.SetSearchItemResponse;
 import com.example.pfc_navi.dto.SetSearchResponse;
 import com.example.pfc_navi.dto.SetUpdateItemRequest;
@@ -27,29 +29,31 @@ public class SetService {
     private final MealSetItemRepository mealSetItemRepository;
     private final DefaultFoodRepository defaultFoodRepository;
     private final CustomFoodRepository customFoodRepository;
+    private final UserRepository userRepository;
 
     public SetService(
             MealSetRepository mealSetRepository,
             MealSetItemRepository mealSetItemRepository,
             DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository) {
+            CustomFoodRepository customFoodRepository,
+            UserRepository userRepository) {
         this.mealSetRepository = mealSetRepository;
         this.mealSetItemRepository = mealSetItemRepository;
         this.defaultFoodRepository = defaultFoodRepository;
         this.customFoodRepository = customFoodRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public SetRegisterResponse registerSet(SetRegisterRequest request) {
+    public SetRegisterResponse registerSet(SetRegisterRequest request, Integer userId) {
         validateRequest(request);
 
-        // TODO: Cookie認証完成後にログイン中ユーザー情報へ変更
-        Integer userId = 1;
-        String loginId = "test";
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません"));
 
         MealSet mealSet = new MealSet();
         mealSet.setUserId(userId);
-        mealSet.setLoginId(loginId);
+        mealSet.setLoginId(user.getLoginId());
         mealSet.setName(request.getName());
         mealSet.setTotalCal(0);
         mealSet.setTotalPro(0);
