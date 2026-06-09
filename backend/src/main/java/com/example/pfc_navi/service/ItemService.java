@@ -3,32 +3,37 @@ package com.example.pfc_navi.service;
 import com.example.pfc_navi.dto.CustomItemCreateResponse;
 import com.example.pfc_navi.dto.CustomItemRequest;
 import com.example.pfc_navi.entity.CustomFood;
+import com.example.pfc_navi.entity.User;
 import com.example.pfc_navi.repository.CustomFoodRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.pfc_navi.dto.CustomItemResponse;
 import com.example.pfc_navi.dto.CustomItemUpdateRequest;
+import com.example.pfc_navi.repository.UserRepository;
 
 @Service
 public class ItemService {
 
     private final CustomFoodRepository customFoodRepository;
+    private final UserRepository userRepository;
 
-    public ItemService(CustomFoodRepository customFoodRepository) {
+    public ItemService(
+        CustomFoodRepository customFoodRepository,
+        UserRepository userRepository) {
         this.customFoodRepository = customFoodRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public CustomItemCreateResponse createCustomItem(CustomItemRequest request) {
+    public CustomItemCreateResponse createCustomItem(CustomItemRequest request, Integer userId) {
         validateRequest(request);
 
-        // TODO: Cookie認証完成後にログイン中ユーザー情報へ変更
-        Integer userId = 1;
-        String loginId = "test";
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません"));
 
         CustomFood customFood = new CustomFood();
         customFood.setUserId(userId);
-        customFood.setLoginId(loginId);
+        customFood.setLoginId(user.getLoginId());
         customFood.setName(request.getName());
         customFood.setAmount(request.getAmount());
         customFood.setPro(request.getPro());
