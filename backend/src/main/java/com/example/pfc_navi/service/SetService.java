@@ -265,14 +265,14 @@ public class SetService {
     }
 
     @Transactional
-    public SetSearchResponse updateSet(Integer id, SetUpdateRequest request) {
+    public SetSearchResponse updateSet(Integer id, SetUpdateRequest request, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
         validateUpdateRequest(request);
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         mealSetItemRepository.deleteBySetFoodId(id);
@@ -310,12 +310,12 @@ public class SetService {
     }
 
     @Transactional
-    public void deleteSet(Integer id) {
+    public void deleteSet(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         mealSetItemRepository.deleteBySetFoodId(id);
