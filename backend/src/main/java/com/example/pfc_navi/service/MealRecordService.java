@@ -185,7 +185,7 @@ public class MealRecordService {
             throw new IllegalArgumentException("mealRecordIdは必須です。");
         }
 
-        MealRecord mealRecord = mealRecordRepository.findById(mealRecordId)
+        MealRecord mealRecord = mealRecordRepository.findByIdAndUserId(mealRecordId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象の食事記録が存在しません。"));
 
         LocalDate recordDate = mealRecord.getRecordDate();

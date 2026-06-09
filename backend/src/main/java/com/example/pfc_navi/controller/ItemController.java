@@ -95,9 +95,10 @@ public class ItemController {
         }
 
         @DeleteMapping("/{id}")
-        public ApiResponse<?> deleteCustomItem(@PathVariable Integer id) {
+        public ApiResponse<?> deleteCustomItem(@PathVariable Integer id, Authentication authentication) {
                 try {
-                        itemService.deleteCustomItem(id);
+                        Integer userId = Integer.parseInt(authentication.getName());
+                        itemService.deleteCustomItem(id, userId);
 
                         return ApiResponse.success(
                                         "自前食材・料理を削除しました。",
@@ -110,11 +111,13 @@ public class ItemController {
         @PutMapping("/{id}")
         public ApiResponse<?> updateCustomItem(
                         @PathVariable Integer id,
-                        @RequestBody CustomItemUpdateRequest request) {
+                        @RequestBody CustomItemUpdateRequest request,
+                        Authentication authentication) {
                 try {
+                        Integer userId = Integer.parseInt(authentication.getName());
                         return ApiResponse.success(
                                         "自前食材・料理を更新しました。",
-                                        itemService.updateCustomItem(id, request));
+                                        itemService.updateCustomItem(id, request, userId));
                 } catch (IllegalArgumentException e) {
                         return ApiResponse.validationError(e.getMessage(), Map.of());
                 }

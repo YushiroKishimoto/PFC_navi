@@ -47,26 +47,26 @@ public class ItemService {
     }
 
     @Transactional
-    public void deleteCustomItem(Integer id) {
+    public void deleteCustomItem(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        CustomFood customFood = customFoodRepository.findById(id)
+        CustomFood customFood = customFoodRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象の自前食材・料理が存在しません。"));
 
         customFoodRepository.delete(customFood);
     }
 
     @Transactional
-    public CustomItemResponse updateCustomItem(Integer id, CustomItemUpdateRequest request) {
+    public CustomItemResponse updateCustomItem(Integer id, CustomItemUpdateRequest request, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
         validateUpdateRequest(request);
 
-        CustomFood customFood = customFoodRepository.findById(id)
+        CustomFood customFood = customFoodRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象の自前食材・料理が存在しません。"));
 
         customFood.setName(request.getName());

@@ -56,20 +56,23 @@ public class SetController {
     @PutMapping("/{id}")
     public ApiResponse<?> updateSet(
             @PathVariable Integer id,
-            @RequestBody SetUpdateRequest request) {
+            @RequestBody SetUpdateRequest request,
+            Authentication authentication) {
         try {
+            Integer userId = Integer.parseInt(authentication.getName());
             return ApiResponse.success(
                     "セットを更新しました。",
-                    setService.updateSet(id, request));
+                    setService.updateSet(id, request, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<?> deleteSet(@PathVariable Integer id) {
+    public ApiResponse<?> deleteSet(@PathVariable Integer id, Authentication authentication) {
         try {
-            setService.deleteSet(id);
+            Integer userId = Integer.parseInt(authentication.getName());
+            setService.deleteSet(id, userId);
 
             return ApiResponse.success(
                     "セットを削除しました。",
