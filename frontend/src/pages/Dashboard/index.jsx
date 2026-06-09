@@ -7,8 +7,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
-  PieChart, Pie, Cell,
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
 const MEAL_TYPES = [
@@ -30,15 +37,35 @@ export default function Dashboard() {
     const d = String(date.getDate()).padStart(2, "0");
     const formatted = `${y}-${m}-${d}`;
 
-    getDashboard(formatted).then((data) => setDashboard(data));
-    getMealRecords(formatted).then((data) => setMeals(data.meals ?? []));
+    getDashboard(formatted)
+      .then((res) => {
+        console.log("ダッシュボード取得レスポンス", res);
+        setDashboard(res.data ?? res);
+      })
+      .catch((e) => {
+        console.error("ダッシュボード取得失敗", e);
+      });
+
+    getMealRecords(formatted)
+      .then((res) => {
+        console.log("食事記録取得レスポンス", res);
+
+        const mealData = res.data?.meals ?? res.meals ?? [];
+        setMeals(mealData);
+      })
+      .catch((e) => {
+        console.error("食事記録取得失敗", e);
+        setMeals([]);
+      });
   }, [date]);
 
   const handleChange = (newDate) => {
     setDate(newDate);
+
     const y = newDate.getFullYear();
     const m = String(newDate.getMonth() + 1).padStart(2, "0");
     const d = String(newDate.getDate()).padStart(2, "0");
+
     navigate(`/${y}-${m}-${d}`);
   };
 
@@ -73,7 +100,6 @@ export default function Dashboard() {
 
   return (
     <div className={styles.container}>
-
       <div className={styles.header}>
         <div className={styles.dateText}>
           {date.toLocaleDateString("ja-JP", {
@@ -83,6 +109,7 @@ export default function Dashboard() {
             weekday: "long",
           })}
         </div>
+
         <div className={styles.scoreBox}>
           <span>スコア</span>
           <span className={styles.score}>{score}%</span>
@@ -95,17 +122,26 @@ export default function Dashboard() {
             <span>総カロリー</span>
             <strong>{dashboard?.actualCal ?? 0} kcal</strong>
           </div>
+
           <div className={styles.summaryItem}>
             <span>P</span>
-            <strong>{pfc.intake.p} / {pfc.target.p}</strong>
+            <strong>
+              {pfc.intake.p} / {pfc.target.p}
+            </strong>
           </div>
+
           <div className={styles.summaryItem}>
             <span>F</span>
-            <strong>{pfc.intake.f} / {pfc.target.f}</strong>
+            <strong>
+              {pfc.intake.f} / {pfc.target.f}
+            </strong>
           </div>
+
           <div className={styles.summaryItem}>
             <span>C</span>
-            <strong>{pfc.intake.c} / {pfc.target.c}</strong>
+            <strong>
+              {pfc.intake.c} / {pfc.target.c}
+            </strong>
           </div>
         </div>
       </div>
@@ -114,8 +150,10 @@ export default function Dashboard() {
         <div className={styles.calendar}>
           <DatePicker selected={date} onChange={handleChange} inline />
         </div>
+
         <div className={styles.card}>
           <h3>PFC比率</h3>
+
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={pieData} dataKey="value" outerRadius={80}>
@@ -126,8 +164,10 @@ export default function Dashboard() {
             </PieChart>
           </ResponsiveContainer>
         </div>
+
         <div className={styles.card}>
           <h3>PFC比較</h3>
+
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={barData}>
               <XAxis dataKey="name" />
@@ -142,30 +182,42 @@ export default function Dashboard() {
 
       <div className={styles.bottomGrid}>
         {MEAL_TYPES.map(({ key, label }) => {
-          const meal = meals.find((m) => m.mealType === key);
+          const meal = meals.find(
+            (m) => String(m.mealType).toLowerCase() === key
+          );
+
           return (
             <div key={key} className={styles.mealCard}>
               <h4>{label}</h4>
+
               <div className={styles.foodList}>
-                {meal ? (
+                {meal && meal.items && meal.items.length > 0 ? (
                   meal.items.map((item) => (
                     <div key={item.id} className={styles.foodItem}>
-                      <span>{item.name}</span>
-                      <span>{item.cal} kcal</span>
-                      <span>P:{item.pro} F:{item.fat} C:{item.car}</span>
+                      <span>
+                        {item.name ?? item.foodName ?? item.itemName ?? "名称未設定"}
+                      </span>
+
+                      <span>{item.cal ?? 0} kcal</span>
+
+                      <span>
+                        P:{item.pro ?? 0} F:{item.fat ?? 0} C:{item.car ?? 0}
+                      </span>
                     </div>
                   ))
                 ) : (
                   <div className={styles.empty}>記録なし</div>
                 )}
               </div>
+
               <button
                 className={styles.addButton}
                 onClick={() => {
                   const y = date.getFullYear();
                   const m = String(date.getMonth() + 1).padStart(2, "0");
                   const d = String(date.getDate()).padStart(2, "0");
-                  navigate(`/${y}-${m}-${d}/meal/${key}`); // ← ここを修正
+
+                  navigate(`/${y}-${m}-${d}/meal/${key}`);
                 }}
               >
                 ＋ 追加
@@ -174,7 +226,6 @@ export default function Dashboard() {
           );
         })}
       </div>
-
     </div>
   );
 }
