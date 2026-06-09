@@ -110,6 +110,7 @@ CREATE TABLE meal_records (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     login_id VARCHAR(20) NOT NULL,
+    record_date DATE NOT NULL,
     meal_type VARCHAR(50) NOT NULL,
     total_pro INTEGER NOT NULL CHECK (total_pro >= 0),
     total_fat INTEGER NOT NULL CHECK (total_fat >= 0),
@@ -132,4 +133,8 @@ CREATE TABLE meal_record_items (
     fat INTEGER NOT NULL CHECK (fat >= 0),
     car INTEGER NOT NULL CHECK (car >= 0),
     cal INTEGER NOT NULL CHECK (cal >= 0)
+    CONSTRAINT fk_meal_record_items_meal_record
+    FOREIGN KEY (meal_record_id)
+    REFERENCES meal_records(id)
+    ON DELETE CASCADE
 )
