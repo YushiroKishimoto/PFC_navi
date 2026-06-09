@@ -10,20 +10,21 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    setError("");
+const handleLogin = async () => {
+  setError("");
 
-    const res = await login(loginId, password);
+  const res = await login(loginId, password);
 
-    console.log("login response:", res);
+  // ★ここに入れる
+  console.log("LOGIN RESPONSE =", res);
 
-    if (res?.message === "ログインに成功しました") {
-      navigate("/");
-      return;
-    }
+  if (res?.resultCode === "SUCCESS") {
+    navigate("/");
+    return;
+  }
 
-    setError(res.message);
-  };
+  setError(res?.message || "ログイン失敗");
+};
 
   const handleRegister = () => {
     navigate("/user");
