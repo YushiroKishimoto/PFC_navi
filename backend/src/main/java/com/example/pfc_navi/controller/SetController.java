@@ -5,6 +5,7 @@ import com.example.pfc_navi.dto.SetRegisterRequest;
 import com.example.pfc_navi.dto.SetUpdateRequest;
 import com.example.pfc_navi.service.SetService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.Map;
 
@@ -18,9 +19,10 @@ public class SetController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<?> registerSet(@RequestBody SetRegisterRequest request) {
+    public ApiResponse<?> registerSet(@RequestBody SetRegisterRequest request, Authentication authentication) {
         try {
-            return ApiResponse.success("セットを登録しました。", setService.registerSet(request));
+            Integer userId = Integer.parseInt(authentication.getName());
+            return ApiResponse.success("セットを登録しました。", setService.registerSet(request, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
