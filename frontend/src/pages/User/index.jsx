@@ -16,7 +16,7 @@ export default function Register() {
       setMessage(res.message);
 
       if (res?.message === "ユーザー登録が完了しました") {
-        navigate("/login");
+        navigate("/onboarding");
       }
     } catch (e) {
       setMessage("登録失敗");
