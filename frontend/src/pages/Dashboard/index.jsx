@@ -93,7 +93,7 @@ export default function Dashboard() {
         <div className={styles.summaryRow}>
           <div className={styles.summaryItem}>
             <span>総カロリー</span>
-            <strong>{dashboard?.totalKcal ?? 0} kcal</strong>
+            <strong>{dashboard?.actualCal ?? 0} kcal</strong>
           </div>
           <div className={styles.summaryItem}>
             <span>P</span>
@@ -177,4 +177,4 @@ export default function Dashboard() {
 
     </div>
   );
-}
+}setMeals(data.data.meals ?? []);
