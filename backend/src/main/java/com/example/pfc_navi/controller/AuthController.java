@@ -43,9 +43,15 @@ public class AuthController {
                     SecurityContextHolder.getContext()
             );
 
-            return ResponseEntity.ok(Map.of("message", "ログインに成功しました"));
+            return ResponseEntity.ok(Map.of(
+                    "resultCode", "SUCCESS",
+                    "message", "ログインに成功しました"
+            ));
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(Map.of("error", "ログインIDまたはパスワードが正しくありません"));
+            return ResponseEntity.status(401).body(Map.of(
+                    "resultCode", "FAIL",
+                    "message", "ログインIDまたはパスワードが正しくありません"
+            ));
         }
     }
 

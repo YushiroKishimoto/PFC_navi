@@ -139,16 +139,6 @@ export default function Onboarding() {
           ))}
         </select>
 
-        {/* 目標カロリー */}
-        {/* <input
-          name="targetCal"
-          type="number"
-          placeholder="目標カロリー"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.targetCal}
-        /> */}
-
         {/* PFCコース */}
         <select
           name="pfcCourse"
