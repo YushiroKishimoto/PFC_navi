@@ -1,7 +1,7 @@
 .sidebar {
   height: 100vh;
   width: 100%;
-  background: #222;
+  background: #77AF9C; /* メインカラー */
   color: white;
 
   display: flex;
@@ -17,8 +17,11 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
+
+  background: #77AF9C;
 }
 
+/* ハンバーガー */
 .hamburger {
   background: none;
   border: none;
@@ -27,8 +30,10 @@
   cursor: pointer;
 }
 
+/* タイトル */
 .title {
   font-weight: bold;
+  color: #ffffff;
 }
 
 /* メニュー */
@@ -38,7 +43,7 @@
   margin-top: 10px;
 }
 
-/* ★リンクの見た目を完全固定（重要） */
+/* メニューアイテム */
 .item {
   display: flex;
   align-items: center;
@@ -50,20 +55,48 @@
 
   cursor: pointer;
   transition: 0.2s;
+
+  border-left: 3px solid transparent;
 }
 
-/* visited対策（紫防止） */
+/* visited対策 */
 .item:visited {
   color: white;
 }
 
 /* hover */
 .item:hover {
-  background: #333;
-  color: white;
+  background: #8CD790; /* 明るいグリーン */
+  color: #757575;       /* グレー文字 */
+  border-left: 3px solid #C5E99B;
 }
 
-/* active対策 */
+/* active */
 .item:active {
+  background: #C5E99B;
+  color: #757575;
+}
+
+/* 選択状態を作る場合用 */
+.item.active {
+  background: #8CD790;
+  color: #757575;
+  border-left: 3px solid #C5E99B;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+
   color: white;
+  text-decoration: none;
+
+  cursor: pointer;
+  transition: 0.2s;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.item:last-child {
+  border-bottom: none;
 }
