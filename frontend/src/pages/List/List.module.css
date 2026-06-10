@@ -1,191 +1,271 @@
 .container {
-  padding: 40px 48px;
+  padding: 32px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.title {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 32px;
 }
 
 .message {
   margin: 12px 0;
   font-weight: bold;
+  color: #333;
 }
 
-.searchArea {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-  margin-bottom: 32px;
-}
-
-.searchColumn {
+.tabs {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.sectionTitle {
-  font-size: 20px;
+.tab {
+  padding: 10px 24px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f3f4f6;
+  color: #333;
   font-weight: bold;
-  margin: 0;
+  cursor: pointer;
 }
 
-.labelText {
-  margin: 0;
-  font-size: 16px;
+.activeTab {
+  padding: 10px 24px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .searchRow {
   display: flex;
   gap: 8px;
   align-items: center;
+  margin-bottom: 16px;
 }
 
-.tab:hover {
-  border-color: #4caf50;
-}
-
-.activeTab {
-  padding: 8px 14px;
-  border: 1px solid #4caf50;
-  background: #4caf50;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-/* =====================
-   検索
-===================== */
 .input {
   width: 100%;
   padding: 10px 12px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .searchButton {
-  padding: 9px 16px;
-  white-space: nowrap;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  background-color: #111827;
+  color: #fff;
+  font-weight: bold;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.resultList {
+.searchButton:hover {
+  background-color: #374151;
+}
+
+.listScroll {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.resultButton {
-  width: 100%;
-  padding: 10px 12px;
-  text-align: left;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.resultButtonActive {
-  width: 100%;
-  padding: 10px 12px;
-  text-align: left;
-  border: 2px solid #333;
-  border-radius: 6px;
-  background: #f2f2f2;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.editArea {
-  margin-top: 24px;
-  border-top: 2px solid #222;
-  padding-top: 24px;
+  gap: 16px;
 }
 
 .card {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 24px;
+  padding: 20px 30px;
+  background-color: #fff;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.editBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.editBtn:hover {
+  background-color: #1d4ed8;
+}
+
+.saveBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #16a34a;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background-color: #15803d;
+}
+
+.deleteBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #dc2626;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background-color: #b91c1c;
+}
+
+.deleteBtn:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.deleteSmallBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: #dc2626;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.deleteSmallBtn:hover {
+  background-color: #b91c1c;
+}
+
+.deleteSmallBtn:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.setNameInput {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.totalRow {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  font-weight: bold;
+}
+
+.itemEditArea {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.setItemList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* 編集ボタン */
-.editBtn {
-  background-color: #4caf50;
-  color: white;
-}
-
-.editBtn:hover {
-  background-color: #43a047;
-}
-
-/* 保存ボタン */
-.saveBtn {
-  background-color: #2196f3;
-  color: white;
-}
-
-.saveBtn:hover {
-  background-color: #1e88e5;
-}
-
-/* 削除ボタン */
-.deleteBtn {
-  background-color: #e53935;
-  color: white;
-}
-
-.deleteBtn:hover {
-  background-color: #d32f2f;
-}
-
-/* =====================
-   入力エリア（横一列）
-===================== */
-.editArea {
-  display: flex;
-  gap: 12px;
+.setItemRow {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 90px 80px 80px 80px 110px 36px;
+  gap: 10px;
   align-items: center;
-  margin-top: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #eee;
 }
 
-.amountInput {
-  width: 120px;
-  padding: 8px 10px;
+.foodNameCell {
+  min-width: 0;
+  font-weight: bold;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.fieldGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.fieldLabel {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  min-width: 28px;
+}
+
+.nutrientInput {
+  width: 52px;
+  padding: 7px 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: right;
   box-sizing: border-box;
 }
 
-.deleteButton {
-  padding: 8px 24px;
-  cursor: pointer;
+.amountInput {
+  width: 58px;
+  padding: 7px 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: right;
+  box-sizing: border-box;
 }
 
-.saveButton {
-  padding: 8px 24px;
-  cursor: pointer;
+.unit {
+  white-space: nowrap;
+  font-size: 14px;
 }
 
-@media (max-width: 768px) {
-  .searchArea {
+input:disabled {
+  background-color: #f9fafb;
+  color: #333;
+}
+
+@media (max-width: 1100px) {
+  .setItemRow {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
 
-  .searchRow {
+  .foodNameCell {
+    font-size: 16px;
+  }
+
+  .itemEditArea {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
 }
