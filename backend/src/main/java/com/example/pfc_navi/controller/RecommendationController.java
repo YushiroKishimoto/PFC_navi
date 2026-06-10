@@ -1,8 +1,6 @@
 package com.example.pfc_navi.controller;
 
 import com.example.pfc_navi.dto.RecommendationItemDto;
-import com.example.pfc_navi.entity.User;
-import com.example.pfc_navi.repository.UserRepository;
 import com.example.pfc_navi.service.RecommendationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +14,9 @@ import java.util.List;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
-    private final UserRepository userRepository;
 
-    public RecommendationController(RecommendationService recommendationService,
-                                    UserRepository userRepository) {
+    public RecommendationController(RecommendationService recommendationService) {
         this.recommendationService = recommendationService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/recommendations")
@@ -30,13 +25,10 @@ public class RecommendationController {
             @RequestParam(defaultValue = "5") int limit,
             Principal principal) {
 
-        User user = userRepository.findByLoginId(principal.getName())
-                .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません"));
-
+        Integer userId = Integer.parseInt(principal.getName());
         LocalDate localDate = LocalDate.parse(date);
         List<RecommendationItemDto> result =
-                recommendationService.getRecommendations(user.getUserId(), localDate, limit);
-
+                recommendationService.getRecommendations(userId, localDate, limit);
         return ResponseEntity.ok(result);
     }
 }
