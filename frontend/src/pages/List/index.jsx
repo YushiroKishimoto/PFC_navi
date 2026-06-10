@@ -54,7 +54,7 @@ export default function List() {
         const res = await searchCustomItems(search);
         const resultItems = res?.data?.items ?? [];
 
-        setItems(resultItems.slice(0, 5));
+        setItems(resultItems);
 
         if (resultItems.length === 0) {
           setMessage("該当する食材・料理がありません");
@@ -70,7 +70,7 @@ export default function List() {
         const res = await getSetitem(search);
         const resultSets = res?.data?.sets ?? [];
 
-        setSets(resultSets.slice(0, 5));
+        setSets(resultSets);
 
         if (resultSets.length === 0) {
           setMessage("該当するセットがありません");
