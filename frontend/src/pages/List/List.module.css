@@ -2,6 +2,11 @@
   padding: 32px;
   width: 100%;
   box-sizing: border-box;
+  background: linear-gradient(
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
 }
 
 .message {

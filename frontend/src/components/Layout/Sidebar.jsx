@@ -22,7 +22,6 @@ export default function Sidebar({ open, setOpen }) {
       </div>
 
       {/* WORKSPACE */}
-      <div className={styles.sectionTitle}>WORKSPACE</div>
 
       <Link to="/" className={`${styles.item} ${isActive("/") ? styles.active : ""}`}>
         <span>🏠</span>
@@ -30,7 +29,7 @@ export default function Sidebar({ open, setOpen }) {
       </Link>
 
       {/* FOOD */}
-      <div className={styles.sectionTitle}>FOOD</div>
+
 
       <Link to="/items" className={`${styles.item} ${isActive("/items") ? styles.active : ""}`}>
         <span>🍱</span>
@@ -43,7 +42,6 @@ export default function Sidebar({ open, setOpen }) {
       </Link>
 
       {/* USER */}
-      <div className={styles.sectionTitle}>USER</div>
 
       <Link to="/profile" className={`${styles.item} ${isActive("/profile") ? styles.active : ""}`}>
         <span>👤</span>
@@ -51,7 +49,6 @@ export default function Sidebar({ open, setOpen }) {
       </Link>
 
       {/* DATA */}
-      <div className={styles.sectionTitle}>DATA</div>
 
       <Link to="/list" className={`${styles.item} ${isActive("/list") ? styles.active : ""}`}>
         <span>📚</span>

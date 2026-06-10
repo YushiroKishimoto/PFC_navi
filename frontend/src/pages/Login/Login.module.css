@@ -6,7 +6,11 @@
 
   min-height: 100vh;
 
-  background: linear-gradient(180deg, #C5E99B 0%, #8CD790 100%);
+ background: linear-gradient(
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
 }
 
 h2 {

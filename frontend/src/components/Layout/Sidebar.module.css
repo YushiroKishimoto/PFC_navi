@@ -2,8 +2,8 @@
   height: 100vh;
   overflow-y: auto;
 
-  background: #77AF9C;
-  color: white;
+  background: #556d70;
+color: #ffffff;
 
   transition: width 0.2s ease;
 
@@ -72,7 +72,11 @@
 
 /* active */
 .active {
-  background: #8CD790;
+  background: linear-gradient(
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
   color: #757575;
 }
 
