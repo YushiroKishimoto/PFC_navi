@@ -200,3 +200,26 @@
   color: #999;
   padding: 10px 0;
 }
+
+.mealHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mealHeader h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.mealTotal {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+  white-space: nowrap;
+}

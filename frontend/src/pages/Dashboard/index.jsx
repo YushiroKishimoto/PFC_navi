@@ -24,9 +24,11 @@ const MEAL_TYPES = [
   { key: "dinner", label: "夕食" },
 ];
 
-const safe = (v) => (typeof v === "number" ? v : 0);
+const safe = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
 
-// ★追加：mealType揺れ対策
 const normalize = (v) => String(v ?? "").trim().toLowerCase();
 
 export default function Dashboard() {
@@ -53,10 +55,14 @@ export default function Dashboard() {
 
         if (ignore) return;
 
+        console.log("ダッシュボード取得レスポンス", dashRes);
+        console.log("食事記録取得レスポンス", mealRes);
+
         setDashboard(dashRes?.data ?? dashRes ?? {});
         setMeals(mealRes?.data?.meals ?? mealRes?.meals ?? []);
       } catch (e) {
         console.error(e);
+
         if (!ignore) {
           setDashboard({});
           setMeals([]);
@@ -110,7 +116,6 @@ export default function Dashboard() {
 
   return (
     <div className={styles.container}>
-
       {/* ヘッダー */}
       <div className={styles.header}>
         <div>
@@ -132,7 +137,6 @@ export default function Dashboard() {
 
       {/* 上段 */}
       <div className={styles.topGrid}>
-
         {/* カレンダー */}
         <div className={styles.calendar}>
           <DatePicker selected={date} onChange={handleChange} inline />
@@ -147,23 +151,28 @@ export default function Dashboard() {
 
           <div className={styles.summaryMini}>
             <span>P</span>
-            <strong>{pfc.intake.p} / {pfc.target.p}</strong>
+            <strong>
+              {pfc.intake.p} / {pfc.target.p}
+            </strong>
           </div>
 
           <div className={styles.summaryMini}>
             <span>F</span>
-            <strong>{pfc.intake.f} / {pfc.target.f}</strong>
+            <strong>
+              {pfc.intake.f} / {pfc.target.f}
+            </strong>
           </div>
 
           <div className={styles.summaryMini}>
             <span>C</span>
-            <strong>{pfc.intake.c} / {pfc.target.c}</strong>
+            <strong>
+              {pfc.intake.c} / {pfc.target.c}
+            </strong>
           </div>
         </div>
 
         {/* 円＋棒グラフ */}
         <div className={styles.chartCard}>
-
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
@@ -204,41 +213,62 @@ export default function Dashboard() {
               <Bar dataKey="intake" fill="#82ca9d" barSize={16} />
             </BarChart>
           </ResponsiveContainer>
-
         </div>
       </div>
 
       {/* 食事 */}
       <div className={styles.bottomGrid}>
         {MEAL_TYPES.map(({ key, label }) => {
+          const items = meals
+            .filter((m) => normalize(m?.mealType) === key)
+            .flatMap((meal) =>
+              meal?.items ??
+              meal?.mealItems ??
+              meal?.foods ??
+              []
+            );
 
-          const meal = meals.find(
-            (m) => normalize(m?.mealType) === key
+          const mealTotal = items.reduce(
+            (acc, item) => {
+              acc.cal += safe(item.cal);
+              acc.pro += safe(item.pro);
+              acc.fat += safe(item.fat);
+              acc.car += safe(item.car);
+              return acc;
+            },
+            { cal: 0, pro: 0, fat: 0, car: 0 }
           );
-
-          // ★追加：複数形式対応
-          const items =
-            meal?.items ??
-            meal?.mealItems ??
-            meal?.foods ??
-            [];
 
           return (
             <div key={key} className={styles.mealCard}>
-              <h4>{label}</h4>
+              <div className={styles.mealHeader}>
+                <h4>{label}</h4>
+
+                <div className={styles.mealTotal}>
+                  {mealTotal.cal}kcal / P:{mealTotal.pro} F:{mealTotal.fat} C:
+                  {mealTotal.car}
+                </div>
+              </div>
 
               <div className={styles.foodList}>
                 {items.length > 0 ? (
-                  items.map((item) => (
-                    <div key={item.id} className={styles.foodItem}>
+                  items.map((item, index) => (
+                    <div
+                      key={`${item.id ?? item.itemId ?? "item"}-${index}`}
+                      className={styles.foodItem}
+                    >
                       <span>
-                        {item.name ?? item.foodName ?? item.itemName ?? "名称未設定"}
+                        {item.name ??
+                          item.foodName ??
+                          item.itemName ??
+                          "名称未設定"}
                       </span>
 
                       <span>{safe(item.cal)} kcal</span>
 
                       <span>
-                        P:{safe(item.pro)} F:{safe(item.fat)} C:{safe(item.car)}
+                        P:{safe(item.pro)} F:{safe(item.fat)} C:
+                        {safe(item.car)}
                       </span>
                     </div>
                   ))
