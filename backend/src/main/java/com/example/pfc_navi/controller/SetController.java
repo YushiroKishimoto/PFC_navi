@@ -30,7 +30,8 @@ public class SetController {
 
     @GetMapping("/search")
     public ApiResponse<?> searchSets(
-            @RequestParam String keyword) {
+            @RequestParam String keyword, Authentication authentication) {
+        Integer userId = Integer.parseInt(authentication.getName());
         if (keyword == null || keyword.trim().isEmpty()) {
             return ApiResponse.validationError(
                     "検索キーワードを入力してください。",
@@ -39,15 +40,16 @@ public class SetController {
 
         return ApiResponse.success(
                 "セット検索完了",
-                Map.of("sets", setService.searchSets(keyword)));
+                Map.of("sets", setService.searchSets(keyword, userId)));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<?> getSetDetail(@PathVariable Integer id) {
+    public ApiResponse<?> getSetDetail(@PathVariable Integer id, Authentication authentication) {
         try {
+            Integer userId = Integer.parseInt(authentication.getName());
             return ApiResponse.success(
                     "セット詳細取得成功",
-                    setService.getSetDetail(id));
+                    setService.getSetDetail(id, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }

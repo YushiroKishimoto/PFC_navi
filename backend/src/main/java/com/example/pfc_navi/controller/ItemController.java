@@ -38,7 +38,8 @@ public class ItemController {
 
         @GetMapping("/search")
         public ApiResponse<Map<String, List<ItemSearchResponse>>> searchItems(
-                        @RequestParam String keyword) {
+                        @RequestParam String keyword, Authentication authentication) {
+                Integer userId = Integer.parseInt(authentication.getName());
                 if (keyword == null || keyword.trim().isEmpty()) {
                         return ApiResponse.validationError(
                                         "検索キーワードを入力してください。",
@@ -63,7 +64,7 @@ public class ItemController {
                                         food.getCal()));
                 }
 
-                List<CustomFood> customFoods = customFoodRepository.findByNameContaining(searchKeyword);
+                List<CustomFood> customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
 
                 for (CustomFood food : customFoods) {
                         items.add(new ItemSearchResponse(
@@ -125,7 +126,8 @@ public class ItemController {
 
         @GetMapping("/custom/search")
         public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
-                        @RequestParam String keyword) {
+                        @RequestParam String keyword, Authentication authentication) {
+                Integer userId = Integer.parseInt(authentication.getName());
                 if (keyword == null || keyword.trim().isEmpty()) {
                         return ApiResponse.validationError(
                                         "検索キーワードを入力してください。",
@@ -136,7 +138,7 @@ public class ItemController {
 
                 List<ItemSearchResponse> items = new ArrayList<>();
 
-                List<CustomFood> customFoods = customFoodRepository.findByNameContaining(searchKeyword);
+                List<CustomFood> customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
 
                 for (CustomFood food : customFoods) {
                         items.add(new ItemSearchResponse(

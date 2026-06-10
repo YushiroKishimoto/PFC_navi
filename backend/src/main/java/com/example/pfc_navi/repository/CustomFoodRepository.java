@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface CustomFoodRepository extends JpaRepository<CustomFood, Integer> {
 
-    List<CustomFood> findByNameContaining(String keyword);
+    List<CustomFood> findByNameContainingAndUserId(String keyword, Integer userId);
     Optional<CustomFood> findByIdAndUserId(Integer id, Integer userId);
 }
