@@ -114,6 +114,14 @@ export default function Dashboard() {
 
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
+  const handleDelete = (itemId) => {
+  setMeals((prev) =>
+    prev.map((meal) => ({
+      ...meal,
+      items: (meal.items ?? []).filter((item) => item.id !== itemId),
+    }))
+  );
+};
   return (
     <div className={styles.container}>
       {/* ヘッダー */}
@@ -270,6 +278,12 @@ export default function Dashboard() {
                         P:{safe(item.pro)} F:{safe(item.fat)} C:
                         {safe(item.car)}
                       </span>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        ✕
+                      </button>
                     </div>
                   ))
                 ) : (
