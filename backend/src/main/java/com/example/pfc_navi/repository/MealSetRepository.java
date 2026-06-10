@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface MealSetRepository extends JpaRepository<MealSet, Integer> {
     List<MealSet> findByUserId(Integer userId);
-    List<MealSet> findByNameContaining(String keyword);
+    List<MealSet> findByNameContainingAndUserId(String keyword, Integer userId);
     Optional<MealSet> findByIdAndUserId(Integer id, Integer userId);
 }

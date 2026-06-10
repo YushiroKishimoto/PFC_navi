@@ -93,10 +93,10 @@ public class SetService {
                 updatedSet.getTotalCar());
     }
 
-    public List<SetSearchResponse> searchSets(String keyword) {
+    public List<SetSearchResponse> searchSets(String keyword, Integer userId) {
         String searchKeyword = keyword == null ? "" : keyword.trim();
 
-        List<MealSet> mealSets = mealSetRepository.findByNameContaining(searchKeyword);
+        List<MealSet> mealSets = mealSetRepository.findByNameContainingAndUserId(searchKeyword, userId);
 
         List<SetSearchResponse> responses = new ArrayList<>();
 
@@ -133,12 +133,12 @@ public class SetService {
         return responses;
     }
 
-    public SetSearchResponse getSetDetail(Integer id) {
+    public SetSearchResponse getSetDetail(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         List<MealSetItem> mealSetItems = mealSetItemRepository.findBySetFoodId(mealSet.getId());
@@ -306,7 +306,7 @@ public class SetService {
 
         mealSetRepository.save(mealSet);
 
-        return getSetDetail(id);
+        return getSetDetail(id, userId);
     }
 
     @Transactional
