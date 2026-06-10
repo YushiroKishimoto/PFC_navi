@@ -24,7 +24,7 @@ export default function Set() {
         const res = await searchItems(search);
         const resultItems = res?.data?.items ?? [];
 
-        setItems(resultItems.slice(0, 5));
+        setItems(resultItems);
 
         // if (resultItems.length === 0) {
         //   setMessage("該当するセットがありません");
