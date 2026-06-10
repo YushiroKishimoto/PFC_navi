@@ -46,10 +46,10 @@
 
   /* 背景（テーマカラー） */
   background: linear-gradient(
-    180deg,
-    #C5E99B 0%,
-    #8CD790 100%
-  );
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
 
   /* ズレ防止のため重要 */
   transition: margin-left 0.2s ease;

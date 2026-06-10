@@ -1,5 +1,10 @@
 .container {
   padding: 20px;
+ background: linear-gradient(
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
 }
 
 .input {

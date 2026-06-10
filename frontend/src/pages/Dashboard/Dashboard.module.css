@@ -15,7 +15,11 @@
   overflow: hidden;
 
   padding: 10px;
-  background: #f5f5f5;
+  background: linear-gradient(
+  180deg,
+  #f7f9f7 0%,
+  #eef4ee 100%
+);
 }
 
 /* =========================
