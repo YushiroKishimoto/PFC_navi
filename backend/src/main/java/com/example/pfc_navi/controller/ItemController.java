@@ -125,35 +125,15 @@ public class ItemController {
         }
 
         @GetMapping("/custom/search")
-        public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
-                        @RequestParam String keyword, Authentication authentication) {
-                Integer userId = Integer.parseInt(authentication.getName());
-                if (keyword == null || keyword.trim().isEmpty()) {
-                        return ApiResponse.validationError(
-                                        "検索キーワードを入力してください。",
-                                        Map.of("items", List.of()));
-                }
+public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
+        @RequestParam(required = false, defaultValue = "") String keyword,
+        Authentication authentication) {
 
-                String searchKeyword = keyword.trim();
+    Integer userId = Integer.parseInt(authentication.getName());
 
-                List<ItemSearchResponse> items = new ArrayList<>();
-
-                List<CustomFood> customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
-
-                for (CustomFood food : customFoods) {
-                        items.add(new ItemSearchResponse(
-                                        "custom",
-                                        food.getId(),
-                                        food.getName(),
-                                        food.getAmount(),
-                                        food.getPro(),
-                                        food.getFat(),
-                                        food.getCar(),
-                                        food.getCal()));
-                }
-
-                return ApiResponse.success(
-                                "自前食材・料理の検索完了",
-                                Map.of("items", items));
-        }
+    return ApiResponse.success(
+            "自前食材・料理の検索完了",
+            Map.of("items", itemService.searchCustomItems(keyword, userId))
+    );
+}
 }

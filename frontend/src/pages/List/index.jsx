@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import styles from "./List.module.css";
 
 import {
@@ -25,6 +25,33 @@ export default function List() {
 
   const [message, setMessage] = useState("");
 
+  // =====================
+  // 初期表示：上から5件取得
+  // =====================
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadInitialData = async () => {
+    setMessage("");
+
+    try {
+      const [itemRes, setRes] = await Promise.all([
+        searchCustomItems(""),
+        getSetitem(""),
+      ]);
+
+      const resultItems = itemRes?.data?.items ?? [];
+      const resultSets = setRes?.data?.sets ?? [];
+
+      setItems(resultItems.slice(0, 5));
+      setSets(resultSets.slice(0, 5));
+    } catch (e) {
+      console.error(e);
+      setMessage("初期データの取得に失敗しました");
+    }
+  };
+
   const filteredItems = useMemo(() => {
     return items.filter((i) => {
       if (!search.trim()) return true;
@@ -44,17 +71,12 @@ export default function List() {
     setEditItemId(null);
     setEditSetId(null);
 
-    if (!search.trim()) {
-      setMessage("検索キーワードを入力してください");
-      return;
-    }
-
     if (tab === "item") {
       try {
-        const res = await searchCustomItems(search);
+        const res = await searchCustomItems(search.trim());
         const resultItems = res?.data?.items ?? [];
 
-        setItems(resultItems);
+        setItems(resultItems.slice(0, 5));
 
         if (resultItems.length === 0) {
           setMessage("該当する食材・料理がありません");
@@ -67,10 +89,10 @@ export default function List() {
 
     if (tab === "set") {
       try {
-        const res = await getSetitem(search);
+        const res = await getSetitem(search.trim());
         const resultSets = res?.data?.sets ?? [];
 
-        setSets(resultSets);
+        setSets(resultSets.slice(0, 5));
 
         if (resultSets.length === 0) {
           setMessage("該当するセットがありません");
@@ -439,9 +461,7 @@ export default function List() {
               <div className={styles.setItemList}>
                 {(set.items ?? []).map((item) => (
                   <div key={item.id} className={styles.setItemRow}>
-                    <div className={styles.foodNameCell}>
-                      {item.name}
-                    </div>
+                    <div className={styles.foodNameCell}>{item.name}</div>
 
                     <div className={styles.inputWithUnit}>
                       <input

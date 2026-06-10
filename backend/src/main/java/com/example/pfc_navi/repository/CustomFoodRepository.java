@@ -10,4 +10,7 @@ public interface CustomFoodRepository extends JpaRepository<CustomFood, Integer>
 
     List<CustomFood> findByNameContainingAndUserId(String keyword, Integer userId);
     Optional<CustomFood> findByIdAndUserId(Integer id, Integer userId);
+
+    List<CustomFood> findTop5ByUserIdOrderByIdDesc(Integer userId);
+    
 }

@@ -94,11 +94,17 @@ public class SetService {
     }
 
     public List<SetSearchResponse> searchSets(String keyword, Integer userId) {
-        String searchKeyword = keyword == null ? "" : keyword.trim();
+    String searchKeyword = keyword == null ? "" : keyword.trim();
 
-        List<MealSet> mealSets = mealSetRepository.findByNameContainingAndUserId(searchKeyword, userId);
+    List<MealSet> mealSets;
 
-        List<SetSearchResponse> responses = new ArrayList<>();
+    if (searchKeyword.isEmpty()) {
+        mealSets = mealSetRepository.findTop5ByUserIdOrderByIdDesc(userId);
+    } else {
+        mealSets = mealSetRepository.findByNameContainingAndUserId(searchKeyword, userId);
+    }
+
+    List<SetSearchResponse> responses = new ArrayList<>();
 
         for (MealSet mealSet : mealSets) {
             List<MealSetItem> mealSetItems = mealSetItemRepository.findBySetFoodId(mealSet.getId());
