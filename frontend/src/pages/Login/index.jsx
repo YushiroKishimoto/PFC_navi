@@ -13,19 +13,25 @@ export default function Login() {
   const handleLogin = async () => {
     setError("");
 
+  try {
     const res = await login(loginId, password);
 
+    console.log("LOGIN RESPONSE =", res);
+
     if (res?.resultCode === "SUCCESS") {
-      if (res?.needsOnboarding) {
-        navigate("/onboarding");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
       return;
     }
 
-    setError(res?.message || "ログイン失敗");
-  };
+    // ★全部まとめる
+    setError("ログインに失敗しました");
+
+  } catch (e) {
+    console.error(e);
+
+    setError("ログインに失敗しました");
+  }
+};
 
   const handleRegister = () => {
     navigate("/user");
@@ -52,13 +58,6 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        {error && (
-          <div style={{ color: "red", fontSize: 12 }}>
-            {error}
-          </div>
-        )}
-
         <button className={styles.loginButton} onClick={handleLogin}>
           ログイン
         </button>
@@ -66,7 +65,7 @@ export default function Login() {
         <button className={styles.registerButton} onClick={handleRegister}>
           新規登録
         </button>
-
+        <p>{error}</p>
       </div>
     </div>
   );

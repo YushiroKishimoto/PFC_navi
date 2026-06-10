@@ -46,7 +46,13 @@ export default function Register() {
         <button className={styles.buttonPrimary} onClick={handleRegister}>
           登録
         </button>
-
+              <button
+                className={styles.backButton}
+                onClick={() => {navigate(`/login`);
+                }}
+              >
+                ログイン画面に戻る
+              </button>
         <p>{message}</p>
       </div>
     </div>
