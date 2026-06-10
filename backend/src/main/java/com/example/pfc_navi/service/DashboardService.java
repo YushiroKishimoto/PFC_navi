@@ -54,10 +54,10 @@ public class DashboardService {
         int diffCal = targetCal - actualCal;
 
         // 達成度スコア（60点満点）
-        double calScore = calcNutrientScore(actualCal, targetCal, 30);
-        double proScore = calcNutrientScore(actualPro, targetPro, 30);
-        double fatScore = calcNutrientScore(actualFat, targetFat, 20);
-        double carScore = calcNutrientScore(actualCar, targetCar, 20);
+        double calScore = calcNutrientScore(actualCal, targetCal, 20);
+        double proScore = calcNutrientScore(actualPro, targetPro, 20);
+        double fatScore = calcNutrientScore(actualFat, targetFat, 10);
+        double carScore = calcNutrientScore(actualCar, targetCar, 10);
         double achievementScore = calScore + proScore + fatScore + carScore;
 
         // バランススコア（40点満点）
