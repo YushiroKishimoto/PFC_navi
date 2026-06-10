@@ -11,6 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.pfc_navi.dto.CustomItemResponse;
 import com.example.pfc_navi.dto.CustomItemUpdateRequest;
 
+import com.example.pfc_navi.dto.ItemSearchResponse;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ItemService {
 
@@ -88,6 +92,35 @@ public class ItemService {
                 saved.getCal()
         );
     }
+
+    public List<ItemSearchResponse> searchCustomItems(String keyword, Integer userId) {
+    String searchKeyword = keyword == null ? "" : keyword.trim();
+
+    List<CustomFood> customFoods;
+
+    if (searchKeyword.isEmpty()) {
+        customFoods = customFoodRepository.findTop5ByUserIdOrderByIdDesc(userId);
+    } else {
+        customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
+    }
+
+    List<ItemSearchResponse> items = new ArrayList<>();
+
+    for (CustomFood food : customFoods) {
+        items.add(new ItemSearchResponse(
+                "custom",
+                food.getId(),
+                food.getName(),
+                food.getAmount(),
+                food.getPro(),
+                food.getFat(),
+                food.getCar(),
+                food.getCal()
+        ));
+    }
+
+    return items;
+}
 
 
     private void validateRequest(CustomItemRequest request) {

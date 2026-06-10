@@ -29,19 +29,15 @@ public class SetController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<?> searchSets(
-            @RequestParam String keyword, Authentication authentication) {
-        Integer userId = Integer.parseInt(authentication.getName());
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return ApiResponse.validationError(
-                    "検索キーワードを入力してください。",
-                    Map.of("sets", java.util.List.of()));
-        }
+public ApiResponse<?> searchSets(
+        @RequestParam(required = false, defaultValue = "") String keyword,
+        Authentication authentication) {
+    Integer userId = Integer.parseInt(authentication.getName());
 
-        return ApiResponse.success(
-                "セット検索完了",
-                Map.of("sets", setService.searchSets(keyword, userId)));
-    }
+    return ApiResponse.success(
+            "セット検索完了",
+            Map.of("sets", setService.searchSets(keyword, userId)));
+}
 
     @GetMapping("/{id}")
     public ApiResponse<?> getSetDetail(@PathVariable Integer id, Authentication authentication) {
