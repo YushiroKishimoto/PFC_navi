@@ -2,39 +2,39 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../api/auth";
 import styles from "./User.module.css";
-
+ 
 export default function Register() {
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
+ 
   const navigate = useNavigate();
-
+ 
   const handleRegister = async () => {
     try {
       const res = await register(loginId, password);
       setMessage(res.message);
-
+ 
       if (res?.message === "ユーザー登録が完了しました") {
-        navigate("/onboarding");
+        navigate("/login");
       }
     } catch (e) {
       setMessage("登録失敗");
     }
   };
-
+ 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>ユーザー登録</h2>
-
+<div className={styles.container}>
+<h2 className={styles.title}>ユーザー登録</h2>
+ 
       <div className={styles.form}>
-        <input
+<input
           className={styles.input}
           placeholder="loginId"
           value={loginId}
           onChange={(e) => setLoginId(e.target.value)}
         />
-
+ 
         <input
           className={styles.input}
           type="password"
@@ -42,19 +42,13 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
+ 
         <button className={styles.buttonPrimary} onClick={handleRegister}>
           登録
-        </button>
-              <button
-                className={styles.backButton}
-                onClick={() => {navigate(`/login`);
-                }}
-              >
-                ログイン画面に戻る
-              </button>
+</button>
+ 
         <p>{message}</p>
-      </div>
-    </div>
+</div>
+</div>
   );
 }
