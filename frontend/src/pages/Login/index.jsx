@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import { login } from "../../api/auth"; // ← パスは環境に合わせて調整
+import { login } from "../../api/auth";
 
 export default function Login() {
   const [loginId, setLoginId] = useState("");
@@ -10,8 +10,8 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-const handleLogin = async () => {
-  setError("");
+  const handleLogin = async () => {
+    setError("");
 
   try {
     const res = await login(loginId, password);

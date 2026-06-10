@@ -5,11 +5,11 @@ import com.example.pfc_navi.dto.CustomItemRequest;
 import com.example.pfc_navi.entity.CustomFood;
 import com.example.pfc_navi.entity.User;
 import com.example.pfc_navi.repository.CustomFoodRepository;
+import com.example.pfc_navi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.pfc_navi.dto.CustomItemResponse;
 import com.example.pfc_navi.dto.CustomItemUpdateRequest;
-import com.example.pfc_navi.repository.UserRepository;
 
 @Service
 public class ItemService {
@@ -47,26 +47,26 @@ public class ItemService {
     }
 
     @Transactional
-    public void deleteCustomItem(Integer id) {
+    public void deleteCustomItem(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        CustomFood customFood = customFoodRepository.findById(id)
+        CustomFood customFood = customFoodRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象の自前食材・料理が存在しません。"));
 
         customFoodRepository.delete(customFood);
     }
 
     @Transactional
-    public CustomItemResponse updateCustomItem(Integer id, CustomItemUpdateRequest request) {
+    public CustomItemResponse updateCustomItem(Integer id, CustomItemUpdateRequest request, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
         validateUpdateRequest(request);
 
-        CustomFood customFood = customFoodRepository.findById(id)
+        CustomFood customFood = customFoodRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象の自前食材・料理が存在しません。"));
 
         customFood.setName(request.getName());

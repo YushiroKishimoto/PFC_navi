@@ -5,6 +5,7 @@ import com.example.pfc_navi.dto.SetRegisterRequest;
 import com.example.pfc_navi.dto.SetUpdateRequest;
 import com.example.pfc_navi.service.SetService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.Map;
 
@@ -18,9 +19,10 @@ public class SetController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<?> registerSet(@RequestBody SetRegisterRequest request) {
+    public ApiResponse<?> registerSet(@RequestBody SetRegisterRequest request, Authentication authentication) {
         try {
-            return ApiResponse.success("セットを登録しました。", setService.registerSet(request));
+            Integer userId = Integer.parseInt(authentication.getName());
+            return ApiResponse.success("セットを登録しました。", setService.registerSet(request, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
@@ -28,7 +30,8 @@ public class SetController {
 
     @GetMapping("/search")
     public ApiResponse<?> searchSets(
-            @RequestParam String keyword) {
+            @RequestParam String keyword, Authentication authentication) {
+        Integer userId = Integer.parseInt(authentication.getName());
         if (keyword == null || keyword.trim().isEmpty()) {
             return ApiResponse.validationError(
                     "検索キーワードを入力してください。",
@@ -37,15 +40,16 @@ public class SetController {
 
         return ApiResponse.success(
                 "セット検索完了",
-                Map.of("sets", setService.searchSets(keyword)));
+                Map.of("sets", setService.searchSets(keyword, userId)));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<?> getSetDetail(@PathVariable Integer id) {
+    public ApiResponse<?> getSetDetail(@PathVariable Integer id, Authentication authentication) {
         try {
+            Integer userId = Integer.parseInt(authentication.getName());
             return ApiResponse.success(
                     "セット詳細取得成功",
-                    setService.getSetDetail(id));
+                    setService.getSetDetail(id, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
@@ -54,20 +58,23 @@ public class SetController {
     @PutMapping("/{id}")
     public ApiResponse<?> updateSet(
             @PathVariable Integer id,
-            @RequestBody SetUpdateRequest request) {
+            @RequestBody SetUpdateRequest request,
+            Authentication authentication) {
         try {
+            Integer userId = Integer.parseInt(authentication.getName());
             return ApiResponse.success(
                     "セットを更新しました。",
-                    setService.updateSet(id, request));
+                    setService.updateSet(id, request, userId));
         } catch (IllegalArgumentException e) {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<?> deleteSet(@PathVariable Integer id) {
+    public ApiResponse<?> deleteSet(@PathVariable Integer id, Authentication authentication) {
         try {
-            setService.deleteSet(id);
+            Integer userId = Integer.parseInt(authentication.getName());
+            setService.deleteSet(id, userId);
 
             return ApiResponse.success(
                     "セットを削除しました。",

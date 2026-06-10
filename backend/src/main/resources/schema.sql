@@ -17,7 +17,7 @@ CREATE TABLE users (
     weight NUMERIC NOT NULL CHECK (weight >= 0),
     burn_cal NUMERIC NOT NULL CHECK (burn_cal >= 0),
     target_cal INTEGER NOT NULL CHECK (target_cal >= 0),
-    pfc_course INTEGER NOT NULL CHECK (pfc_course >= 0),
+    pfc_course INTEGER NOT NULL CHECK (pfc_course >= 0)
 );
 
 -- default_foods
@@ -40,7 +40,7 @@ CREATE TABLE custom_foods (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     login_id VARCHAR(20) NOT NULL,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(1000) NOT NULL,
     amount INTEGER NOT NULL CHECK (amount >= 0),
     pro INTEGER NOT NULL CHECK (pro >= 0),
     fat INTEGER NOT NULL CHECK (fat >= 0),
@@ -52,7 +52,19 @@ CREATE TABLE custom_foods (
 -- set_foods
 -- 食事セット
 
-CREATE TABLE set_foods (
+--CREATE TABLE set_foods (
+--    id SERIAL PRIMARY KEY,
+--    user_id INTEGER NOT NULL,
+--    login_id VARCHAR(20) NOT NULL,
+--    name VARCHAR(50) NOT NULL,
+--    total_pro INTEGER NOT NULL CHECK (total_pro >= 0),
+--    total_fat INTEGER NOT NULL CHECK (total_fat >= 0),
+--    total_car INTEGER NOT NULL CHECK (total_car >= 0),
+--    total_cal INTEGER NOT NULL CHECK (total_cal >= 0),
+--    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+--);
+
+CREATE TABLE meal_sets (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     login_id VARCHAR(20) NOT NULL,
@@ -68,7 +80,7 @@ CREATE TABLE set_foods (
 -- 食事セットの明細
 -- default_foods / custom_foods のどちらかを item_type で判別
 
-CREATE TABLE set_items (
+CREATE TABLE meal_set_items (
     id SERIAL PRIMARY KEY,
     set_food_id INTEGER NOT NULL,
     item_type VARCHAR(50) NOT NULL,
@@ -80,12 +92,25 @@ CREATE TABLE set_items (
     cal INTEGER NOT NULL CHECK (cal >= 0)
 );
 
+--CREATE TABLE set_items (
+--    id SERIAL PRIMARY KEY,
+--    set_food_id INTEGER NOT NULL,
+--    item_type VARCHAR(50) NOT NULL,
+--    item_id INTEGER NOT NULL,
+--    amount INTEGER NOT NULL CHECK (amount >= 0),
+--    pro INTEGER NOT NULL CHECK (pro >= 0),
+--    fat INTEGER NOT NULL CHECK (fat >= 0),
+--    car INTEGER NOT NULL CHECK (car >= 0),
+--    cal INTEGER NOT NULL CHECK (cal >= 0)
+--);
+
 -- meal_records
 -- 食事記録
 CREATE TABLE meal_records (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     login_id VARCHAR(20) NOT NULL,
+    record_date DATE NOT NULL,
     meal_type VARCHAR(50) NOT NULL,
     total_pro INTEGER NOT NULL CHECK (total_pro >= 0),
     total_fat INTEGER NOT NULL CHECK (total_fat >= 0),
@@ -108,4 +133,8 @@ CREATE TABLE meal_record_items (
     fat INTEGER NOT NULL CHECK (fat >= 0),
     car INTEGER NOT NULL CHECK (car >= 0),
     cal INTEGER NOT NULL CHECK (cal >= 0)
+    CONSTRAINT fk_meal_record_items_meal_record
+    FOREIGN KEY (meal_record_id)
+    REFERENCES meal_records(id)
+    ON DELETE CASCADE
 )

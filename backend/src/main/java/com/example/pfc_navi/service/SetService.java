@@ -7,10 +7,12 @@ import com.example.pfc_navi.entity.CustomFood;
 import com.example.pfc_navi.entity.DefaultFood;
 import com.example.pfc_navi.entity.MealSet;
 import com.example.pfc_navi.entity.MealSetItem;
+import com.example.pfc_navi.entity.User;
 import com.example.pfc_navi.repository.CustomFoodRepository;
 import com.example.pfc_navi.repository.DefaultFoodRepository;
 import com.example.pfc_navi.repository.MealSetItemRepository;
 import com.example.pfc_navi.repository.MealSetRepository;
+import com.example.pfc_navi.repository.UserRepository;
 import com.example.pfc_navi.dto.SetSearchItemResponse;
 import com.example.pfc_navi.dto.SetSearchResponse;
 import com.example.pfc_navi.dto.SetUpdateItemRequest;
@@ -27,29 +29,31 @@ public class SetService {
     private final MealSetItemRepository mealSetItemRepository;
     private final DefaultFoodRepository defaultFoodRepository;
     private final CustomFoodRepository customFoodRepository;
+    private final UserRepository userRepository;
 
     public SetService(
             MealSetRepository mealSetRepository,
             MealSetItemRepository mealSetItemRepository,
             DefaultFoodRepository defaultFoodRepository,
-            CustomFoodRepository customFoodRepository) {
+            CustomFoodRepository customFoodRepository,
+            UserRepository userRepository) {
         this.mealSetRepository = mealSetRepository;
         this.mealSetItemRepository = mealSetItemRepository;
         this.defaultFoodRepository = defaultFoodRepository;
         this.customFoodRepository = customFoodRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public SetRegisterResponse registerSet(SetRegisterRequest request) {
+    public SetRegisterResponse registerSet(SetRegisterRequest request, Integer userId) {
         validateRequest(request);
 
-        // TODO: Cookie認証完成後にログイン中ユーザー情報へ変更
-        Integer userId = 1;
-        String loginId = "test";
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません"));
 
         MealSet mealSet = new MealSet();
         mealSet.setUserId(userId);
-        mealSet.setLoginId(loginId);
+        mealSet.setLoginId(user.getLoginId());
         mealSet.setName(request.getName());
         mealSet.setTotalCal(0);
         mealSet.setTotalPro(0);
@@ -89,10 +93,10 @@ public class SetService {
                 updatedSet.getTotalCar());
     }
 
-    public List<SetSearchResponse> searchSets(String keyword) {
+    public List<SetSearchResponse> searchSets(String keyword, Integer userId) {
         String searchKeyword = keyword == null ? "" : keyword.trim();
 
-        List<MealSet> mealSets = mealSetRepository.findByNameContaining(searchKeyword);
+        List<MealSet> mealSets = mealSetRepository.findByNameContainingAndUserId(searchKeyword, userId);
 
         List<SetSearchResponse> responses = new ArrayList<>();
 
@@ -129,12 +133,12 @@ public class SetService {
         return responses;
     }
 
-    public SetSearchResponse getSetDetail(Integer id) {
+    public SetSearchResponse getSetDetail(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         List<MealSetItem> mealSetItems = mealSetItemRepository.findBySetFoodId(mealSet.getId());
@@ -261,14 +265,14 @@ public class SetService {
     }
 
     @Transactional
-    public SetSearchResponse updateSet(Integer id, SetUpdateRequest request) {
+    public SetSearchResponse updateSet(Integer id, SetUpdateRequest request, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
         validateUpdateRequest(request);
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         mealSetItemRepository.deleteBySetFoodId(id);
@@ -302,16 +306,16 @@ public class SetService {
 
         mealSetRepository.save(mealSet);
 
-        return getSetDetail(id);
+        return getSetDetail(id, userId);
     }
 
     @Transactional
-    public void deleteSet(Integer id) {
+    public void deleteSet(Integer id, Integer userId) {
         if (id == null) {
             throw new IllegalArgumentException("idは必須です。");
         }
 
-        MealSet mealSet = mealSetRepository.findById(id)
+        MealSet mealSet = mealSetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new IllegalArgumentException("対象のセットが存在しません。"));
 
         mealSetItemRepository.deleteBySetFoodId(id);

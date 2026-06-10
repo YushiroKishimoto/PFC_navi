@@ -3,7 +3,7 @@ package com.example.pfc_navi.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "set_items")
+@Table(name = "meal_set_items")
 public class SetItem {
 
     @Id
