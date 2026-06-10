@@ -1,11 +1,15 @@
+import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
-import { Link } from "react-router-dom";
 
 export default function Sidebar({ open, setOpen }) {
-  return (
-    <div className={styles.sidebar}>
+  const location = useLocation();
 
-      {/* 上部 */}
+  const isActive = (path) => location.pathname === path;
+
+  return (
+    <div className={`${styles.sidebar} ${open ? styles.open : styles.closed}`}>
+
+      {/* トップ */}
       <div className={styles.top}>
         <button
           className={styles.hamburger}
@@ -14,38 +18,45 @@ export default function Sidebar({ open, setOpen }) {
           ☰
         </button>
 
-        {open && <span className={styles.title}>MENU</span>}
+        {open && <div className={styles.title}>PFC App</div>}
       </div>
 
+      {/* WORKSPACE */}
+      <div className={styles.sectionTitle}>WORKSPACE</div>
 
-      {/* メニュー */}
-      <div className={styles.menu}>
+      <Link to="/" className={`${styles.item} ${isActive("/") ? styles.active : ""}`}>
+        <span>🏠</span>
+        {open && <span>ダッシュボード</span>}
+      </Link>
 
-        <Link to="/" className={styles.item}>
-          <span>🏠</span>
-          {open && <span>ダッシュボード</span>}
-        </Link>
+      {/* FOOD */}
+      <div className={styles.sectionTitle}>FOOD</div>
 
-        <Link to="/items" className={styles.item}>
-          <span>🍱</span>
-          {open && <span>食材・料理の登録</span>}
-        </Link>
+      <Link to="/items" className={`${styles.item} ${isActive("/items") ? styles.active : ""}`}>
+        <span>🍱</span>
+        {open && <span>食材・料理</span>}
+      </Link>
 
-        <Link to="/set" className={styles.item}>
-          <span>📦</span>
-          {open && <span>セット登録</span>}
-        </Link>
+      <Link to="/set" className={`${styles.item} ${isActive("/set") ? styles.active : ""}`}>
+        <span>📦</span>
+        {open && <span>セット登録</span>}
+      </Link>
 
-        <Link to="/profile" className={styles.item}>
-          <span>👤</span>
-          {open && <span>プロフィール</span>}
-        </Link>        
+      {/* USER */}
+      <div className={styles.sectionTitle}>USER</div>
 
-        <Link to="/list" className={styles.item}>
-          <span>📚</span>
-          {open && <span>登録一覧</span>}
-        </Link>        
-      </div>
+      <Link to="/profile" className={`${styles.item} ${isActive("/profile") ? styles.active : ""}`}>
+        <span>👤</span>
+        {open && <span>プロフィール</span>}
+      </Link>
+
+      {/* DATA */}
+      <div className={styles.sectionTitle}>DATA</div>
+
+      <Link to="/list" className={`${styles.item} ${isActive("/list") ? styles.active : ""}`}>
+        <span>📚</span>
+        {open && <span>登録一覧</span>}
+      </Link>
 
     </div>
   );
