@@ -1,56 +1,111 @@
 .container {
-  padding: 20px;
- background: linear-gradient(
-  180deg,
-  #f7f9f7 0%,
-  #eef4ee 100%
-);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
 }
 
-.input {
-  width: 100%;
-  padding: 8px;
-  margin: 6px 0;
-}
+/* 左右 */
+.left,
+.right {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
 
-.searchList {
-  margin-top: 10px;
-}
-
-.searchItem {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px;
-  border-bottom: 1px solid #ddd;
-}
-
-.table {
-  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+
+  min-height: 0;
+  overflow: hidden;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 6px;
+/* =========================
+   検索結果（ここが重要）
+========================= */
+.searchList {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 4px;
+}
+
+/* カード */
+.card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fafafa;
+
+  margin-bottom: 8px;
+}
+
+/* ヘッダー */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.total {
-  margin-top: 16px;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+/* 名前 */
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.button {
-  margin-top: 16px;
+/* 追加ボタン */
+.addButton {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #77AF9C;
+  color: white;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background: #8CD790;
+}
+
+/* 栄養 */
+.nutritionRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 右側リスト */
+.table {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* 合計 */
+.total {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* 登録ボタン */
+.Button {
+  margin-top: 10px;
   width: 100%;
   padding: 10px;
-  background: #4caf50;
-  color: white;
+  border-radius: 999px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  background: #77AF9C;
+  color: white;
+  font-weight: bold;
+}
+
+.Button:hover {
+  background: #8CD790;
 }
