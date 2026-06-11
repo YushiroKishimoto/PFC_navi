@@ -12,19 +12,25 @@ export default function Login() {
  
   const handleLogin = async () => {
     setError("");
- 
-    const res = await login(loginId, password);
- 
-    if (res?.resultCode === "SUCCESS") {
-      if (res?.needsOnboarding) {
-        navigate("/onboarding");
-      } else {
-        navigate("/");
+
+    try {
+      const res = await login(loginId, password);
+
+      if (res?.resultCode === "SUCCESS") {
+        if (res?.needsOnboarding) {
+          navigate("/onboarding");
+        } else {
+          navigate("/");
+        }
+        return;
       }
-      return;
+
+      setError(res?.message || "ログイン失敗");
+
+    } catch (e) {
+      const message = e.response?.data?.message || "ログインIDまたはパスワードが正しくありません";
+      setError(message);
     }
- 
-    setError(res?.message || "ログイン失敗");
   };
  
   const handleRegister = () => {
