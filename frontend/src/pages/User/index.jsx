@@ -53,8 +53,8 @@ export default function Register() {
                >
                  ログイン画面に戻る
                </button>
-        <p>{message}</p>
 </div>
+<p>{message}</p>
 </div>
   );
 }
