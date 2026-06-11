@@ -345,4 +345,50 @@ public class MealRecordService {
             }
         }
     }
+
+    @Transactional
+public NutritionTotalResponse deleteMealRecordItem(Integer itemId, Integer userId) {
+    if (itemId == null) {
+        throw new IllegalArgumentException("itemIdは必須です。");
+    }
+
+    MealRecordItem targetItem = mealRecordItemRepository.findById(itemId)
+            .orElseThrow(() -> new IllegalArgumentException("対象の記録明細が存在しません。"));
+
+    MealRecord mealRecord = mealRecordRepository.findByIdAndUserId(targetItem.getMealRecordId(), userId)
+            .orElseThrow(() -> new IllegalArgumentException("対象の食事記録が存在しません。"));
+
+    LocalDate recordDate = mealRecord.getRecordDate();
+    Integer mealRecordId = mealRecord.getId();
+
+    mealRecordItemRepository.delete(targetItem);
+
+    List<MealRecordItem> remainingItems = mealRecordItemRepository.findByMealRecordId(mealRecordId);
+
+    if (remainingItems.isEmpty()) {
+        mealRecordRepository.delete(mealRecord);
+        return calculateDailyTotal(userId, recordDate);
+    }
+
+    int totalCal = 0;
+    int totalPro = 0;
+    int totalFat = 0;
+    int totalCar = 0;
+
+    for (MealRecordItem item : remainingItems) {
+        totalCal += item.getCal();
+        totalPro += item.getPro();
+        totalFat += item.getFat();
+        totalCar += item.getCar();
+    }
+
+    mealRecord.setTotalCal(totalCal);
+    mealRecord.setTotalPro(totalPro);
+    mealRecord.setTotalFat(totalFat);
+    mealRecord.setTotalCar(totalCar);
+
+    mealRecordRepository.save(mealRecord);
+
+    return calculateDailyTotal(userId, recordDate);
+}
 }
