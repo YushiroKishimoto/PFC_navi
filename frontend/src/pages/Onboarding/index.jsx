@@ -19,6 +19,13 @@ export default function Onboarding() {
     // targetCal: "",
     pfcCourse: "",
   });
+  const ACTIVITY_OPTIONS = [
+    { value: 1, label: "ほとんど運動しない（週1回以下）" },
+    { value: 2, label: "軽い運動（週1〜2回）" },
+    { value: 3, label: "適度な運動（週3〜4回）" },
+    { value: 4, label: "活発な運動（週5〜6回）" },
+    { value: 5, label: "かなり活発（ほぼ毎日）" },
+  ];
 
   const [isExist, setIsExist] = useState(false);
   const [message, setMessage] = useState("");
@@ -122,7 +129,7 @@ export default function Onboarding() {
           value={form.weight}
         />
 
-        {/* 活動回数（選択） */}
+        {/* 活動レベル（選択） */}
         <select
           name="burnCal"
           className={styles.input}
@@ -130,11 +137,11 @@ export default function Onboarding() {
           value={form.burnCal}
         >
           <option value="" disabled hidden>
-            活動回数を選択
+            活動レベルを選択
           </option>
-          {[1,2,3,4,5].map((n) => (
-            <option key={n} value={n}>
-              {n}回/週
+          {ACTIVITY_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </select>
