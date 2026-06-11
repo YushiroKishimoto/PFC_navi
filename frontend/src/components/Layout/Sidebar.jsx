@@ -54,7 +54,12 @@ export default function Sidebar({ open, setOpen }) {
         <span>📚</span>
         {open && <span>登録一覧</span>}
       </Link>
-
+      {/* 下部：ログアウト */}
+      <div className={styles.bottom}>
+        <button className={styles.logoutButton}>
+          {open && "ログアウト"}
+        </button>
+      </div>
     </div>
   );
 }

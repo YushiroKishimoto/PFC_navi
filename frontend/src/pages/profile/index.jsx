@@ -153,14 +153,6 @@ export default function Onboarding() {
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           更新
         </button>
-
-        <button
-          className={styles.logoutButton}
-          onClick={handleLogout}
-        >
-          ログアウト
-        </button>
-
         <p>{message}</p>
       </div>
     </div>
