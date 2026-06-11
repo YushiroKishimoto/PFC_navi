@@ -71,4 +71,19 @@ public class MealRecordController {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
     }
+
+    @DeleteMapping("/items/{itemId}")
+public ApiResponse<?> deleteMealRecordItem(
+        @PathVariable Integer itemId,
+        Principal principal) {
+    try {
+        Integer userId = Integer.parseInt(principal.getName());
+
+        return ApiResponse.success(
+                "食事記録明細を削除しました。",
+                mealRecordService.deleteMealRecordItem(itemId, userId));
+    } catch (IllegalArgumentException e) {
+        return ApiResponse.validationError(e.getMessage(), Map.of());
+    }
+}
 }

@@ -1,7 +1,7 @@
 import styles from "./Dashboard.module.css";
 import { useState, useEffect } from "react";
 import { getDashboard } from "../../api/dashboard";
-import { getMealRecords } from "../../api/mealRecord";
+import { getMealRecords, deleteMealRecordItem } from "../../api/mealRecord";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -114,13 +114,30 @@ export default function Dashboard() {
 
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
-  const handleDelete = (itemId) => {
-  setMeals((prev) =>
-    prev.map((meal) => ({
-      ...meal,
-      items: (meal.items ?? []).filter((item) => item.id !== itemId),
-    }))
-  );
+const handleDelete = async (itemId) => {
+  if (!window.confirm("この記録を削除しますか？")) {
+    return;
+  }
+
+  try {
+    const res = await deleteMealRecordItem(itemId);
+
+    if (res?.resultCode === "SUCCESS") {
+      setMeals((prev) =>
+        prev.map((meal) => ({
+          ...meal,
+          items: (meal.items ?? meal.mealItems ?? meal.foods ?? []).filter(
+            (item) => item.id !== itemId
+          ),
+        }))
+      );
+    } else {
+      alert(res?.message || "記録の削除に失敗しました");
+    }
+  } catch (e) {
+    console.error(e);
+    alert("記録の削除に失敗しました");
+  }
 };
   return (
     <div className={styles.container}>
@@ -154,27 +171,29 @@ export default function Dashboard() {
         <div className={styles.summaryCard}>
           <div className={styles.summaryMini}>
             <span>総カロリー</span>
-            <strong>{safe(dashboard?.actualCal)} kcal</strong>
+            <strong>
+              {safe(dashboard?.actualCal)} / {safe(dashboard?.targetCal)}kcal
+            </strong> 
           </div>
 
           <div className={styles.summaryMini}>
             <span>P</span>
             <strong>
-              {pfc.intake.p} / {pfc.target.p}
+              {pfc.intake.p} / {pfc.target.p} g
             </strong>
           </div>
 
           <div className={styles.summaryMini}>
             <span>F</span>
             <strong>
-              {pfc.intake.f} / {pfc.target.f}
+              {pfc.intake.f} / {pfc.target.f} g
             </strong>
           </div>
 
           <div className={styles.summaryMini}>
             <span>C</span>
             <strong>
-              {pfc.intake.c} / {pfc.target.c}
+              {pfc.intake.c} / {pfc.target.c} g
             </strong>
           </div>
         </div>
