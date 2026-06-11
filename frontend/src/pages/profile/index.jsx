@@ -154,8 +154,10 @@ export default function Onboarding() {
           更新
         </button>
 
-        {/* ★追加ここだけ */}
-        <button onClick={handleLogout}>
+        <button
+          className={styles.logoutButton}
+          onClick={handleLogout}
+        >
           ログアウト
         </button>
 

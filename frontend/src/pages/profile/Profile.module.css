@@ -82,3 +82,21 @@
 .buttonPrimary:active {
   transform: scale(0.98);
 }
+
+.logoutButton {
+  padding: 12px;
+  background: transparent;
+  color: #757575;
+
+  border: 1px solid #8CD790;
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.logoutButton:hover {
+  background: #C5E99B;
+  transform: scale(1.02);
+}
