@@ -69,12 +69,6 @@ export default function Onboarding() {
   };
 
   // ★追加（ここだけ新規）
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.clear();
-    navigate("/login");
-  };
-
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>3. ユーザー情報登録</h2>
@@ -153,14 +147,6 @@ export default function Onboarding() {
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           更新
         </button>
-
-        <button
-          className={styles.logoutButton}
-          onClick={handleLogout}
-        >
-          ログアウト
-        </button>
-
         <p>{message}</p>
       </div>
     </div>
