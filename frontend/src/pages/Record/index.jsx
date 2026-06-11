@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Record.module.css";
+
 import { createMealRecord } from "../../api/mealRecord";
 import { searchItems } from "../../api/item";
 import { getSetitem } from "../../api/set";
@@ -12,17 +13,27 @@ export default function Record() {
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
+  // =========================
+  // state
+  // =========================
+  const [tab, setTab] = useState("foodMeal");
+
   const [mealType, setMealType] = useState(mealTypeParam ?? "breakfast");
+
   const [foodSearch, setFoodSearch] = useState("");
   const [setSearch, setSetSearch] = useState("");
+
   const [foodResults, setFoodResults] = useState([]);
   const [setResults, setSetResults] = useState([]);
+
   const [selected, setSelected] = useState([]);
+
   const [recommendations, setRecommendations] = useState([]);
+
   const [message, setMessage] = useState("");
 
   // =========================
-  // レコメンド取得
+  // レコメンド
   // =========================
   useEffect(() => {
     getRecommendations(currentDate)
@@ -42,9 +53,8 @@ export default function Record() {
     try {
       const res = await searchItems(foodSearch);
       setFoodResults(res?.data?.items ?? []);
-    } catch (e) {
-      console.error("食材検索エラー:", e);
-      setMessage("食材検索に失敗しました");
+    } catch {
+      setMessage("食材検索失敗");
     }
   };
 
@@ -60,21 +70,20 @@ export default function Record() {
     try {
       const res = await getSetitem(setSearch);
       setSetResults(res?.data?.sets ?? []);
-    } catch (e) {
-      console.error("セット検索エラー:", e);
-      setMessage("セット検索に失敗しました");
+    } catch {
+      setMessage("セット検索失敗");
     }
   };
 
   // =========================
-  // 追加
+  // 追加処理
   // =========================
   const addFood = (item) => {
-    setSelected([
-      ...selected,
+    setSelected((prev) => [
+      ...prev,
       {
-        key: `${item.source}-${item.id}-${Date.now()}`,
-        source: item.source,
+        key: `food-${item.id}-${Date.now()}`,
+        source: "food",
         itemId: item.id,
         name: item.name,
         amount: item.amount,
@@ -87,8 +96,8 @@ export default function Record() {
   };
 
   const addSet = (set) => {
-    setSelected([
-      ...selected,
+    setSelected((prev) => [
+      ...prev,
       {
         key: `set-${set.id}-${Date.now()}`,
         source: "set",
@@ -104,11 +113,11 @@ export default function Record() {
   };
 
   const addRecommendation = (rec) => {
-    setSelected([
-      ...selected,
+    setSelected((prev) => [
+      ...prev,
       {
-        key: `set-${rec.id}-${Date.now()}`,
-        source: "set",
+        key: `rec-${rec.id}-${Date.now()}`,
+        source: "food",
         itemId: rec.id,
         name: rec.name,
         amount: 1,
@@ -121,7 +130,7 @@ export default function Record() {
   };
 
   const removeSelected = (key) => {
-    setSelected(selected.filter((item) => item.key !== key));
+    setSelected((prev) => prev.filter((i) => i.key !== key));
   };
 
   // =========================
@@ -143,18 +152,18 @@ export default function Record() {
   // =========================
   const handleSave = async () => {
     if (selected.length === 0) {
-      setMessage("記録する食材またはセットを追加してください");
+      setMessage("追加してください");
       return;
     }
 
     try {
       const payload = {
         recordDate: currentDate,
-        mealType: mealType,
-        items: selected.map((item) => ({
-          source: item.source,
-          itemId: item.itemId,
-          amount: item.amount,
+        mealType,
+        items: selected.map((i) => ({
+          source: i.source,
+          itemId: i.itemId,
+          amount: i.amount,
         })),
       };
 
@@ -163,14 +172,16 @@ export default function Record() {
       if (res?.resultCode === "SUCCESS") {
         navigate(`/${currentDate}`);
       } else {
-        setMessage(res?.message || "保存に失敗しました");
+        setMessage(res?.message || "保存失敗");
       }
-    } catch (e) {
-      console.error(e);
-      setMessage("保存に失敗しました");
+    } catch {
+      setMessage("保存失敗");
     }
   };
 
+  // =========================
+  // UI
+  // =========================
   return (
     <div className={styles.container}>
 
@@ -189,108 +200,136 @@ export default function Record() {
         </select>
       </div>
 
-      <div className={styles.grid}>
+      {/* タブ（2つだけ） */}
+      <div className={styles.tabs}>
+        <button
+          onClick={() => setTab("foodMeal")}
+          className={tab === "foodMeal" ? styles.activeTab : ""}
+        >
+          食材・食事
+        </button>
 
-        {/* 左 */}
-        <div className={styles.left}>
-          <h3>食材検索</h3>
-          <input
-            value={foodSearch}
-            onChange={(e) => setFoodSearch(e.target.value)}
-            placeholder="食材名を入力"
-          />
-          <button onClick={handleFoodSearch}>検索</button>
-
-          <div className={styles.list}>
-            {foodResults.map((item) => (
-              <div key={`${item.source}-${item.id}`} className={styles.item}>
-                <div>
-                  <span>{item.name}</span>
-                  <div>{item.source} / {item.amount}g / {item.cal}kcal</div>
-                  <div>P:{item.pro} F:{item.fat} C:{item.car}</div>
-                </div>
-                <button onClick={() => addFood(item)}>＋</button>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.selectedBox}>
-            <h4>追加した内容</h4>
-            {selected.map((item) => (
-              <div key={item.key}>
-                {item.name} / {item.amount}{item.source === "set" ? "セット" : "g"} / {item.cal}kcal
-                <button onClick={() => removeSelected(item.key)}>削除</button>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.total}>
-            合計 P:{total.pro} F:{total.fat} C:{total.car} / {total.cal}kcal
-          </div>
-        </div>
-
-        {/* 右 */}
-        <div className={styles.right}>
-          <h3>セット検索</h3>
-          <input
-            value={setSearch}
-            onChange={(e) => setSetSearch(e.target.value)}
-            placeholder="セット名を入力"
-          />
-          <button onClick={handleSetSearch}>検索</button>
-
-          <div className={styles.setList}>
-            {setResults.map((set) => (
-              <div key={set.id} className={styles.setCard}>
-                <div>{set.name}</div>
-                <div>{set.totalCal}kcal</div>
-                <div>P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}</div>
-                {set.items && set.items.length > 0 && (
-                  <div>
-                    {set.items.map((item) => (
-                      <div key={item.id}>・{item.name} {item.amount}g</div>
-                    ))}
-                  </div>
-                )}
-                <button onClick={() => addSet(set)}>追加</button>
-              </div>
-            ))}
-          </div>
-
-          {/* レコメンド */}
-          <h3>おすすめセット</h3>
-          <div className={styles.setList}>
-            {recommendations.length === 0 ? (
-              <div>おすすめはありません</div>
-            ) : (
-              recommendations.map((rec) => (
-                <div key={rec.id} className={styles.setCard}>
-                  <div>{rec.name}</div>
-                  <div>P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar}</div>
-                  <button onClick={() => addRecommendation(rec)}>追加</button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
+        <button
+          onClick={() => setTab("set")}
+          className={tab === "set" ? styles.activeTab : ""}
+        >
+          セット
+        </button>
       </div>
+
+      {/* =========================
+          食材・食事タブ
+      ========================= */}
+      {tab === "foodMeal" && (
+        <div className={styles.grid}>
+
+          {/* 左：食材 + レコメンド */}
+          <div className={styles.left}>
+            <h3>食材検索</h3>
+
+            <input
+              value={foodSearch}
+              onChange={(e) => setFoodSearch(e.target.value)}
+            />
+            <button onClick={handleFoodSearch}>検索</button>
+
+            <div className={styles.list}>
+              {foodResults.map((item) => (
+                <div key={item.id} className={styles.item}>
+                  <span>{item.name}</span>
+                  <button onClick={() => addFood(item)}>＋</button>
+                </div>
+              ))}
+            </div>
+
+            <h3>おすすめ</h3>
+            <div className={styles.list}>
+              {recommendations.map((rec) => (
+                <div key={rec.id} className={styles.item}>
+                  <span>{rec.name}</span>
+                  <button onClick={() => addRecommendation(rec)}>＋</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 右：選択 */}
+          <div className={styles.right}>
+            <h3>選択中</h3>
+
+            <div>
+              {selected.map((i) => (
+                <div key={i.key}>
+                  {i.name}
+                  <button onClick={() => removeSelected(i.key)}>削除</button>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              P:{total.pro} F:{total.fat} C:{total.car} / {total.cal}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================
+          セットタブ
+      ========================= */}
+      {tab === "set" && (
+        <div className={styles.grid}>
+
+          <div className={styles.left}>
+            <h3>セット検索</h3>
+
+            <input
+              value={setSearch}
+              onChange={(e) => setSetSearch(e.target.value)}
+            />
+            <button onClick={handleSetSearch}>検索</button>
+
+            <div className={styles.list}>
+              {setResults.map((set) => (
+                <div key={set.id} className={styles.item}>
+                  <span>{set.name}</span>
+                  <button onClick={() => addSet(set)}>＋</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.right}>
+            <h3>選択中</h3>
+
+            <div>
+              {selected.map((i) => (
+                <div key={i.key}>
+                  {i.name}
+                  <button onClick={() => removeSelected(i.key)}>削除</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      )}
 
       {/* フッター */}
       <div className={styles.footer}>
+        <button className={styles.saveButton} onClick={handleSave}>
+          保存
+        </button>
+
         <button className={styles.primary} onClick={() => navigate("/items")}>
           食材登録
         </button>
+
         <button className={styles.secondary} onClick={() => navigate("/set")}>
           セット登録
-        </button>
-        <button className={styles.saveButton} onClick={handleSave}>
-          保存
         </button>
       </div>
 
       {message && <p>{message}</p>}
-
     </div>
   );
 }
