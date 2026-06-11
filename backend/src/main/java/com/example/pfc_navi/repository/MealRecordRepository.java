@@ -11,6 +11,12 @@ import java.util.Optional;
 public interface MealRecordRepository extends JpaRepository<MealRecord, Integer> {
 
     List<MealRecord> findByUserIdAndRecordDate(Integer userId, LocalDate recordDate);
+
     Optional<MealRecord> findByIdAndUserId(Integer id, Integer userId);
+
+    List<MealRecord> findByUserIdAndRecordDateBetween(
+            Integer userId,
+            LocalDate startDate,
+            LocalDate endDate);
 
 }

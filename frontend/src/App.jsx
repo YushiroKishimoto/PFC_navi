@@ -14,6 +14,7 @@ import Record from "./pages/Record";
 import Items from "./pages/Items";
 import Set from "./pages/Set";
 import List from "./pages/List";
+import Analysis from "./pages/Analysis";
 
 function AppRoutes() {
   const location = useLocation();
@@ -46,10 +47,13 @@ function AppRoutes() {
         {/* 食事記録 */}
         <Route path="/:date/meal/:mealType" element={<Record />} /> 
 
+        <Route path="/analysis" element={<Analysis />} />
+
         {/* マスタ系 */}
         <Route path="/items" element={<Items />} />
         <Route path="/set" element={<Set />} />
         <Route path="/list" element={<List />} />
+
       </Routes>
     </Layout>
   );
