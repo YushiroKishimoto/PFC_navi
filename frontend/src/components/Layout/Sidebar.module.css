@@ -2,13 +2,14 @@
   height: 100vh;
   overflow-y: auto;
 
-  background: #556d70;
-color: #ffffff;
+  background: #7fbf7f;
+  color: #ffffff;
 
   transition: width 0.2s ease;
 
   display: flex;
   flex-direction: column;
+  white-space: nowrap;
 }
 
 /* 開閉 */
@@ -32,23 +33,13 @@ color: #ffffff;
 .hamburger {
   background: none;
   border: none;
-  color: white;
+  color: #ffffff;
   font-size: 20px;
   cursor: pointer;
 }
 
 .title {
   font-weight: bold;
-}
-
-/* セクション */
-.sectionTitle {
-  font-size: 11px;
-  font-weight: bold;
-
-  color: rgba(255, 255, 255, 0.7);
-
-  margin: 14px 8px 6px;
 }
 
 /* アイテム */
@@ -64,20 +55,18 @@ color: #ffffff;
   color: white;
 
   transition: 0.2s;
+  white-space: nowrap;
 }
 
 .item:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* active */
 .active {
-  background: linear-gradient(
-  180deg,
-  #f7f9f7 0%,
-  #eef4ee 100%
-);
-  color: #757575;
+  background: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-weight: 600;
 }
 
 /* スクロールバー */
