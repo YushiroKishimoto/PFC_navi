@@ -57,6 +57,12 @@ export default function Sidebar({ open, setOpen }) {
         {open && <span>登録一覧</span>}
       </Link>
 
+      {/* Overview */}
+      <Link to="/overview" className={`${styles.item} ${isActive("/overview") ? styles.active : ""}`}>
+        <span>📜</span>
+        {open && <span>アプリ概要</span>}
+      </Link>
+
       {/* 下部：ログアウト */}
       <div className={styles.bottom}>
         <button
