@@ -14,6 +14,7 @@ import Record from "./pages/Record";
 import Items from "./pages/Items";
 import Set from "./pages/Set";
 import List from "./pages/List";
+import Analysis from "./pages/Analysis";
 
 import Overview from "./pages/Overview";
 
@@ -47,6 +48,8 @@ function AppRoutes() {
 
         {/* 食事記録 */}
         <Route path="/:date/meal/:mealType" element={<Record />} /> 
+
+        <Route path="/analysis" element={<Analysis />} />
 
         {/* マスタ系 */}
         <Route path="/items" element={<Items />} />
