@@ -16,6 +16,8 @@ import Set from "./pages/Set";
 import List from "./pages/List";
 import Analysis from "./pages/Analysis";
 
+import Overview from "./pages/Overview";
+
 function AppRoutes() {
   const location = useLocation();
 
@@ -54,6 +56,8 @@ function AppRoutes() {
         <Route path="/set" element={<Set />} />
         <Route path="/list" element={<List />} />
 
+        {/* アプリ概要 */}
+        <Route path="/overview" element={<Overview />} />
       </Routes>
     </Layout>
   );
