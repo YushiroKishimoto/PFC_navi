@@ -5,21 +5,27 @@
   box-sizing: border-box;
 }
 
-.container {
+html,
+body {
   height: 100%;
+}
+
+.container {
+  height: 100vh;
   width: 100%;
 
   display: flex;
   flex-direction: column;
 
-  overflow: hidden;
-
   padding: 10px;
+
   background: linear-gradient(
-  180deg,
-  #f7f9f7 0%,
-  #eef4ee 100%
-);
+    180deg,
+    #f7f9f7 0%,
+    #eef4ee 100%
+  );
+
+  overflow-y: auto;
 }
 
 /* =========================
@@ -68,10 +74,9 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 14px;
 
-  height: 45vh;
+  margin-bottom: 14px;
 }
 
-/* calendar */
 .calendar {
   background: #fff;
   padding: 8px;
@@ -82,7 +87,6 @@
   align-items: center;
 }
 
-/* summary */
 .summaryCard {
   background: #fff;
   padding: 10px;
@@ -101,7 +105,6 @@
   font-size: 13px;
 }
 
-/* chart */
 .chartCard {
   background: #fff;
   padding: 12px;
@@ -120,10 +123,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 
-  height: 45vh;
   margin-top: 12px;
-
-  min-height: 0; /* 追加 */
 }
 
 /* meal card */
@@ -135,20 +135,53 @@
   display: flex;
   flex-direction: column;
 
-  height: 100%;
+  min-height: 260px;
   overflow: hidden;
-
-  min-height: 0; /* 必須 */
 }
 
+/* =========================
+   meal header
+========================= */
+.mealHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.mealHeader h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+
+  white-space: nowrap;
+}
+
+.mealTotal {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* =========================
+   food list (重要部分)
+========================= */
 .foodList {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
 
-  min-height: 0; /* 必須 */
+  /* ★ 5件固定表示 */
+  max-height: calc(5 * 42px);
+
+  overflow-y: auto;
 }
 
-/* scrollbar (optional) */
+/* scrollbar */
 .foodList::-webkit-scrollbar {
   width: 6px;
 }
@@ -162,31 +195,71 @@
   background: transparent;
 }
 
-/* item */
+/* =========================
+   food item
+========================= */
 .foodItem {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   font-size: 12px;
-  padding: 5px 0;
+
+  height: 42px; /* ★高さ固定（5件制御の基準） */
+  padding: 0 4px;
+
   border-bottom: 1px solid #eee;
+
+  gap: 6px;
+  overflow: hidden;
 }
 
 /* =========================
-   button fixed bottom
+   buttons
 ========================= */
 .addButton {
-  margin-top: auto;
-
-  padding: 9px;
-  font-size: 13px;
-
-  background: red;
+  padding: 12px;
+  background: #77AF9C;
   color: white;
+
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
 
   cursor: pointer;
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.addButton:hover {
+  background: #8CD790;
+  transform: scale(1.02);
+}
+
+.deleteButton {
+  background: transparent;
+  border: none;
+
+  color: #999;
+  font-size: 16px;
+
+  cursor: pointer;
+
+  margin-left: 8px;
+  transition: 0.2s;
+}
+
+.deleteButton:hover {
+  color: #e74c3c;
+}
+
+/* =========================
+   empty
+========================= */
+.empty {
+  font-size: 12px;
+  color: #999;
+  padding: 10px 0;
 }
 
 /* =========================
@@ -196,47 +269,5 @@
   .topGrid,
   .bottomGrid {
     grid-template-columns: 1fr;
-    height: auto;
   }
-}
-.empty {
-  font-size: 12px;
-  color: #999;
-  padding: 10px 0;
-}
-
-.mealHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.mealHeader h4 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.mealTotal {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  text-align: right;
-  white-space: nowrap;
-}
-.deleteButton {
-  background: transparent;
-  border: none;
-  color: #999;
-  font-size: 16px;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: 0.2s;
-}
-
-.deleteButton:hover {
-  color: #e74c3c;
 }
