@@ -1,13 +1,12 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr; /* ← 1画面にする */
   height: 100vh;
   gap: 12px;
   padding: 12px;
 
   background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
 }
-
 /* メッセージ */
 .message {
   color: #757575;
@@ -53,7 +52,7 @@
 }
 
 .input {
-  flex: 1;
+  flex: auto;
   padding: 8px 10px;
   border: 1px solid #C5E99B;
   border-radius: 8px;

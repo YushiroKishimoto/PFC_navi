@@ -255,54 +255,57 @@ export default function List() {
     );
   };
 
-  return (
-    <div className={styles.container}>
-      <h2>一覧・編集</h2>
+return (
+  <div className={styles.container}>
 
-      {message && <p className={styles.message}>{message}</p>}
-
-      <div className={styles.tabs}>
-        <button
-          type="button"
-          className={tab === "item" ? styles.activeTab : styles.tab}
-          onClick={() => {
-            setTab("item");
-            setSearch("");
-            setMessage("");
-            setEditItemId(null);
-            setEditSetId(null);
-          }}
-        >
-          食材・料理
-        </button>
-
-        <button
-          type="button"
-          className={tab === "set" ? styles.activeTab : styles.tab}
-          onClick={() => {
-            setTab("set");
-            setSearch("");
-            setMessage("");
-            setEditItemId(null);
-            setEditSetId(null);
-          }}
-        >
-          セット
-        </button>
+    {/* 左カラム */}
+    <div className={styles.left}>
+      <div className={styles.header}>
+        <h2>一覧・編集</h2>
+        {message && <p className={styles.message}>{message}</p>}
       </div>
 
-      <div className={styles.searchRow}>
-        <input
-          className={styles.input}
-          placeholder="検索"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className={styles.filter}>
+        <div className={styles.tabs}>
+          <button
+            className={tab === "item" ? styles.activeTab : styles.tab}
+            onClick={() => {
+              setTab("item");
+              setSearch("");
+              setEditItemId(null);
+              setEditSetId(null);
+            }}
+          >
+            食材・料理
+          </button>
+
+          <button
+            className={tab === "set" ? styles.activeTab : styles.tab}
+            onClick={() => {
+              setTab("set");
+              setSearch("");
+              setEditItemId(null);
+              setEditSetId(null);
+            }}
+          >
+            セット
+          </button>
+        </div>
+
+        <div className={styles.searchRow}>
+          <input
+            className={styles.input}
+            placeholder="検索"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      {tab === "item" && (
-        <div className={styles.listScroll}>
-          {filteredItems.map((item) => (
+      {/* 一覧（前の感じのまま） */}
+      <div className={styles.listScroll}>
+        {tab === "item" &&
+          filteredItems.map((item) => (
             <div key={item.id} className={styles.card}>
               <div className={styles.cardHeader}>
                 <strong>{item.name}</strong>
@@ -399,12 +402,9 @@ export default function List() {
               </div>
             </div>
           ))}
-        </div>
-      )}
 
-      {tab === "set" && (
-        <div className={styles.listScroll}>
-          {filteredSets.map((set) => (
+        {tab === "set" &&
+          filteredSets.map((set) => (
             <div key={set.id} className={styles.card}>
               <div className={styles.cardHeader}>
                 <input
@@ -461,12 +461,7 @@ export default function List() {
                         className={styles.nutrientInput}
                         value={item.cal ?? item.kcal ?? ""}
                         onChange={(e) =>
-                          updateSetItem(
-                            set.id,
-                            item.id,
-                            "cal",
-                            Number(e.target.value)
-                          )
+                          updateSetItem(set.id, item.id, "cal", Number(e.target.value))
                         }
                       />
                       <span className={styles.unit}>kcal</span>
@@ -478,12 +473,7 @@ export default function List() {
                         className={styles.nutrientInput}
                         value={item.pro ?? item.p ?? ""}
                         onChange={(e) =>
-                          updateSetItem(
-                            set.id,
-                            item.id,
-                            "pro",
-                            Number(e.target.value)
-                          )
+                          updateSetItem(set.id, item.id, "pro", Number(e.target.value))
                         }
                       />
                       <span className={styles.unit}>g(P)</span>
@@ -495,12 +485,7 @@ export default function List() {
                         className={styles.nutrientInput}
                         value={item.fat ?? item.f ?? ""}
                         onChange={(e) =>
-                          updateSetItem(
-                            set.id,
-                            item.id,
-                            "fat",
-                            Number(e.target.value)
-                          )
+                          updateSetItem(set.id, item.id, "fat", Number(e.target.value))
                         }
                       />
                       <span className={styles.unit}>g(F)</span>
@@ -512,12 +497,7 @@ export default function List() {
                         className={styles.nutrientInput}
                         value={item.car ?? item.c ?? ""}
                         onChange={(e) =>
-                          updateSetItem(
-                            set.id,
-                            item.id,
-                            "car",
-                            Number(e.target.value)
-                          )
+                          updateSetItem(set.id, item.id, "car", Number(e.target.value))
                         }
                       />
                       <span className={styles.unit}>g(C)</span>
@@ -529,12 +509,7 @@ export default function List() {
                         className={styles.amountInput}
                         value={item.amount ?? ""}
                         onChange={(e) =>
-                          updateSetItem(
-                            set.id,
-                            item.id,
-                            "amount",
-                            Number(e.target.value)
-                          )
+                          updateSetItem(set.id, item.id, "amount", Number(e.target.value))
                         }
                       />
                       <span className={styles.unit}>g</span>
@@ -553,8 +528,8 @@ export default function List() {
               </div>
             </div>
           ))}
-        </div>
-      )}
+      </div>
     </div>
-  );
+  </div>
+);
 }
