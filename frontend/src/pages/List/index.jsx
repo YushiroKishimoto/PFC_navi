@@ -25,9 +25,6 @@ export default function List() {
 
   const [message, setMessage] = useState("");
 
-  // =====================
-  // 初期表示：上から5件取得
-  // =====================
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -107,12 +104,7 @@ export default function List() {
   const updateItem = (id, field, value) => {
     setItems((prev) =>
       prev.map((i) =>
-        i.id === id
-          ? {
-              ...i,
-              [field]: value,
-            }
-          : i
+        i.id === id ? { ...i, [field]: value } : i
       )
     );
   };
@@ -120,12 +112,7 @@ export default function List() {
   const updateSet = (id, field, value) => {
     setSets((prev) =>
       prev.map((s) =>
-        s.id === id
-          ? {
-              ...s,
-              [field]: value,
-            }
-          : s
+        s.id === id ? { ...s, [field]: value } : s
       )
     );
   };
@@ -138,10 +125,7 @@ export default function List() {
               ...s,
               items: (s.items ?? []).map((i) =>
                 i.id === itemRowId
-                  ? {
-                      ...i,
-                      [field]: value,
-                    }
+                  ? { ...i, [field]: value }
                   : i
               ),
             }
@@ -167,18 +151,16 @@ export default function List() {
         setMessage("食材・料理を更新しました");
         setEditItemId(null);
       } else {
-        setMessage(res?.message || "食材・料理の更新に失敗しました");
+        setMessage(res?.message || "更新失敗");
       }
     } catch (e) {
       console.error(e);
-      setMessage("食材・料理の更新に失敗しました");
+      setMessage("更新失敗");
     }
   };
 
   const handleDeleteItem = async (id) => {
-    if (!window.confirm("この食材・料理を削除しますか？")) {
-      return;
-    }
+    if (!window.confirm("削除しますか？")) return;
 
     try {
       const res = await deleteCustomItem(id);
@@ -186,13 +168,13 @@ export default function List() {
       if (res?.resultCode === "SUCCESS") {
         setItems((prev) => prev.filter((i) => i.id !== id));
         setEditItemId(null);
-        setMessage("食材・料理を削除しました");
+        setMessage("削除しました");
       } else {
-        setMessage(res?.message || "食材・料理の削除に失敗しました");
+        setMessage(res?.message || "削除失敗");
       }
     } catch (e) {
       console.error(e);
-      setMessage("食材・料理の削除に失敗しました");
+      setMessage("削除失敗");
     }
   };
 
@@ -210,21 +192,19 @@ export default function List() {
       const res = await updateSetitem(set.id, payload);
 
       if (res?.resultCode === "SUCCESS") {
-        setMessage("セットを更新しました");
+        setMessage("セット更新完了");
         setEditSetId(null);
       } else {
-        setMessage(res?.message || "セットの更新に失敗しました");
+        setMessage(res?.message || "更新失敗");
       }
     } catch (e) {
       console.error(e);
-      setMessage("セットの更新に失敗しました");
+      setMessage("更新失敗");
     }
   };
 
   const handleDeleteSet = async (id) => {
-    if (!window.confirm("このセットを削除しますか？")) {
-      return;
-    }
+    if (!window.confirm("削除しますか？")) return;
 
     try {
       const res = await deleteSetitem(id);
@@ -232,13 +212,13 @@ export default function List() {
       if (res?.resultCode === "SUCCESS") {
         setSets((prev) => prev.filter((s) => s.id !== id));
         setEditSetId(null);
-        setMessage("セットを削除しました");
+        setMessage("削除しました");
       } else {
-        setMessage(res?.message || "セットの削除に失敗しました");
+        setMessage(res?.message || "削除失敗");
       }
     } catch (e) {
       console.error(e);
-      setMessage("セットの削除に失敗しました");
+      setMessage("削除失敗");
     }
   };
 
@@ -255,281 +235,339 @@ export default function List() {
     );
   };
 
-return (
-  <div className={styles.container}>
-
-    {/* 左カラム */}
-    <div className={styles.left}>
-      <div className={styles.header}>
-        <h2>一覧・編集</h2>
-        {message && <p className={styles.message}>{message}</p>}
-      </div>
-
-      <div className={styles.filter}>
-        <div className={styles.tabs}>
-          <button
-            className={tab === "item" ? styles.activeTab : styles.tab}
-            onClick={() => {
-              setTab("item");
-              setSearch("");
-              setEditItemId(null);
-              setEditSetId(null);
-            }}
-          >
-            食材・料理
-          </button>
-
-          <button
-            className={tab === "set" ? styles.activeTab : styles.tab}
-            onClick={() => {
-              setTab("set");
-              setSearch("");
-              setEditItemId(null);
-              setEditSetId(null);
-            }}
-          >
-            セット
-          </button>
+  return (
+    <div className={styles.container}>
+      <div className={styles.left}>
+        <div className={styles.header}>
+          <h2>一覧・編集</h2>
+          {message && <p className={styles.message}>{message}</p>}
         </div>
 
-        <div className={styles.searchRow}>
-          <input
-            className={styles.input}
-            placeholder="検索"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className={styles.filter}>
+          <div className={styles.tabs}>
+            <button
+              className={tab === "item" ? styles.activeTab : styles.tab}
+              onClick={() => {
+                setTab("item");
+                setSearch("");
+                setEditItemId(null);
+                setEditSetId(null);
+              }}
+            >
+              食材・料理
+            </button>
+
+            <button
+              className={tab === "set" ? styles.activeTab : styles.tab}
+              onClick={() => {
+                setTab("set");
+                setSearch("");
+                setEditItemId(null);
+                setEditSetId(null);
+              }}
+            >
+              セット
+            </button>
+          </div>
+
+          <div className={styles.searchRow}>
+            <input
+              className={styles.input}
+              placeholder="検索"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* 一覧（前の感じのまま） */}
-      <div className={styles.listScroll}>
-        {tab === "item" &&
-          filteredItems.map((item) => (
-            <div key={item.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <strong>{item.name}</strong>
-
-                <div className={styles.buttonGroup}>
-                  {editItemId === item.id ? (
-                    <button
-                      type="button"
-                      className={styles.saveBtn}
-                      onClick={() => handleSaveItem(item)}
-                    >
-                      保存
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.editBtn}
-                      onClick={() => setEditItemId(item.id)}
-                    >
-                      編集
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    className={styles.deleteBtn}
-                    onClick={() => handleDeleteItem(item.id)}
-                  >
-                    削除
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.itemEditArea}>
-                <div className={styles.inputWithUnit}>
+        <div className={styles.listScroll}>
+          {tab === "item" &&
+            filteredItems.map((item) => (
+              <div key={item.id} className={styles.card}>
+                <div className={styles.cardHeader}>
                   <input
                     disabled={editItemId !== item.id}
-                    className={styles.nutrientInput}
-                    value={item.cal ?? item.kcal ?? ""}
+                    className={styles.setNameInput}
+                    value={item.name ?? ""}
                     onChange={(e) =>
-                      updateItem(item.id, "cal", Number(e.target.value))
+                      updateItem(item.id, "name", e.target.value)
                     }
                   />
-                  <span className={styles.unit}>kcal</span>
-                </div>
 
-                <div className={styles.inputWithUnit}>
-                  <input
-                    disabled={editItemId !== item.id}
-                    className={styles.nutrientInput}
-                    value={item.pro ?? item.p ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, "pro", Number(e.target.value))
-                    }
-                  />
-                  <span className={styles.unit}>g(P)</span>
-                </div>
-
-                <div className={styles.inputWithUnit}>
-                  <input
-                    disabled={editItemId !== item.id}
-                    className={styles.nutrientInput}
-                    value={item.fat ?? item.f ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, "fat", Number(e.target.value))
-                    }
-                  />
-                  <span className={styles.unit}>g(F)</span>
-                </div>
-
-                <div className={styles.inputWithUnit}>
-                  <input
-                    disabled={editItemId !== item.id}
-                    className={styles.nutrientInput}
-                    value={item.car ?? item.c ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, "car", Number(e.target.value))
-                    }
-                  />
-                  <span className={styles.unit}>g(C)</span>
-                </div>
-
-                <div className={styles.inputWithUnit}>
-                  <input
-                    disabled={editItemId !== item.id}
-                    className={styles.amountInput}
-                    value={item.amount ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, "amount", Number(e.target.value))
-                    }
-                  />
-                  <span className={styles.unit}>g</span>
-                </div>
-              </div>
-            </div>
-          ))}
-
-        {tab === "set" &&
-          filteredSets.map((set) => (
-            <div key={set.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <input
-                  disabled={editSetId !== set.id}
-                  className={styles.setNameInput}
-                  value={set.name ?? ""}
-                  onChange={(e) => updateSet(set.id, "name", e.target.value)}
-                />
-
-                <div className={styles.buttonGroup}>
-                  {editSetId === set.id ? (
-                    <button
-                      type="button"
-                      className={styles.saveBtn}
-                      onClick={() => handleSaveSet(set)}
-                    >
-                      保存
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.editBtn}
-                      onClick={() => setEditSetId(set.id)}
-                    >
-                      編集
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    className={styles.deleteBtn}
-                    onClick={() => handleDeleteSet(set.id)}
-                  >
-                    セット削除
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.totalRow}>
-                <span>合計 kcal：{set.totalCal ?? 0}</span>
-                <span>P：{set.totalPro ?? 0}</span>
-                <span>F：{set.totalFat ?? 0}</span>
-                <span>C：{set.totalCar ?? 0}</span>
-              </div>
-
-              <div className={styles.setItemList}>
-                {(set.items ?? []).map((item) => (
-                  <div key={item.id} className={styles.setItemRow}>
-                    <div className={styles.foodNameCell}>{item.name}</div>
-
-                    <div className={styles.inputWithUnit}>
-                      <input
-                        disabled={editSetId !== set.id}
-                        className={styles.nutrientInput}
-                        value={item.cal ?? item.kcal ?? ""}
-                        onChange={(e) =>
-                          updateSetItem(set.id, item.id, "cal", Number(e.target.value))
-                        }
-                      />
-                      <span className={styles.unit}>kcal</span>
-                    </div>
-
-                    <div className={styles.inputWithUnit}>
-                      <input
-                        disabled={editSetId !== set.id}
-                        className={styles.nutrientInput}
-                        value={item.pro ?? item.p ?? ""}
-                        onChange={(e) =>
-                          updateSetItem(set.id, item.id, "pro", Number(e.target.value))
-                        }
-                      />
-                      <span className={styles.unit}>g(P)</span>
-                    </div>
-
-                    <div className={styles.inputWithUnit}>
-                      <input
-                        disabled={editSetId !== set.id}
-                        className={styles.nutrientInput}
-                        value={item.fat ?? item.f ?? ""}
-                        onChange={(e) =>
-                          updateSetItem(set.id, item.id, "fat", Number(e.target.value))
-                        }
-                      />
-                      <span className={styles.unit}>g(F)</span>
-                    </div>
-
-                    <div className={styles.inputWithUnit}>
-                      <input
-                        disabled={editSetId !== set.id}
-                        className={styles.nutrientInput}
-                        value={item.car ?? item.c ?? ""}
-                        onChange={(e) =>
-                          updateSetItem(set.id, item.id, "car", Number(e.target.value))
-                        }
-                      />
-                      <span className={styles.unit}>g(C)</span>
-                    </div>
-
-                    <div className={styles.inputWithUnit}>
-                      <input
-                        disabled={editSetId !== set.id}
-                        className={styles.amountInput}
-                        value={item.amount ?? ""}
-                        onChange={(e) =>
-                          updateSetItem(set.id, item.id, "amount", Number(e.target.value))
-                        }
-                      />
-                      <span className={styles.unit}>g</span>
-                    </div>
+                  <div className={styles.buttonGroup}>
+                    {editItemId === item.id ? (
+                      <button
+                        className={styles.saveBtn}
+                        onClick={() => handleSaveItem(item)}
+                      >
+                        保存
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.editBtn}
+                        onClick={() => setEditItemId(item.id)}
+                      >
+                        編集
+                      </button>
+                    )}
 
                     <button
-                      type="button"
-                      className={styles.deleteSmallBtn}
-                      disabled={editSetId !== set.id}
-                      onClick={() => deleteSetItem(set.id, item.id)}
+                      className={styles.deleteBtn}
+                      onClick={() => handleDeleteItem(item.id)}
                     >
-                      ×
+                      削除
                     </button>
                   </div>
-                ))}
+                </div>
+
+                <div className={styles.itemEditArea}>
+                  <div className={styles.inputWithUnit}>
+                    <span className={styles.unit}>kcal</span>
+                    <input
+                      type="number"
+                      disabled={editItemId !== item.id}
+                      className={styles.nutrientInput}
+                      value={item.cal ?? 0}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "cal",
+                          e.target.value === "" ? 0 : Number(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className={styles.inputWithUnit}>
+                    <span className={styles.unit}>g(P)</span>
+                    <input
+                      type="number"
+                      disabled={editItemId !== item.id}
+                      className={styles.nutrientInput}
+                      value={item.pro ?? 0}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "pro",
+                          e.target.value === "" ? 0 : Number(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className={styles.inputWithUnit}>
+                    <span className={styles.unit}>g(F)</span>
+                    <input
+                      type="number"
+                      disabled={editItemId !== item.id}
+                      className={styles.nutrientInput}
+                      value={item.fat ?? 0}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "fat",
+                          e.target.value === "" ? 0 : Number(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className={styles.inputWithUnit}>
+                    <span className={styles.unit}>g(C)</span>
+                    <input
+                      type="number"
+                      disabled={editItemId !== item.id}
+                      className={styles.nutrientInput}
+                      value={item.car ?? 0}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "car",
+                          e.target.value === "" ? 0 : Number(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className={styles.inputWithUnit}>
+                    <span className={styles.unit}>g</span>
+                    <input
+                      type="number"
+                      disabled={editItemId !== item.id}
+                      className={styles.amountInput}
+                      value={item.amount ?? 0}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "amount",
+                          e.target.value === "" ? 0 : Number(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+
+          {tab === "set" &&
+            filteredSets.map((set) => (
+              <div key={set.id} className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <input
+                    disabled={editSetId !== set.id}
+                    className={styles.setNameInput}
+                    value={set.name ?? ""}
+                    onChange={(e) =>
+                      updateSet(set.id, "name", e.target.value)
+                    }
+                  />
+
+                  <div className={styles.buttonGroup}>
+                    {editSetId === set.id ? (
+                      <button
+                        className={styles.saveBtn}
+                        onClick={() => handleSaveSet(set)}
+                      >
+                        保存
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.editBtn}
+                        onClick={() => setEditSetId(set.id)}
+                      >
+                        編集
+                      </button>
+                    )}
+
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => handleDeleteSet(set.id)}
+                    >
+                      セット削除
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.totalRow}>
+                  <span>合計 kcal：{set.totalCal ?? 0}</span>
+                  <span>P：{set.totalPro ?? 0}</span>
+                  <span>F：{set.totalFat ?? 0}</span>
+                  <span>C：{set.totalCar ?? 0}</span>
+                </div>
+
+                <div className={styles.setItemList}>
+                  {(set.items ?? []).map((item) => (
+                    <div key={item.id} className={styles.setItemRow}>
+                      <div className={styles.foodNameCell} style={{ width: "100%" }}>
+                        {item.name}
+                      </div>
+
+                      <div className={styles.inputWithUnit}>
+                        <span className={styles.unit}>kcal</span>
+                        <input
+                          type="number"
+                          disabled={editSetId !== set.id}
+                          className={styles.nutrientInput}
+                          value={item.cal ?? 0}
+                          onChange={(e) =>
+                            updateSetItem(
+                              set.id,
+                              item.id,
+                              "cal",
+                              e.target.value === "" ? 0 : Number(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className={styles.inputWithUnit}>
+                        <span className={styles.unit}>g(P)</span>
+                        <input
+                          type="number"
+                          disabled={editSetId !== set.id}
+                          className={styles.nutrientInput}
+                          value={item.pro ?? 0}
+                          onChange={(e) =>
+                            updateSetItem(
+                              set.id,
+                              item.id,
+                              "pro",
+                              e.target.value === "" ? 0 : Number(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className={styles.inputWithUnit}>
+                        <span className={styles.unit}>g(F)</span>
+                        <input
+                          type="number"
+                          disabled={editSetId !== set.id}
+                          className={styles.nutrientInput}
+                          value={item.fat ?? 0}
+                          onChange={(e) =>
+                            updateSetItem(
+                              set.id,
+                              item.id,
+                              "fat",
+                              e.target.value === "" ? 0 : Number(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className={styles.inputWithUnit}>
+                        <span className={styles.unit}>g(C)</span>
+                        <input
+                          type="number"
+                          disabled={editSetId !== set.id}
+                          className={styles.nutrientInput}
+                          value={item.car ?? 0}
+                          onChange={(e) =>
+                            updateSetItem(
+                              set.id,
+                              item.id,
+                              "car",
+                              e.target.value === "" ? 0 : Number(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className={styles.inputWithUnit}>
+                        <span className={styles.unit}>g</span>
+                        <input
+                          type="number"
+                          disabled={editSetId !== set.id}
+                          className={styles.amountInput}
+                          value={item.amount ?? 0}
+                          onChange={(e) =>
+                            updateSetItem(
+                              set.id,
+                              item.id,
+                              "amount",
+                              e.target.value === "" ? 0 : Number(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+
+                      {editSetId === set.id && (
+                        <button
+                          type="button"
+                          className={styles.deleteSmallBtn}
+                          onClick={() => deleteSetItem(set.id, item.id)}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }

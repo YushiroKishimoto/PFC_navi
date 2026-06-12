@@ -7,6 +7,7 @@
 
   background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
 }
+
 /* メッセージ */
 .message {
   color: #757575;
@@ -48,11 +49,12 @@
   gap: 8px;
   margin-bottom: 10px;
 
-  max-width: 420px;   /* 追加：伸びすぎ防止 */
+  width: 100%;   /* ← 修正：親幅に追従 */
 }
 
 .input {
-  flex: auto;
+  flex: 1;       /* ← 追加：横幅を伸ばす */
+  width: 100%;   /* ← 追加：確実に追従 */
   padding: 8px 10px;
   border: 1px solid #C5E99B;
   border-radius: 8px;
@@ -227,4 +229,38 @@
 
 .name {
   color: #757575;
+}
+.setItemRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  flex-wrap: wrap; /* 横幅不足時に折り返し */
+}
+
+/* 折り返し時の崩れ防止 */
+.inputWithUnit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  min-width: 90px;
+}
+
+/* 入力が潰れすぎないように補正 */
+.nutrientInput,
+.amountInput {
+  min-width: 60px;
+}
+.setNameInput {
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
+  min-width: 0;
+
+  padding: 4px 6px;
+  border: 1px solid #C5E99B;
+  border-radius: 6px;
+
+  margin-right: 12px; /* ← 追加：ボタンとの間隔 */
 }
