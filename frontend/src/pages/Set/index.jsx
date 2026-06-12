@@ -38,12 +38,23 @@ export default function Set() {
   // =========================
   // 追加
   // =========================
-  const addItem = (item) => {
-    setSelected((prev) => {
-      if (prev.some((i) => i.id === item.id)) return prev;
-      return [...prev, { ...item }];
-    });
-  };
+const addItem = (item) => {
+  setSelected((prev) => {
+    if (prev.some((i) => i.id === item.id)) return prev;
+
+    return [
+      ...prev,
+      {
+        ...item,
+        amount: 100,
+        baseCal: item.cal,
+        basePro: item.pro,
+        baseFat: item.fat,
+        baseCar: item.car,
+      },
+    ];
+  });
+};
 
   // =========================
   // 更新
@@ -197,60 +208,44 @@ const removeItem = (id) => {
             </div>
               <div className={styles.nutritionRow}>
 
-                <div className={styles.col}>
-                  <span>量</span>
-                  <input
-                    type="number"
-                    value={item.amount || 0}
-                    onChange={(e) =>
-                      updateItem(item.id, "amount", Number(e.target.value))
-                    }
-                  />
-                </div>
+<div className={styles.col}>
+  <span>量（ｇ）</span>
+  <input
+    type="number"
+    value={item.amount || 0}
+    onChange={(e) =>
+      updateItem(item.id, "amount", Number(e.target.value))
+    }
+  />
+</div>
 
-                <div className={styles.col}>
-                  <span>Cal</span>
-                  <input
-                    type="number"
-                    value={item.cal || 0}
-                    onChange={(e) =>
-                      updateItem(item.id, "cal", Number(e.target.value))
-                    }
-                  />
-                </div>
+<div className={styles.col}>
+  <span>Cal</span>
+  <div>
+    {((item.baseCal || item.cal || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
 
-                <div className={styles.col}>
-                  <span>P</span>
-                  <input
-                    type="number"
-                    value={item.pro || 0}
-                    onChange={(e) =>
-                      updateItem(item.id, "pro", Number(e.target.value))
-                    }
-                  />
-                </div>
+<div className={styles.col}>
+  <span>P</span>
+  <div>
+    {((item.basePro || item.pro || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
 
-                <div className={styles.col}>
-                  <span>F</span>
-                  <input
-                    type="number"
-                    value={item.fat || 0}
-                    onChange={(e) =>
-                      updateItem(item.id, "fat", Number(e.target.value))
-                    }
-                  />
-                </div>
+<div className={styles.col}>
+  <span>F</span>
+  <div>
+    {((item.baseFat || item.fat || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
 
-                <div className={styles.col}>
-                  <span>C</span>
-                  <input
-                    type="number"
-                    value={item.car || 0}
-                    onChange={(e) =>
-                      updateItem(item.id, "car", Number(e.target.value))
-                    }
-                  />
-                </div>
+<div className={styles.col}>
+  <span>C</span>
+  <div>
+    {((item.baseCar || item.car || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
 
               </div>
 
@@ -259,7 +254,7 @@ const removeItem = (id) => {
         </div>
 
         <div className={styles.total}>
-          P:{total.pro.toFixed(1)} F:{total.fat.toFixed(1)} C:{total.car.toFixed(1)}
+          Cal:{total.cal.toFixed(1)}kcal P:{total.pro.toFixed(1)}g F:{total.fat.toFixed(1)}g C:{total.car.toFixed(1)}g
         </div>
 
         <button className={styles.Button} onClick={handleRegister}>
