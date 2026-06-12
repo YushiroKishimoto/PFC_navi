@@ -82,3 +82,21 @@
 .buttonPrimary:active {
   transform: scale(0.98);
 }
+
+.formRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.formRow label {
+  width: 80px;       /* ラベル幅を固定 */
+  font-size: 14px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.formRow .input {
+  flex: 1;           /* 残りの幅をすべて使う */
+}
