@@ -298,14 +298,6 @@ export default function List() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <button
-          type="button"
-          className={styles.searchButton}
-          onClick={handleSearch}
-        >
-          検索
-        </button>
       </div>
 
       {tab === "item" && (
