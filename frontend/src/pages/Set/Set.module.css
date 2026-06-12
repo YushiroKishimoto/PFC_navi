@@ -109,3 +109,24 @@
 .Button:hover {
   background: #8CD790;
 }
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deleteButton {
+  margin-left: auto;
+  background: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.deleteButton:hover {
+  background: #ff2e2e;
+}

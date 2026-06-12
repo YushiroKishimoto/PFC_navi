@@ -55,6 +55,13 @@ export default function Set() {
       )
     );
   };
+  
+// =========================
+// 削除
+// =========================
+const removeItem = (id) => {
+  setSelected((prev) => prev.filter((item) => item.id !== id));
+};
 
   // =========================
   // 合計
@@ -176,10 +183,18 @@ export default function Set() {
           {selected.map((item) => (
             <div key={item.id} className={styles.card}>
 
+            <div className={styles.cardHeader}>
               <div className={styles.name}>
                 {item.name}
               </div>
 
+              <button
+                className={styles.deleteButton}
+                onClick={() => removeItem(item.id)}
+              >
+                削除
+              </button>
+            </div>
               <div className={styles.nutritionRow}>
 
                 <div className={styles.col}>
