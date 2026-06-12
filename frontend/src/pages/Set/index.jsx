@@ -75,24 +75,37 @@ export default function Set() {
     );
   }, [selected]);
 
+    const createPayload = () => {
+    return {
+      name: setName,
+      items: selected.map(({ name, cal, pro, fat, car, id, ...rest }) => ({
+        itemId: id,
+        ...rest
+      }))
+    };
+  };
   // =========================
   // 登録
   // =========================
   const handleRegister = async () => {
-    if (!setName.trim() || selected.length === 0) return;
+    if (!setName.trim() || selected.length === 0) {
+      alert("セット名と食材を入力してください");
+      return;
+    }
 
-    const payload = {
-      name: setName,
-      items: selected.map((i) => ({
-        itemId: i.id,
-        amount: i.amount,
-      })),
-    };
+    const payload = createPayload();
 
-    await createSetitem(payload);
+    const res = await createSetitem(payload);
+    console.log("SET_DB_REGISTER:", payload);
 
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/");
+    alert("セット登録完了");
+
+    // 安全遷移（戻れるなら戻る / 無理ならホーム）
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
