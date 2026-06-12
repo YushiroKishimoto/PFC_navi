@@ -82,8 +82,8 @@ export default function Record() {
     setSelected((prev) => [
       ...prev,
       {
-        key: `food-${item.id}-${Date.now()}`,
-        source: "food",
+        key: `${item.source}-${item.id}-${Date.now()}`,
+        source: item.source,
         itemId: item.id,
         name: item.name,
         amount: item.amount,
@@ -118,8 +118,8 @@ export default function Record() {
     setSelected((prev) => [
       ...prev,
       {
-        key: `rec-${rec.id}-${Date.now()}`,
-        source: "food",
+        key: `set-${rec.id}-${Date.now()}`,
+        source: "set",
         itemId: rec.id,
         name: rec.name,
         amount: 1,
@@ -191,6 +191,8 @@ export default function Record() {
           amount: i.amount,
         })),
       };
+
+      console.log("保存payload", payload);
 
       const res = await createMealRecord(payload);
 
