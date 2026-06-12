@@ -10,25 +10,16 @@ export default function Set() {
   const [search, setSearch] = useState("");
   const [setName, setSetName] = useState("");
   const [items, setItems] = useState([]);
+  const [selected, setSelected] = useState([]);
 
-  // const [items] = useState([
-  //   { id: 1, name: "鶏むね肉", cal: 200, pro: 30, fat: 5, car: 0, amount: 100 },
-  //   { id: 2, name: "白米", cal: 250, pro: 5, fat: 1, car: 55, amount: 150 },
-  //   { id: 3, name: "卵", cal: 150, pro: 12, fat: 10, car: 1, amount: 1 },
-  // ]);
-
-  // キーワードが変わるたびにAPI実行
+  // =========================
+  // API検索
+  // =========================
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const res = await searchItems(search);
-        const resultItems = res?.data?.items ?? [];
-
-        setItems(resultItems);
-
-        // if (resultItems.length === 0) {
-        //   setMessage("該当するセットがありません");
-        // }
+        setItems(res?.data?.items ?? []);
       } catch (err) {
         console.error(err);
       }
@@ -36,8 +27,6 @@ export default function Set() {
 
     fetchItems();
   }, [search]);
-
-  const [selected, setSelected] = useState([]);
 
   // =========================
   // フィルタ
@@ -47,17 +36,28 @@ export default function Set() {
   }, [search, items]);
 
   // =========================
-  // 追加（安全更新）
+  // 追加
   // =========================
-  const addItem = (item) => {
-    setSelected((prev) => {
-      if (prev.some((i) => i.id === item.id)) return prev;
-      return [...prev, { ...item }];
-    });
-  };
+const addItem = (item) => {
+  setSelected((prev) => {
+    if (prev.some((i) => i.id === item.id)) return prev;
+
+    return [
+      ...prev,
+      {
+        ...item,
+        amount: 100,
+        baseCal: item.cal,
+        basePro: item.pro,
+        baseFat: item.fat,
+        baseCar: item.car,
+      },
+    ];
+  });
+};
 
   // =========================
-  // 更新（安全な関数型更新）
+  // 更新
   // =========================
   const updateItem = (id, field, value) => {
     setSelected((prev) =>
@@ -66,9 +66,16 @@ export default function Set() {
       )
     );
   };
+  
+// =========================
+// 削除
+// =========================
+const removeItem = (id) => {
+  setSelected((prev) => prev.filter((item) => item.id !== id));
+};
 
   // =========================
-  // 合計（安全計算）
+  // 合計
   // =========================
   const total = useMemo(() => {
     return selected.reduce(
@@ -86,10 +93,7 @@ export default function Set() {
     );
   }, [selected]);
 
-  // =========================
-  // payload生成（分離）
-  // =========================
-  const createPayload = () => {
+    const createPayload = () => {
     return {
       name: setName,
       items: selected.map(({ name, cal, pro, fat, car, id, ...rest }) => ({
@@ -98,9 +102,8 @@ export default function Set() {
       }))
     };
   };
-
   // =========================
-  // 登録（安全遷移）
+  // 登録
   // =========================
   const handleRegister = async () => {
     if (!setName.trim() || selected.length === 0) {
@@ -125,141 +128,140 @@ export default function Set() {
 
   return (
     <div className={styles.container}>
-      <h2>セット登録</h2>
 
-      {/* セット名 */}
-      <input
-        className={styles.input}
-        placeholder="セット名"
-        value={setName}
-        onChange={(e) => setSetName(e.target.value)}
-      />
+      {/* =========================
+          左
+      ========================= */}
+      <div className={styles.left}>
 
-      {/* 検索 */}
-      <input
-        className={styles.input}
-        placeholder="食材・料理検索"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+        <h2>セット登録</h2>
 
-      {/* 検索結果 */}
-      <div className={styles.searchList}>
-        {filteredItems.map((item) => (
-          <div key={item.id} className={styles.searchItem}>
-            <span>{item.name}</span>
-            <button onClick={() => addItem(item)}>追加</button>
-          </div>
-        ))}
-      </div>
+        <input
+          className={styles.input}
+          placeholder="セット名"
+          value={setName}
+          onChange={(e) => setSetName(e.target.value)}
+        />
 
-      {/* 編集 */}
-      <div className={styles.table}>
-        {selected.map((item) => (
-          <div key={item.id} className={styles.row}>
-            <div>{item.name}</div>
+        <input
+          className={styles.input}
+          placeholder="食材検索"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-            <input
-              type="number"
-              value={item.amount}
-              onChange={(e) =>
-                updateItem(item.id, "amount", Number(e.target.value))
-              }
-            />
+        {/* =========================
+            検索結果（スクロール）
+        ========================= */}
+        <div className={styles.searchList}>
+          {filteredItems.map((item) => (
+            <div key={item.id} className={styles.card}>
 
-            <input
-              type="number"
-              value={item.cal}
-              onChange={(e) =>
-                updateItem(item.id, "cal", Number(e.target.value))
-              }
-            />
+              <div className={styles.cardHeader}>
+                <div className={styles.name}>
+                  {item.name}
+                </div>
 
-            <input
-              type="number"
-              value={item.pro}
-              onChange={(e) =>
-                updateItem(item.id, "pro", Number(e.target.value))
-              }
-            />
+                <button
+                  className={styles.addButton}
+                  onClick={() => addItem(item)}
+                >
+                  追加
+                </button>
+              </div>
 
-            <input
-              type="number"
-              value={item.fat}
-              onChange={(e) =>
-                updateItem(item.id, "fat", Number(e.target.value))
-              }
-            />
+              <div className={styles.nutritionRow}>
+                <div className={styles.col}>Cal: {item.cal}</div>
+                <div className={styles.col}>P: {item.pro}</div>
+                <div className={styles.col}>F: {item.fat}</div>
+                <div className={styles.col}>C: {item.car}</div>
+              </div>
 
-            <input
-              type="number"
-              value={item.car}
-              onChange={(e) =>
-                updateItem(item.id, "car", Number(e.target.value))
-              }
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* 合計 */}
-      <div className={styles.total}>
-        <h3>合計</h3>
-        <div>{total.cal.toFixed(0)} cal</div>
-        <div>
-          P:{total.pro.toFixed(1)} F:{total.fat.toFixed(1)} C:{total.car.toFixed(1)}
+            </div>
+          ))}
         </div>
+
       </div>
 
-      {/* 登録 */}
-      <button className={styles.button} onClick={handleRegister}>
-        セットを登録
-      </button>
+      {/* =========================
+          右
+      ========================= */}
+      <div className={styles.right}>
+
+        <h3>選択済み</h3>
+
+        <div className={styles.table}>
+          {selected.map((item) => (
+            <div key={item.id} className={styles.card}>
+
+            <div className={styles.cardHeader}>
+              <div className={styles.name}>
+                {item.name}
+              </div>
+
+              <button
+                className={styles.deleteButton}
+                onClick={() => removeItem(item.id)}
+              >
+                削除
+              </button>
+            </div>
+              <div className={styles.nutritionRow}>
+
+<div className={styles.col}>
+  <span>量（ｇ）</span>
+  <input
+    type="number"
+    value={item.amount || 0}
+    onChange={(e) =>
+      updateItem(item.id, "amount", Number(e.target.value))
+    }
+  />
+</div>
+
+<div className={styles.col}>
+  <span>Cal</span>
+  <div>
+    {((item.baseCal || item.cal || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
+
+<div className={styles.col}>
+  <span>P</span>
+  <div>
+    {((item.basePro || item.pro || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
+
+<div className={styles.col}>
+  <span>F</span>
+  <div>
+    {((item.baseFat || item.fat || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
+
+<div className={styles.col}>
+  <span>C</span>
+  <div>
+    {((item.baseCar || item.car || 0) * (item.amount || 0) / 100).toFixed(1)}
+  </div>
+</div>
+
+              </div>
+
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.total}>
+          Cal:{total.cal.toFixed(1)}kcal P:{total.pro.toFixed(1)}g F:{total.fat.toFixed(1)}g C:{total.car.toFixed(1)}g
+        </div>
+
+        <button className={styles.Button} onClick={handleRegister}>
+          セットを登録
+        </button>
+
+      </div>
     </div>
   );
 }
-
-
-// MOCK
-// import { useEffect, useState } from "react";
-// import { createSetitem } from "../../api/set";
-
-// export default function TestPage() {
-//   const testRegisterFood = async () => {
-//     const payload = {
-//       name: "朝食セット2",
-//       items: [
-//         {
-//           source: "default",
-//           itemId: 1,
-//           amount: 150
-//         },
-//         {
-//           source: "custom",
-//           itemId: 1,
-//           amount: 100
-//         }
-//       ]
-//     };
-
-//     try {
-//       const res = await createSetitem(payload);
-//       console.log("成功:", res.data);
-//       return res.data;
-//     } catch (err) {
-//       console.error("失敗:", err);
-//     }
-//   };
-
-//   const handleClick = async () => {
-//     await testRegisterFood();
-//   };
-
-//   return (
-//     <div>
-//       <button onClick={handleClick}>
-//         食品セット登録テスト
-//       </button>
-//     </div>
-//   );
-// }
