@@ -87,10 +87,11 @@ export default function Record() {
         itemId: item.id,
         name: item.name,
         amount: item.amount,
-        cal: item.cal,
-        pro: item.pro,
-        fat: item.fat,
-        car: item.car,
+        baseAmount: item.amount,
+        baseCal: item.cal,
+        basePro: item.pro,
+        baseFat: item.fat,
+        baseCar: item.car,
       },
     ]);
   };
@@ -104,10 +105,11 @@ export default function Record() {
         itemId: set.id,
         name: set.name,
         amount: 1,
-        cal: set.totalCal,
-        pro: set.totalPro,
-        fat: set.totalFat,
-        car: set.totalCar,
+        baseAmount: 1,
+        baseCal: set.totalCal,
+        basePro: set.totalPro,
+        baseFat: set.totalFat,
+        baseCar: set.totalCar,
       },
     ]);
   };
@@ -121,10 +123,11 @@ export default function Record() {
         itemId: rec.id,
         name: rec.name,
         amount: 1,
-        cal: rec.totalCal,
-        pro: rec.totalPro,
-        fat: rec.totalFat,
-        car: rec.totalCar,
+        baseAmount: 1,
+        baseCal: rec.totalCal,
+        basePro: rec.totalPro,
+        baseFat: rec.totalFat,
+        baseCar: rec.totalCar,
       },
     ]);
   };
@@ -133,15 +136,37 @@ export default function Record() {
     setSelected((prev) => prev.filter((i) => i.key !== key));
   };
 
+  // 数量変更（基準量に対する比率でPFCを再計算）
+  const updateAmount = (key, value) => {
+    const newAmount = Number(value);
+    if (Number.isNaN(newAmount) || newAmount < 0) return;
+
+    setSelected((prev) =>
+      prev.map((i) => (i.key === key ? { ...i, amount: newAmount } : i))
+    );
+  };
+
+  // 表示用のスケーリング計算
+  const scaled = (item) => {
+    const ratio = item.baseAmount > 0 ? item.amount / item.baseAmount : 0;
+    return {
+      cal: Math.round(item.baseCal * ratio),
+      pro: Math.round(item.basePro * ratio),
+      fat: Math.round(item.baseFat * ratio),
+      car: Math.round(item.baseCar * ratio),
+    };
+  };
+
   // =========================
   // 合計
   // =========================
   const total = selected.reduce(
     (acc, cur) => {
-      acc.cal += Number(cur.cal);
-      acc.pro += Number(cur.pro);
-      acc.fat += Number(cur.fat);
-      acc.car += Number(cur.car);
+      const s = scaled(cur);
+      acc.cal += s.cal;
+      acc.pro += s.pro;
+      acc.fat += s.fat;
+      acc.car += s.car;
       return acc;
     },
     { cal: 0, pro: 0, fat: 0, car: 0 }
@@ -187,12 +212,12 @@ export default function Record() {
 
       {/* ヘッダー */}
       <div className={styles.header}>
-        <h2>{currentDate} の記録</h2>
+        <h2 className={styles.headerTitle}>{currentDate} の記録</h2>
 
         <select
           value={mealType}
           onChange={(e) => setMealType(e.target.value)}
-          className={styles.input}
+          className={styles.mealSelect}
         >
           <option value="breakfast">朝食</option>
           <option value="lunch">昼食</option>
@@ -200,119 +225,177 @@ export default function Record() {
         </select>
       </div>
 
-      {/* タブ（2つだけ） */}
-      <div className={styles.tabs}>
-        <button
-          onClick={() => setTab("foodMeal")}
-          className={tab === "foodMeal" ? styles.activeTab : ""}
-        >
-          食材・食事
-        </button>
+      {/* メイン2カラム */}
+      <div className={styles.grid}>
 
-        <button
-          onClick={() => setTab("set")}
-          className={tab === "set" ? styles.activeTab : ""}
-        >
-          セット
-        </button>
-      </div>
+        {/* 左：検索（タブで食材/セット切替） */}
+        <div className={styles.left}>
+          <div className={styles.tabs}>
+            <button
+              onClick={() => setTab("foodMeal")}
+              className={tab === "foodMeal" ? styles.activeTab : styles.tabButton}
+            >
+              食材・食事
+            </button>
 
-      {/* =========================
-          食材・食事タブ
-      ========================= */}
-      {tab === "foodMeal" && (
-        <div className={styles.grid}>
+            <button
+              onClick={() => setTab("set")}
+              className={tab === "set" ? styles.activeTab : styles.tabButton}
+            >
+              セット
+            </button>
+          </div>
 
-          {/* 左：食材 + レコメンド */}
-          <div className={styles.left}>
-            <h3>食材検索</h3>
+          {tab === "foodMeal" && (
+            <>
+              <div className={styles.searchRow}>
+                <input
+                  className={styles.searchInput}
+                  value={foodSearch}
+                  placeholder="食材名で検索"
+                  onChange={(e) => setFoodSearch(e.target.value)}
+                />
+                <button className={styles.searchButton} onClick={handleFoodSearch}>
+                  検索
+                </button>
+              </div>
 
-            <input
-              value={foodSearch}
-              onChange={(e) => setFoodSearch(e.target.value)}
-            />
-            <button onClick={handleFoodSearch}>検索</button>
+              <div className={styles.list}>
+                {foodResults.map((item) => (
+                  <div key={item.id} className={styles.item}>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>{item.name}</span>
+                      <span className={styles.itemPfc}>
+                        P:{item.pro} F:{item.fat} C:{item.car}　{item.cal}kcal
+                      </span>
+                    </div>
+                    <button className={styles.addButton} onClick={() => addFood(item)}>
+                      ＋
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {tab === "set" && (
+            <>
+              <div className={styles.searchRow}>
+                <input
+                  className={styles.searchInput}
+                  value={setSearch}
+                  placeholder="セット名で検索"
+                  onChange={(e) => setSetSearch(e.target.value)}
+                />
+                <button className={styles.searchButton} onClick={handleSetSearch}>
+                  検索
+                </button>
+              </div>
+
+              <div className={styles.list}>
+                {setResults.map((set) => (
+                  <div key={set.id} className={styles.item}>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>{set.name}</span>
+                      <span className={styles.itemPfc}>
+                        P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}　{set.totalCal}kcal
+                      </span>
+                    </div>
+                    <button className={styles.addButton} onClick={() => addSet(set)}>
+                      ＋
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* 右：上下分割 */}
+        <div className={styles.rightColumn}>
+
+          {/* 右上：おすすめ */}
+          <div className={styles.rightTop}>
+            <h3 className={styles.sectionTitle}>おすすめ</h3>
 
             <div className={styles.list}>
-              {foodResults.map((item) => (
-                <div key={item.id} className={styles.item}>
-                  <span>{item.name}</span>
-                  <button onClick={() => addFood(item)}>＋</button>
-                </div>
-              ))}
-            </div>
+              {recommendations.length === 0 && (
+                <p className={styles.empty}>おすすめはまだありません</p>
+              )}
 
-            <h3>おすすめ</h3>
-            <div className={styles.list}>
               {recommendations.map((rec) => (
                 <div key={rec.id} className={styles.item}>
-                  <span>{rec.name}</span>
-                  <button onClick={() => addRecommendation(rec)}>＋</button>
+                  <div className={styles.itemInfo}>
+                    <span className={styles.itemName}>{rec.name}</span>
+                    <span className={styles.itemPfc}>
+                      P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar}　{rec.totalCal}kcal
+                    </span>
+                  </div>
+                  <button className={styles.addButton} onClick={() => addRecommendation(rec)}>
+                    ＋
+                  </button>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* 右：選択 */}
-          <div className={styles.right}>
-            <h3>選択中</h3>
+          {/* 右下：選択中 */}
+          <div className={styles.rightBottom}>
+            <h3 className={styles.sectionTitle}>選択中</h3>
 
-            <div>
-              {selected.map((i) => (
-                <div key={i.key}>
-                  {i.name}
-                  <button onClick={() => removeSelected(i.key)}>削除</button>
-                </div>
-              ))}
+            <div className={styles.selectedBox}>
+              {selected.length === 0 && (
+                <p className={styles.empty}>食材やセットを追加してください</p>
+              )}
+
+              {selected.map((i) => {
+                const s = scaled(i);
+                return (
+                  <div key={i.key} className={styles.selectedItem}>
+                    <div className={styles.selectedHeader}>
+                      <span className={styles.itemName}>{i.name}</span>
+                      <button
+                        className={styles.removeButton}
+                        onClick={() => removeSelected(i.key)}
+                      >
+                        削除
+                      </button>
+                    </div>
+
+                    <div className={styles.selectedBody}>
+                      <div className={styles.amountControl}>
+                        <span className={styles.amountLabel}>数量</span>
+                        <input
+                          type="number"
+                          min="0"
+                          className={styles.amountInput}
+                          value={i.amount}
+                          onChange={(e) => updateAmount(i.key, e.target.value)}
+                        />
+                      </div>
+
+                      <span className={styles.itemPfc}>
+                        P:{s.pro} F:{s.fat} C:{s.car}　{s.cal}kcal
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div>
-              P:{total.pro} F:{total.fat} C:{total.car} / {total.cal}
+            {/* 合計カード */}
+            <div className={styles.totalCard}>
+              <div className={styles.totalTitle}>合計</div>
+              <div className={styles.totalRow}>
+                <span>P: {total.pro}g</span>
+                <span>F: {total.fat}g</span>
+                <span>C: {total.car}g</span>
+                <span className={styles.totalCal}>{total.cal} kcal</span>
+              </div>
             </div>
           </div>
         </div>
-      )}
-
-      {/* =========================
-          セットタブ
-      ========================= */}
-      {tab === "set" && (
-        <div className={styles.grid}>
-
-          <div className={styles.left}>
-            <h3>セット検索</h3>
-
-            <input
-              value={setSearch}
-              onChange={(e) => setSetSearch(e.target.value)}
-            />
-            <button onClick={handleSetSearch}>検索</button>
-
-            <div className={styles.list}>
-              {setResults.map((set) => (
-                <div key={set.id} className={styles.item}>
-                  <span>{set.name}</span>
-                  <button onClick={() => addSet(set)}>＋</button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.right}>
-            <h3>選択中</h3>
-
-            <div>
-              {selected.map((i) => (
-                <div key={i.key}>
-                  {i.name}
-                  <button onClick={() => removeSelected(i.key)}>削除</button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      )}
+      </div>
 
       {/* フッター */}
       <div className={styles.footer}>
@@ -329,7 +412,7 @@ export default function Record() {
         </button>
       </div>
 
-      {message && <p>{message}</p>}
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 }
