@@ -66,4 +66,9 @@ public class AuthController {
         session.invalidate();
         return ResponseEntity.ok(Map.of("message", "ログアウトしました"));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication authentication) {
+        return ResponseEntity.ok(authentication.getName());
+    }
 }

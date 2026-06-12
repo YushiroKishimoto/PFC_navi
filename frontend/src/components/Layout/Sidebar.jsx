@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.css";
+import { logout } from "../../api/auth";
 
 export default function Sidebar({ open, setOpen }) {
   const location = useLocation();
@@ -7,10 +8,24 @@ export default function Sidebar({ open, setOpen }) {
 
   const isActive = (path) => location.pathname === path;
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.clear();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      const res = await logout();
+
+      localStorage.removeItem("token");
+      sessionStorage.clear();
+
+      if (res?.message === "ログアウトしました") {
+        navigate("/login");
+        return;
+      }
+
+      setError(res?.message || "ログアウト失敗");
+
+    } catch (e) {
+      const message = e.response?.data?.message || "ログアウトできません";
+      setError(message);
+    }
   };
 
   return (

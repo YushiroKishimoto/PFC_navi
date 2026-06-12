@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 // layout
 import Layout from "./components/Layout/Layout";
+import PrivateRoute from "./components/PrivateRoute";
 
 // pages
 import Login from "./pages/Login";
@@ -30,10 +31,15 @@ function AppRoutes() {
   if (isHidden) {
     return (
       <Routes>
+        {/* 認証不要 */}
         <Route path="/login" element={<Login />} />
         <Route path="/user" element={<User />} />
-        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/password-reset" element={<PasswordReset />} />
+        
+        {/* 認証必須 */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/onboarding" element={<Onboarding />} />
+        </Route>
       </Routes>
     );
   }
@@ -41,25 +47,28 @@ function AppRoutes() {
   return (
     <Layout>
       <Routes>
-        {/* ログイン系 */}
-        <Route path="/profile" element={<Profile />} />
+        {/* 認証必須 */}
+        <Route element={<PrivateRoute />}>
+          {/* ログイン系 */}
+          <Route path="/profile" element={<Profile />} />
 
-        {/* ダッシュボード */}
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/:date" element={<Dashboard />} />
+          {/* ダッシュボード */}
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/:date" element={<Dashboard />} />
 
-        {/* 食事記録 */}
-        <Route path="/:date/meal/:mealType" element={<Record />} /> 
+          {/* 食事記録 */}
+          <Route path="/:date/meal/:mealType" element={<Record />} /> 
 
-        <Route path="/analysis" element={<Analysis />} />
+          <Route path="/analysis" element={<Analysis />} />
 
-        {/* マスタ系 */}
-        <Route path="/items" element={<Items />} />
-        <Route path="/set" element={<Set />} />
-        <Route path="/list" element={<List />} />
+          {/* マスタ系 */}
+          <Route path="/items" element={<Items />} />
+          <Route path="/set" element={<Set />} />
+          <Route path="/list" element={<List />} />
 
-        {/* アプリ概要 */}
-        <Route path="/overview" element={<Overview />} />
+          {/* アプリ概要 */}
+          <Route path="/overview" element={<Overview />} />
+        </Route>
       </Routes>
     </Layout>
   );
