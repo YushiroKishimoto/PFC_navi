@@ -1,9 +1,10 @@
---acounts
---アカウント情報
+-- accounts
+-- アカウント情報
 CREATE TABLE accounts (
-    user_id INTEGER PRIMARY KEY,,
+    user_id INTEGER PRIMARY KEY,
     login_id VARCHAR(20) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    security_answer_hash VARCHAR(255)
 );
 
 -- users
