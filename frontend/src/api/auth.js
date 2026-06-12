@@ -17,33 +17,23 @@ export const logout = async () => {
 };
 
 // ユーザー登録
-export const register = async (loginId, password) => {
+export const register = async (loginId, password, securityAnswer) => {
   const res = await client.post("/users/register", {
     loginId,
     password,
+    securityAnswer,
   });
 
   return res.data;
 };
 
-// MOCK
-// export const login = async (loginId, password) => {
-//   console.log("mock login request:", loginId, password);
+// パスワード再発行
+export const resetPassword = async (loginId, securityAnswer, newPassword) => {
+  const res = await client.post("/password-reset", {
+    loginId,
+    securityAnswer,
+    newPassword,
+  });
 
-//   // ここで入力確認できる
-//   if (loginId === "test" && password === "1234") {
-//     return {
-//       resultCode: "SUCCESS",
-//       message: "ログイン成功",
-//       data: {
-//         userId: 1,
-//       },
-//     };
-//   }
-
-//   return {
-//     resultCode: "VALIDATION_ERROR",
-//     message: "ログイン失敗（ID or パスワード違い）",
-//     data: null,
-//   };
-// };
+  return res.data;
+};

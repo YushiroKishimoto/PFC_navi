@@ -1,0 +1,1 @@
+export const SECURITY_QUESTION = "通った中学校の名前は？";

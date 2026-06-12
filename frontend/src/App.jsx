@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import User from "./pages/User";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
+import PasswordReset from "./pages/PasswordReset";
 
 import Dashboard from "./pages/Dashboard";
 import Record from "./pages/Record";
@@ -22,7 +23,7 @@ function AppRoutes() {
   const location = useLocation();
 
   // Sidebarを出さないページ
-  const hideLayout = ["/login", "/user", "/onboarding"];
+  const hideLayout = ["/login", "/user", "/onboarding", "/password-reset"];
 
   const isHidden = hideLayout.includes(location.pathname);
 
@@ -32,6 +33,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/user" element={<User />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
       </Routes>
     );
   }
