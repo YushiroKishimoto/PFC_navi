@@ -1,276 +1,266 @@
 .container {
-  padding: 32px;
-  width: 100%;
-  box-sizing: border-box;
-  background: linear-gradient(
-  180deg,
-  #f7f9f7 0%,
-  #eef4ee 100%
-);
+  display: grid;
+  grid-template-columns: 1fr; /* ← 1画面にする */
+  height: 100vh;
+  gap: 12px;
+  padding: 12px;
+
+  background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
 }
 
+/* メッセージ */
 .message {
-  margin: 12px 0;
-  font-weight: bold;
-  color: #333;
+  color: #757575;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
+/* =====================
+   タブ
+===================== */
 .tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .tab {
-  padding: 10px 24px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f3f4f6;
-  color: #333;
-  font-weight: bold;
+  padding: 6px 12px;
+  border: 1px solid #C5E99B;
+  background: #fff;
+  border-radius: 999px;
   cursor: pointer;
+  color: #757575;
 }
 
 .activeTab {
-  padding: 10px 24px;
-  border: 1px solid #2563eb;
-  border-radius: 6px;
-  background-color: #2563eb;
+  padding: 6px 12px;
+  border: none;
+  background: #77AF9C;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
+  border-radius: 999px;
 }
 
+/* =====================
+   検索
+===================== */
 .searchRow {
   display: flex;
   gap: 8px;
-  align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+
+  width: 100%;   /* ← 修正：親幅に追従 */
 }
 
 .input {
-  width: 100%;
-  padding: 10px 12px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
+  flex: 1;       /* ← 追加：横幅を伸ばす */
+  width: 100%;   /* ← 追加：確実に追従 */
+  padding: 8px 10px;
+  border: 1px solid #C5E99B;
+  border-radius: 8px;
+  outline: none;
 }
 
-.searchButton {
-  padding: 10px 24px;
-  border: none;
-  border-radius: 6px;
-  background-color: #111827;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  white-space: nowrap;
-}
+/* =====================
+   左右パネル
+===================== */
+.left,
+.right {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
 
-.searchButton:hover {
-  background-color: #374151;
-}
-
-.listScroll {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+
+  min-height: 0;
+  overflow: hidden;
+
+  border: 1px solid #C5E99B;
 }
 
+/* =====================
+   リストスクロール
+===================== */
+.listScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* =====================
+   カード
+===================== */
 .card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px 30px;
-  background-color: #fff;
+  border: 1px solid #C5E99B;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: #fff;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
   align-items: center;
-  margin-bottom: 16px;
 }
 
+/* ボタン群 */
 .buttonGroup {
   display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-shrink: 0;
+  gap: 6px;
+}
+
+.editBtn,
+.saveBtn,
+.deleteBtn {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .editBtn {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 6px;
-  background-color: #2563eb;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.editBtn:hover {
-  background-color: #1d4ed8;
+  background: #C5E99B;
+  color: #333;
 }
 
 .saveBtn {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 6px;
-  background-color: #16a34a;
+  background: #77AF9C;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.saveBtn:hover {
-  background-color: #15803d;
 }
 
 .deleteBtn {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 6px;
-  background-color: #dc2626;
+  background: #ff6b6b;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.deleteBtn:hover {
-  background-color: #b91c1c;
-}
-
-.deleteBtn:disabled {
-  background-color: #d1d5db;
-  color: #6b7280;
-  cursor: not-allowed;
-}
-
-.deleteSmallBtn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background-color: #dc2626;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.deleteSmallBtn:hover {
-  background-color: #b91c1c;
-}
-
-.deleteSmallBtn:disabled {
-  background-color: #d1d5db;
-  color: #6b7280;
-  cursor: not-allowed;
-}
-
-.setNameInput {
-  flex: 1;
-  min-width: 0;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.totalRow {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-  font-weight: bold;
-}
-
+/* =====================
+   入力系
+===================== */
 .itemEditArea {
   display: flex;
-  gap: 14px;
-  align-items: center;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.setItemList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.setItemRow {
-  display: grid;
-  grid-template-columns: minmax(320px, 1fr) 90px 80px 80px 80px 110px 36px;
-  gap: 10px;
-  align-items: center;
-  padding: 12px 0;
-  border-top: 1px solid #eee;
-}
-
-.foodNameCell {
-  min-width: 0;
-  font-weight: bold;
-  line-height: 1.4;
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-.fieldGroup {
+.inputWithUnit {
   display: flex;
   align-items: center;
   gap: 4px;
-  white-space: nowrap;
 }
 
-.fieldLabel {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  min-width: 28px;
-}
-
-.nutrientInput {
-  width: 52px;
-  padding: 7px 6px;
-  border: 1px solid #ccc;
+.nutrientInput,
+.amountInput,
+.setNameInput {
+  width: 70px;
+  padding: 4px 6px;
+  border: 1px solid #C5E99B;
   border-radius: 6px;
-  text-align: right;
-  box-sizing: border-box;
-}
-
-.amountInput {
-  width: 58px;
-  padding: 7px 6px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  text-align: right;
-  box-sizing: border-box;
 }
 
 .unit {
+  font-size: 12px;
+  color: #757575;
+}
+
+/* =====================
+   セット
+===================== */
+.totalRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #757575;
+}
+
+.setItemList {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setItemRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.foodNameCell {
+  width: 80px;
+  overflow: hidden;
   white-space: nowrap;
-  font-size: 14px;
+  text-overflow: ellipsis;
 }
 
-input:disabled {
-  background-color: #f9fafb;
-  color: #333;
+/* 削除小ボタン */
+.deleteSmallBtn {
+  border: none;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
 }
 
-@media (max-width: 1100px) {
-  .setItemRow {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
+/* =====================
+   既存互換
+===================== */
+.addButton,
+.Button {
+  background: #77AF9C;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
 
-  .foodNameCell {
-    font-size: 16px;
-  }
+.addButton:hover,
+.Button:hover {
+  background: #8CD790;
+}
 
-  .itemEditArea {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.name {
+  color: #757575;
+}
+.setItemRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  flex-wrap: wrap; /* 横幅不足時に折り返し */
+}
+
+/* 折り返し時の崩れ防止 */
+.inputWithUnit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  min-width: 90px;
+}
+
+/* 入力が潰れすぎないように補正 */
+.nutrientInput,
+.amountInput {
+  min-width: 60px;
+}
+.setNameInput {
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
+  min-width: 0;
+
+  padding: 4px 6px;
+  border: 1px solid #C5E99B;
+  border-radius: 6px;
+
+  margin-right: 12px; /* ← 追加：ボタンとの間隔 */
 }
