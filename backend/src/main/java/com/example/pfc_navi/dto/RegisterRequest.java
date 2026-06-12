@@ -13,6 +13,10 @@ public class RegisterRequest {
     @Size(min = 8, message = "パスワードは8文字以上で入力してください")
     private String password;
 
+    @NotEmpty(message = "セキュリティ質問の回答は必須です")
+    @Size(max = 100, message = "回答は100文字以内で入力してください")
+    private String securityAnswer;
+
     public String getLoginId() {
         return loginId;
     }
@@ -21,11 +25,19 @@ public class RegisterRequest {
         return password;
     }
 
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
     public void setLoginId(String loginId) {
         this.loginId = loginId;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
 }

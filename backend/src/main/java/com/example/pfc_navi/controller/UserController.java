@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         try {
-            userService.register(request.getLoginId(), request.getPassword());
+            userService.register(request.getLoginId(), request.getPassword(), request.getSecurityAnswer());
             return ResponseEntity.ok(Map.of("message", "ユーザー登録が完了しました"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

@@ -17,6 +17,9 @@ public class Account {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
+    @Column(name = "security_answer_hash", length = 255)
+    private String securityAnswerHash;
+
     public Account() {
     }
 
@@ -32,6 +35,9 @@ public class Account {
         return password;
     }
 
+    public String getSecurityAnswerHash() {
+        return securityAnswerHash;
+    }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
@@ -43,5 +49,9 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setSecurityAnswerHash(String securityAnswerHash) {
+        this.securityAnswerHash = securityAnswerHash;
     }
 }
