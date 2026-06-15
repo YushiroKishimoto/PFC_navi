@@ -3,7 +3,7 @@
   grid-template-columns: 1fr; /* ← 1画面にする */
   height: 100vh;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 12px 40px 12px;
 
   background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
 }
