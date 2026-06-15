@@ -143,13 +143,14 @@ const handleDelete = async (itemId) => {
     <div className={styles.container}>
       {/* ヘッダー */}
       <div className={styles.header}>
-        <div>
-          {date.toLocaleDateString("ja-JP", {
+        <h2 className={styles.headerTitle}>{
+            date.toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
             weekday: "long",
-          })}
+          })}の記録</h2>
+        <div>
         </div>
 
         <div className={styles.scoreBox}>
