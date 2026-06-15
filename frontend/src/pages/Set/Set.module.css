@@ -1,13 +1,19 @@
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 100vh;
   gap: 12px;
+
+  height: 100vh;
+  width: 100%;
+
   padding: 12px;
+  box-sizing: border-box;
+
   background: linear-gradient(180deg, #f7f9f7 0%, #eef4ee 100%);
+  overflow: hidden;
 }
 
-/* 左右 */
+/* 左右共通 */
 .left,
 .right {
   background: white;
@@ -17,12 +23,12 @@
   display: flex;
   flex-direction: column;
 
-  min-height: 0;
+  min-height: 0;     /* 重要：スクロール崩れ防止 */
   overflow: hidden;
 }
 
 /* =========================
-   検索結果（ここが重要）
+   左：検索リスト
 ========================= */
 .searchList {
   flex: 1;
@@ -33,7 +39,19 @@
   padding-right: 4px;
 }
 
-/* カード */
+/* =========================
+   右：選択リスト
+========================= */
+.table {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+}
+
+/* =========================
+   カード
+========================= */
 .card {
   border: 1px solid #eee;
   border-radius: 10px;
@@ -72,49 +90,7 @@
   background: #8CD790;
 }
 
-/* 栄養 */
-.nutritionRow {
-  display: flex;
-  gap: 10px;
-  margin-top: 6px;
-  font-size: 12px;
-  color: #666;
-}
-
-/* 右側リスト */
-.table {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-/* 合計 */
-.total {
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-/* 登録ボタン */
-.Button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 999px;
-  border: none;
-  background: #77AF9C;
-  color: white;
-  font-weight: bold;
-}
-
-.Button:hover {
-  background: #8CD790;
-}
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
+/* 削除ボタン */
 .deleteButton {
   margin-left: auto;
   background: #ff5c5c;
@@ -131,6 +107,16 @@
   background: #ff2e2e;
 }
 
+/* 栄養表示 */
+.nutritionRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* input */
 .input {
   padding: 12px 14px;
   border: 1px solid #C5E99B;
@@ -139,9 +125,44 @@
   color: #757575;
   outline: none;
   transition: 0.2s;
+  margin-bottom: 8px;
 }
 
 .input:focus {
   border-color: #77AF9C;
   box-shadow: 0 0 0 3px rgba(119, 175, 156, 0.2);
+}
+
+/* 合計 */
+.total {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* ボタン */
+.Button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  background: #77AF9C;
+  color: white;
+  font-weight: bold;
+}
+
+.Button:hover {
+  background: #8CD790;
+}
+
+/* =========================
+   レスポンシブ
+========================= */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    height: 100vh;
+  }
 }
