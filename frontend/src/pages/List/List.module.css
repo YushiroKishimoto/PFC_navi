@@ -10,7 +10,7 @@
 
 /* メッセージ */
 .message {
-  color: #757575;
+  color: #666;
   font-size: 14px;
   margin-bottom: 10px;
 }
@@ -30,7 +30,7 @@
   background: #fff;
   border-radius: 999px;
   cursor: pointer;
-  color: #757575;
+  color: #666;
 }
 
 .activeTab {
@@ -164,7 +164,7 @@
 
 .unit {
   font-size: 12px;
-  color: #757575;
+  color: #666;
 }
 
 /* =====================
@@ -175,7 +175,7 @@
   gap: 10px;
   margin-top: 6px;
   font-size: 12px;
-  color: #757575;
+  color: #666;
 }
 
 .setItemList {
@@ -227,7 +227,7 @@
 }
 
 .name {
-  color: #757575;
+  color: #666;
 }
 .setItemRow {
   display: flex;

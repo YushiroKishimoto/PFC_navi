@@ -16,7 +16,7 @@
 .title {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #757575;
+  color: #666;
   font-weight: 600;
 }
 
@@ -41,7 +41,7 @@
   padding: 12px 14px;
 
   font-size: 14px;
-  color: #757575;
+  color: #666;
 
   border: 1px solid #C5E99B;
   border-radius: 12px;
@@ -85,7 +85,7 @@
   padding: 12px;
 
   background: transparent;
-  color: #757575;
+  color: #666;
 
   border: 1px solid #8CD790;
   border-radius: 999px;
@@ -113,7 +113,7 @@ input::placeholder {
 .backButton {
   padding: 12px;
   background: transparent;
-  color: #757575;
+  color: #666;
 
   border: 1px solid #8CD790;
   border-radius: 999px;
