@@ -103,6 +103,8 @@ body {
   flex-direction: column;
   gap: 8px;
 
+  color:#666;
+
   overflow: hidden;
 }
 
@@ -157,6 +159,8 @@ body {
   align-items: center;
   gap: 12px;
 
+color:#666;
+
   margin-bottom: 12px;
 }
 
@@ -171,7 +175,7 @@ body {
 .mealTotal {
   font-size: 14px;
   font-weight: bold;
-  color: #333;
+  color: #666;
 
   white-space: nowrap;
   text-align: right;
@@ -186,6 +190,8 @@ body {
 
   /* ★ 5件固定表示 */
   max-height: calc(5 * 42px);
+
+  color:#666;
 
   overflow-y: auto;
 }
