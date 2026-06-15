@@ -135,6 +135,8 @@ body {
   gap: 14px;
 
   margin-top: 12px;
+
+  flex: 1;
 }
 
 /* meal card */
