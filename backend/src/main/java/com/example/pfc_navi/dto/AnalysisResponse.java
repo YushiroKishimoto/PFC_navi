@@ -3,7 +3,7 @@ package com.example.pfc_navi.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-public class WeeklyAnalysisResponse {
+public class AnalysisResponse {
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -16,10 +16,7 @@ public class WeeklyAnalysisResponse {
 
     private Integer targetCal;
 
-    public WeeklyAnalysisResponse() {
-    }
-
-    public WeeklyAnalysisResponse(
+    public AnalysisResponse(
             LocalDate startDate,
             LocalDate endDate,
             Integer recordDays,

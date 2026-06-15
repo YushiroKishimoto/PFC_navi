@@ -40,4 +40,21 @@ public class AnalysisController {
             return ApiResponse.validationError(e.getMessage(), Map.of());
         }
     }
+
+    @GetMapping("/monthly")
+    public ApiResponse<?> getMonthlyAnalysis(
+            @RequestParam String targetMonth,
+            Principal principal
+    ) {
+        try {
+            Integer userId = getUserId(principal);
+
+            return ApiResponse.success(
+                    "月間分析取得成功",
+                    analysisService.getMonthlyAnalysis(targetMonth, userId)
+            );
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.validationError(e.getMessage(), Map.of());
+        }
+    }
 }
