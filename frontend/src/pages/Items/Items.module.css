@@ -6,10 +6,10 @@
 
   min-height: 100vh;
   background: linear-gradient(
-  180deg,
-  #f7f9f7 0%,
-  #eef4ee 100%
-);
+    180deg,
+    #f7f9f7 0%,
+    #eef4ee 100%
+  );
 }
 
 .title {
@@ -19,9 +19,13 @@
   font-weight: 600;
 }
 
-/* カード化 */
+/* =========================
+   カード（ここが変更ポイント）
+========================= */
 .card {
-  width: 420px;
+  width: clamp(260px, 85vw, px);
+  /* 最小280px / 最大420px / 基本は画面の90% */
+
   background: #ffffff;
 
   padding: 24px;
@@ -119,4 +123,25 @@ label {
 
 .button:active {
   transform: scale(0.98);
+}
+
+/* スマホ最適化 */
+@media (max-width: 80px) {
+  .card {
+    width: 92vw;
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
 }

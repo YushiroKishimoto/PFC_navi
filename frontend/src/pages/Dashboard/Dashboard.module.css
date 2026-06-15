@@ -44,6 +44,13 @@ body {
 
   font-size: 15px;
 }
+.headerTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #757575;
+  line-height: 1.2;
+  margin: 0;
+}
 
 .dateText {
   font-size: 15px;
