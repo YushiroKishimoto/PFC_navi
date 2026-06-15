@@ -15,7 +15,7 @@
 .title {
   font-size: 20px;
   margin-bottom: 20px;
-  color: #757575;
+  color: #666;
   font-weight: 600;
 }
 
@@ -39,7 +39,7 @@ label {
   font-size: 12px;
   margin-top: 12px;
   display: block;
-  color: #757575;
+  color: #666;
 }
 
 /* 入力 */
@@ -53,7 +53,7 @@ label {
   border-radius: 12px;
 
   font-size: 14px;
-  color: #757575;
+  color: #666;
 
   outline: none;
   transition: 0.2s;
@@ -85,13 +85,13 @@ label {
 .subText {
   margin-top: 15px;
   font-size: 12px;
-  color: #757575;
+  color: #666;
   opacity: 0.8;
 }
 
 /* エラー */
 .error {
-  color: #757575;
+  color: #666;
   font-size: 11px;
   margin-top: 4px;
   opacity: 0.8;

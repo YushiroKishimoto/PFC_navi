@@ -85,7 +85,7 @@ const AppOverview = () => {
                 {features.map((feature, index) => (
                 <li key={index} style={{ marginBottom: "12px" }}>
                     <a href={feature.url} target="_blank" rel="noopener noreferrer">{feature.name}</a>
-                    <span>：{feature.desc}</span>
+                    <span className={styles.list}>{feature.desc}</span>
                 </li>
                 ))}
             </ul>

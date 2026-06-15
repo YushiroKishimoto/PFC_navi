@@ -16,7 +16,7 @@
 .title {
   font-size: 22px;
   margin-bottom: 20px;
-  color: #757575;
+  color: #666;
   font-weight: 600;
 }
 
@@ -47,7 +47,7 @@
   border-radius: 12px;
 
   font-size: 14px;
-  color: #757575;
+  color: #666;
 
   outline: none;
   transition: 0.2s;

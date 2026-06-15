@@ -133,7 +133,7 @@ export default function Analysis() {
             className={mode === "weekly" ? styles.activeMode : styles.modeButton}
             onClick={() => setMode("weekly")}
           >
-            <h2>週間分析</h2>
+           週間分析
           </button>
 
           <button
@@ -141,7 +141,7 @@ export default function Analysis() {
             className={mode === "monthly" ? styles.activeMode : styles.modeButton}
             onClick={() => setMode("monthly")}
           >
-            <h2>月間分析</h2>
+            月間分析
           </button>
         </div>
           <p>

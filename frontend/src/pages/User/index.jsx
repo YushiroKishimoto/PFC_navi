@@ -64,7 +64,7 @@ export default function Register() {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        <div style={{ fontSize: 12, color: "#757575" }}>
+        <div style={{ fontSize: 12, color: "#666" }}>
           {SECURITY_QUESTION}
 </div>
 

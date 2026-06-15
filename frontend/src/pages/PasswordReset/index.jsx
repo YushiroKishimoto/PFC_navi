@@ -48,7 +48,7 @@ export default function PasswordReset() {
           onChange={(e) => setLoginId(e.target.value)}
         />
 
-        <div style={{ fontSize: 12, color: "#757575" }}>
+        <div style={{ fontSize: 12, color: "#666" }}>
           {SECURITY_QUESTION}
 </div>
 
