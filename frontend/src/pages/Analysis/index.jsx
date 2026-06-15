@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Analysis.module.css";
-import { getWeeklyAnalysis } from "../../api/analysis";
+import { getWeeklyAnalysis, getMonthlyAnalysis } from "../../api/analysis";
 
 import {
   ResponsiveContainer,
@@ -46,11 +46,29 @@ export default function Analysis() {
   });
   const [message, setMessage] = useState("");
 
-  const fetchAnalysis = async (targetEndDate) => {
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    setEndDate(selectedDate);
+    fetchAnalysis(selectedDate);
+  };
+
+  const formatMonth = (targetDate) => {
+    const y = targetDate.getFullYear();
+    const m = String(targetDate.getMonth() + 1).padStart(2, "0");
+    return `${y}-${m}`;
+  };
+
+  const [mode, setMode] = useState("weekly");
+  const [targetMonth, setTargetMonth] = useState(formatMonth(new Date()));
+
+  const fetchAnalysis = async () => {
     try {
       setMessage("");
 
-      const res = await getWeeklyAnalysis(targetEndDate);
+      const res =
+        mode === "weekly"
+          ? await getWeeklyAnalysis(endDate)
+          : await getMonthlyAnalysis(targetMonth);
 
       if (res?.resultCode === "SUCCESS") {
         const days = res?.data?.days ?? [];
@@ -70,64 +88,94 @@ export default function Analysis() {
           recordDays: res?.data?.recordDays ?? 0,
           achievementRate: res?.data?.achievementRate ?? 0,
           averageCal: res?.data?.averageCal ?? 0,
-          days: chartData,
           targetCal: res?.data?.targetCal ?? 0,
+          days: chartData,
         });
       } else {
-        setMessage(res?.message || "週間分析の取得に失敗しました");
+        setMessage(res?.message || "分析の取得に失敗しました");
         setAnalysis({
           startDate: "",
           endDate: "",
           recordDays: 0,
           achievementRate: 0,
           averageCal: 0,
-          days: [],
           targetCal: 0,
+          days: [],
         });
       }
     } catch (e) {
       console.error(e);
-      setMessage("週間分析の取得に失敗しました");
+      setMessage("分析の取得に失敗しました");
       setAnalysis({
         startDate: "",
         endDate: "",
+        recordDays: 0,
+        achievementRate: 0,
+        averageCal: 0,
+        targetCal: 0,
         days: [],
       });
     }
   };
 
   useEffect(() => {
-    fetchAnalysis(endDate);
-  }, []);
-
-  const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    setEndDate(selectedDate);
-    fetchAnalysis(selectedDate);
-  };
+    fetchAnalysis();
+  }, [mode, endDate, targetMonth]);
 
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h2>週間分析</h2>
+          <div className={styles.modeTabs}>
+          <button
+            type="button"
+            className={mode === "weekly" ? styles.activeMode : styles.modeButton}
+            onClick={() => setMode("weekly")}
+          >
+            <h2>週間分析</h2>
+          </button>
+
+          <button
+            type="button"
+            className={mode === "monthly" ? styles.activeMode : styles.modeButton}
+            onClick={() => setMode("monthly")}
+          >
+            <h2>月間分析</h2>
+          </button>
+        </div>
           <p>
             {analysis.startDate && analysis.endDate
               ? `${analysis.startDate} ～ ${analysis.endDate}`
               : "1週間の記録を確認できます"}
           </p>
         </div>
+              
+        
 
         <div className={styles.dateSearch}>
-          <label>終了日</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={handleDateChange}
-            className={styles.dateInput}
-          />
-        </div>
+        {mode === "weekly" ? (
+          <>
+            <label>終了日</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className={styles.dateInput}
+            />
+          </>
+  ) : (
+    <>
+      <label>対象月</label>
+      <input
+        type="month"
+        value={targetMonth}
+        onChange={(e) => setTargetMonth(e.target.value)}
+        className={styles.dateInput}
+      />
+    </>
+  )}
+</div>
       </div>
 
       {message && <p className={styles.message}>{message}</p>}
@@ -150,7 +198,7 @@ export default function Analysis() {
       </div>
 
       <div className={styles.card}>
-        <h3>1週間のPFC記録</h3>
+        <h3>{mode === "weekly" ? "1週間のPFC記録" : "1か月のPFC記録"}</h3>
 
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={analysis.days}>
@@ -167,7 +215,7 @@ export default function Analysis() {
       </div>
 
       <div className={styles.card}>
-        <h3>1週間の総カロリー</h3>
+       <h3>{mode === "weekly" ? "1週間の総カロリー" : "1か月の総カロリー"}</h3>
 
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={analysis.days}>
