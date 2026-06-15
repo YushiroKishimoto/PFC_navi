@@ -107,12 +107,14 @@ body {
 
 .chartCard {
   background: #fff;
-  padding: 12px;
+  padding: 1px;
   border-radius: 12px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* =========================
@@ -135,7 +137,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  min-height: 260px;
+  min-height: 0;
   overflow: hidden;
 }
 

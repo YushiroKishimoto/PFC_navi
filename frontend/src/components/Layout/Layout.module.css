@@ -38,7 +38,7 @@
   min-width: 0;
 
   height: 100vh;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 
   box-sizing: border-box;

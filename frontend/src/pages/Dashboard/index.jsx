@@ -200,6 +200,22 @@ const handleDelete = async (itemId) => {
 
         {/* 円＋棒グラフ */}
         <div className={styles.chartCard}>
+
+            <ResponsiveContainer width="100%" height={180}>
+            <BarChart
+              data={barData}
+              layout="vertical"
+              margin={{ top: 10, right: 30, left: 30, bottom: 10 }}
+            >
+              <XAxis type="number" />
+              <YAxis type="category" dataKey="name" />
+              <Tooltip />
+
+              <Bar dataKey="target" fill="#e0e0e0" barSize={16} />
+              <Bar dataKey="intake" fill="#82ca9d" barSize={16} />
+            </BarChart>
+          </ResponsiveContainer>
+
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
@@ -224,21 +240,6 @@ const handleDelete = async (itemId) => {
                 PFC
               </text>
             </PieChart>
-          </ResponsiveContainer>
-
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart
-              data={barData}
-              layout="vertical"
-              margin={{ top: 10, right: 30, left: 30, bottom: 10 }}
-            >
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="name" />
-              <Tooltip />
-
-              <Bar dataKey="target" fill="#e0e0e0" barSize={16} />
-              <Bar dataKey="intake" fill="#82ca9d" barSize={16} />
-            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
