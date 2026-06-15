@@ -5,35 +5,43 @@ const AppOverview = () => {
     const features = [
         {
             name: "新規ユーザー登録画面",
-            desc: "ユーザーを新しく登録します",
+            desc: "ユーザーを新しく登録できます",
+            url: "http://localhost:5173/user"
         },
         {
             name: "ログイン画面",
-            desc: "ログインします",
+            desc: "ログインできます",
+            url: "http://localhost:5173/login"
         },
         {
             name: "ダッシュボード",
             desc: "日付に応じた食事とPFCの記録を見ることができます",
+            url: "http://localhost:5173/"
         },
         {
             name: "食材・料理（登録）",
             desc: "自作の食材や料理を登録できます",
+            url: "http://localhost:5173/items"
         },
         {
             name: "セット登録",
             desc: "よく摂取する食材や料理の組み合わせを登録できます",
+            url: "http://localhost:5173/set"
         },
         {
             name: "プロフィール（ユーザー情報登録）",
             desc: "ユーザーの情報を登録・更新できます",
+            url: "http://localhost:5173/profile"
         },
         {
             name: "登録一覧（一覧・編集）",
             desc: "登録した食材やセットの検索、編集、削除ができます",
+            url: "http://localhost:5173/list"
         },
         {
-            name: "ログアウト",
-            desc: "[ログアウト]ボタンで常時ログアウトできます",
+            name: "分析（週間分析）",
+            desc: "選択した日付から1週間前までの記録の分析をみることができます",
+            url: "http://localhost:5173/analysis"
         }
     ];
 
@@ -43,7 +51,7 @@ const AppOverview = () => {
         {/* タイトル */}
         <header className={styles.header}>
             <h1>アプリ概要</h1>
-            <p>このアプリの目的・使い方・参考情報を説明します</p>
+            <p>このアプリの目的・使用方法などを説明します</p>
         </header>
 
         {/* アプリの目的 */}
@@ -60,7 +68,7 @@ const AppOverview = () => {
             <h2>2. 使用方法</h2>
             <ol className={styles.list}>
                 <li>ユーザー登録を行う</li>
-                <li>年齢・性別・身長・体重・活動量・目標を設定する</li>
+                <li>年齢・性別・身長・体重・活動レベル・目標コースを設定する</li>
                 <li>食事を登録する</li>
                 <li>日々のPFCバランスとカロリーを確認する</li>
             </ol>
@@ -76,8 +84,8 @@ const AppOverview = () => {
             <ul style={{ listStyle: "none", padding: 0 }}>
                 {features.map((feature, index) => (
                 <li key={index} style={{ marginBottom: "12px" }}>
-                    <strong>{feature.name}：</strong>
-                    <span>{feature.desc}</span>
+                    <a href={feature.url} target="_blank" rel="noopener noreferrer">{feature.name}</a>
+                    <span>：{feature.desc}</span>
                 </li>
                 ))}
             </ul>
