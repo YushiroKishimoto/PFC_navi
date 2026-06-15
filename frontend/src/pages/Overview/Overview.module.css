@@ -9,30 +9,139 @@
   overflow-y: auto;
 }
 
+
+/* =========================
+   header
+========================= */
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: #666;
+}
+
+.header p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* =========================
+   section card style
+========================= */
 .section {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #eee;
+  background: #fff;
+  padding: 20px;
+
+  border-radius: 12px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  margin-bottom: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .section h2 {
-  margin-bottom: 10px;
+  margin: 0 0 8px 0;
+
   font-size: 18px;
+  font-weight: bold;
+  color: #666
+}
+
+/* =========================
+   text / list
+========================= */
+.section p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
 }
 
 .list {
   padding-left: 20px;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #666;
 }
 
+/* =========================
+   feature list
+========================= */
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featureItem {
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.featureItem a {
+  color: #2d9bf0;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.featureItem a:hover {
+  text-decoration: underline;
+}
+
+.featureItem span {
+  color: #666;
+  font-size: 14px;
+}
+
+/* =========================
+   note box
+========================= */
 .note {
   margin-top: 10px;
+
   font-size: 13px;
   color: #666;
+
   background: #f5f5f5;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* =========================
+   responsive
+========================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .section {
+    padding: 14px;
+  }
 }
