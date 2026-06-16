@@ -78,7 +78,7 @@ export default function Onboarding() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>3. ユーザー情報登録</h2>
+      <h2 className={styles.title}>ユーザー情報登録</h2>
 
       <div className={styles.form}>
 
@@ -173,9 +173,8 @@ export default function Onboarding() {
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           更新
         </button>
-        <p>{message}</p>
-
       </div>
+      <p>{message}</p>
     </div>
   );
 }
