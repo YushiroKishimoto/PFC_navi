@@ -322,7 +322,7 @@ export default function List() {
 
                 <div className={styles.itemEditArea}>
                   <div className={styles.inputWithUnit}>
-                    <span className={styles.unit}>kcal</span>
+                    
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
@@ -336,10 +336,11 @@ export default function List() {
                         )
                       }
                     />
+                    <span className={styles.unit}>kcal</span>
                   </div>
 
                   <div className={styles.inputWithUnit}>
-                    <span className={styles.unit}>g(P)</span>
+                    <span className={styles.unit}>P：</span>
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
@@ -353,10 +354,11 @@ export default function List() {
                         )
                       }
                     />
+                    <span className={styles.unit}>g</span>
                   </div>
 
                   <div className={styles.inputWithUnit}>
-                    <span className={styles.unit}>g(F)</span>
+                    <span className={styles.unit}>F：</span>
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
@@ -370,10 +372,11 @@ export default function List() {
                         )
                       }
                     />
+                    <span className={styles.unit}>g</span>
                   </div>
 
                   <div className={styles.inputWithUnit}>
-                    <span className={styles.unit}>g(C)</span>
+                    <span className={styles.unit}>C：</span>
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
@@ -387,10 +390,11 @@ export default function List() {
                         )
                       }
                     />
+                    <span className={styles.unit}>g</span>
                   </div>
 
                   <div className={styles.inputWithUnit}>
-                    <span className={styles.unit}>g</span>
+                    <span className={styles.unit}>量：</span>
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
@@ -404,6 +408,7 @@ export default function List() {
                         )
                       }
                     />
+                    <span className={styles.unit}>g</span>
                   </div>
                 </div>
               </div>
