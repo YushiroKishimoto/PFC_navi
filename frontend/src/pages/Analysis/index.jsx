@@ -181,15 +181,20 @@ export default function Analysis() {
       {message && <p className={styles.message}>{message}</p>}
 
       <div className={styles.summaryGrid}>
-        <div className={styles.summaryCard}>
-          <span>記録日数</span>
-          <strong>{analysis.recordDays ?? 0} / 7日</strong>
-        </div>
+          <div className={styles.summaryCard}>
+            <span>記録日数</span>
+            <strong>
+              {analysis.recordDays ?? 0} /{" "}
+              {mode === "weekly" ? 7 : analysis.days.length}日
+            </strong>
+          </div>
 
-        <div className={styles.summaryCard}>
-          <span>週間達成率</span>
-          <strong>{analysis.achievementRate ?? 0}%</strong>
-        </div>
+          <div className={styles.summaryCard}>
+            <span>
+              {mode === "weekly" ? "週間達成率" : "月間達成率"}
+            </span>
+            <strong>{analysis.achievementRate ?? 0}%</strong>
+          </div>
 
         <div className={styles.summaryCard}>
           <span>平均カロリー</span>
