@@ -115,10 +115,6 @@ export default function Dashboard() {
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
 const handleDelete = async (itemId) => {
-  if (!window.confirm("この記録を削除しますか？")) {
-    return;
-  }
-
   try {
     const res = await deleteMealRecordItem(itemId);
 
@@ -131,6 +127,7 @@ const handleDelete = async (itemId) => {
           ),
         }))
       );
+      navigate(0);
     } else {
       alert(res?.message || "記録の削除に失敗しました");
     }
