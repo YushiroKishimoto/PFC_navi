@@ -81,92 +81,103 @@ export default function Onboarding() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>3. ユーザー情報登録</h2>
+      <h2 className={styles.title}>新規ユーザー情報登録</h2>
 
       <div className={styles.form}>
 
-        {/* 年齢 */}
-        <input
-          name="age"
-          type="number"
-          placeholder="年齢"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.age}
-        />
-
-        {/* 性別（選択式） */}
-        <select
-          name="sex"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.sex}
-        >
-          <option value="" disabled hidden>
-            性別を選択
-          </option>
-          <option value="male">男</option>
-          <option value="female">女</option>
-        </select>
-
-        {/* 身長 */}
-        <input
-          name="height"
-          type="number"
-          placeholder="身長(cm)"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.height}
-        />
-
-        {/* 現在体重 */}
-        <input
-          name="weight"
-          type="number"
-          placeholder="現在体重(kg)"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.weight}
-        />
-
-        {/* 活動レベル（選択） */}
-        <select
-          name="burnCal"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.burnCal}
-        >
-          <option value="" disabled hidden>
-            活動レベルを選択
-          </option>
-          {ACTIVITY_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-
-        {/* PFCコース */}
-        <select
-          name="pfcCourse"
-          className={styles.input}
-          onChange={handleChange}
-          value={form.pfcCourse}
-        >
-          <option value="" disabled hidden>
-            目標コースを選択
-          </option>
-          <option value="1">減量</option>
-          <option value="2">維持</option>
-          <option value="3">増量</option>
-        </select>
+        <div className={styles.formRow}>
+                  <label>年齢</label>
+                  <input
+                    name="age"
+                    type="number"
+                    placeholder="例）25"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.age}
+                  />
+                </div>
+        
+                <div className={styles.formRow}>
+                  <label>性別</label>
+                  <select
+                    name="sex"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.sex}
+                  >
+                    <option value="" disabled hidden>
+                      性別を選択
+                    </option>
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                  </select>
+                </div>
+        
+                <div className={styles.formRow}>
+                  <label class="center-text">身長</label>
+                  <input
+                    name="height"
+                    type="number"
+                    placeholder="例）170"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.height}
+                  />
+                </div>
+        
+                <div className={styles.formRow}>
+                  <label class="center-text">体重</label>
+                  <input
+                    name="weight"
+                    type="number"
+                    placeholder="例）65"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.weight}
+                  />
+                </div>
+        
+                <div className={styles.formRow}>
+                  <label class="center-text">活動レベル</label>
+                  <select
+                    name="burnCal"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.burnCal}
+                  >
+                    <option value="" disabled hidden>
+                      活動レベルを選択
+                    </option>
+                    {ACTIVITY_OPTIONS.map(({ value, label }) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+        
+                <div className={styles.formRow}>
+                  <label>目標コース</label>
+                  <select
+                    name="pfcCourse"
+                    className={styles.input}
+                    onChange={handleChange}
+                    value={form.pfcCourse}
+                  >
+                    <option value="" disabled hidden>
+                      目標コースを選択
+                    </option>
+                    <option value="1">減量</option>
+                    <option value="2">維持</option>
+                    <option value="3">増量</option>
+                  </select>
+                </div>
 
         <button className={styles.buttonPrimary} onClick={handleSubmit}>
           登録
         </button>
-
-        <p>{message}</p>
       </div>
+      <p>{message}</p>
     </div>
   );
 }
