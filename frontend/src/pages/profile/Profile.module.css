@@ -98,3 +98,15 @@
   text-align: center;
   margin-top: 8px;
 }
+
+.formRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.formRow label {
+  min-width: 80px;
+  text-align: center;
+}
