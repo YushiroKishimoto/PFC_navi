@@ -1,10 +1,6 @@
 /* =========================
    base
 ========================= */
-* {
-  box-sizing: border-box;
-}
-
 html,
 body {
   height: 100%;
@@ -12,18 +8,16 @@ body {
 
 .container {
   height: 100vh;
-  width: 100%;
+  width: 97%;
 
   display: flex;
   flex-direction: column;
 
   padding: 10px;
 
-  background: linear-gradient(
-    180deg,
-    #f7f9f7 0%,
-    #eef4ee 100%
-  );
+  background: linear-gradient(180deg,
+      #f7f9f7 0%,
+      #eef4ee 100%);
 
   overflow-y: auto;
 }
@@ -43,7 +37,9 @@ body {
   border-radius: 8px;
 
   font-size: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
+
 .headerTitle {
   font-size: 16px;
   font-weight: 600;
@@ -96,20 +92,30 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* =========================
+   summary（統一）
+========================= */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
 .summaryCard {
   background: #fff;
-  padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
+
+  padding: 8px 10px;
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: center;
 
-  color:#666;
+  gap: 4px;
 
-  overflow: hidden;
+  color: #666;
 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .summaryMini {
@@ -118,6 +124,9 @@ body {
   font-size: 13px;
 }
 
+/* =========================
+   chart
+========================= */
 .chartCard {
   background: #fff;
   padding: 1px;
@@ -140,7 +149,6 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 
-  margin-top: 12px;
 
   flex: 1;
 }
@@ -148,12 +156,14 @@ body {
 /* meal card */
 .mealCard {
   background: #fff;
-  padding: 14px;
+  padding: 10px;
   border-radius: 8px;
 
   display: flex;
   flex-direction: column;
 
+  height: 290px;
+  /* 追加：固定 */
   min-height: 0;
   overflow: hidden;
 
@@ -169,7 +179,7 @@ body {
   align-items: center;
   gap: 12px;
 
-color:#666;
+  color: #666;
 
   margin-bottom: 12px;
 }
@@ -192,16 +202,15 @@ color:#666;
 }
 
 /* =========================
-   food list (重要部分)
+   food list
 ========================= */
 .foodList {
   flex: 1;
   min-height: 0;
 
-  /* ★ 5件固定表示 */
   max-height: calc(5 * 42px);
 
-  color:#666;
+  color: #666;
 
   overflow-y: auto;
 }
@@ -230,7 +239,7 @@ color:#666;
 
   font-size: 12px;
 
-  height: 42px; /* ★高さ固定（5件制御の基準） */
+  height: 42px;
   padding: 0 4px;
 
   border-bottom: 1px solid #eee;
@@ -291,6 +300,7 @@ color:#666;
    responsive
 ========================= */
 @media (max-width: 1024px) {
+
   .topGrid,
   .bottomGrid {
     grid-template-columns: 1fr;
