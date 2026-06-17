@@ -114,34 +114,34 @@ export default function Dashboard() {
 
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
-const handleDelete = async (itemId) => {
-  try {
-    const res = await deleteMealRecordItem(itemId);
+  const handleDelete = async (itemId) => {
+    try {
+      const res = await deleteMealRecordItem(itemId);
 
-    if (res?.resultCode === "SUCCESS") {
-      setMeals((prev) =>
-        prev.map((meal) => ({
-          ...meal,
-          items: (meal.items ?? meal.mealItems ?? meal.foods ?? []).filter(
-            (item) => item.id !== itemId
-          ),
-        }))
-      );
-      navigate(0);
-    } else {
-      alert(res?.message || "記録の削除に失敗しました");
+      if (res?.resultCode === "SUCCESS") {
+        setMeals((prev) =>
+          prev.map((meal) => ({
+            ...meal,
+            items: (meal.items ?? meal.mealItems ?? meal.foods ?? []).filter(
+              (item) => item.id !== itemId
+            ),
+          }))
+        );
+        navigate(0);
+      } else {
+        alert(res?.message || "記録の削除に失敗しました");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("記録の削除に失敗しました");
     }
-  } catch (e) {
-    console.error(e);
-    alert("記録の削除に失敗しました");
-  }
-};
+  };
   return (
     <div className={styles.container}>
       {/* ヘッダー */}
       <div className={styles.header}>
         <h2 className={styles.headerTitle}>{
-            date.toLocaleDateString("ja-JP", {
+          date.toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
@@ -165,41 +165,40 @@ const handleDelete = async (itemId) => {
           <DatePicker selected={date} onChange={handleChange} inline />
         </div>
 
-        {/* サマリー */}
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryMini}>
-            <span>総カロリー</span>
-            <strong>
-              {safe(dashboard?.actualCal)} / {safe(dashboard?.targetCal)}kcal
-            </strong> 
+        {/* サマリー（4分割に変更） */}
+        <div className={styles.summaryGrid}>
+          <div className={styles.summaryCard}>
+
+            <strong>総カロリー{safe(dashboard?.actualCal)} kcal</strong>
           </div>
 
-          <div className={styles.summaryMini}>
-            <span>P</span>
+          <div className={styles.summaryCard}>
+            <strong>達成率：{safe(dashboard?.achievementRate)}%</strong>
+          </div>
+
+          <div className={styles.summaryCard}>
             <strong>
-              {pfc.intake.p} / {pfc.target.p} g
+              P:{pfc.intake.p} / {pfc.target.p} g
             </strong>
           </div>
 
-          <div className={styles.summaryMini}>
-            <span>F</span>
+          <div className={styles.summaryCard}>
             <strong>
-              {pfc.intake.f} / {pfc.target.f} g
+              F:{pfc.intake.f} / {pfc.target.f} g
             </strong>
           </div>
-
-          <div className={styles.summaryMini}>
-            <span>C</span>
+          <div className={styles.summaryCard}>
             <strong>
-              {pfc.intake.c} / {pfc.target.c} g
+              C:{pfc.intake.c} / {pfc.target.f} g
             </strong>
           </div>
         </div>
 
+
         {/* 円＋棒グラフ */}
         <div className={styles.chartCard}>
 
-            <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={180}>
             <BarChart
               data={barData}
               layout="vertical"

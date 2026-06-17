@@ -13,6 +13,9 @@ export default function Record() {
 
   const currentDate = date ?? new Date().toISOString().split("T")[0];
 
+  // 文字列のcurrentDateを安全にDateオブジェクトに変換する処理
+  const displayDate = new Date(currentDate);
+
   // =========================
   // state
   // =========================
@@ -212,20 +215,33 @@ export default function Record() {
   return (
     <div className={styles.container}>
 
-      {/* ヘッダー */}
+      {/* ===================================================
+          指定スタイルに完全準拠させた新しいヘッダー
+      =================================================== */}
       <div className={styles.header}>
-        <h2 className={styles.headerTitle}>{currentDate} の記録</h2>
+        <h2 className={styles.headerTitle}>
+          {displayDate.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            weekday: "long",
+          })}の記録
+        </h2>
 
-        <select
-          value={mealType}
-          onChange={(e) => setMealType(e.target.value)}
-          className={styles.mealSelect}
-        >
-          <option value="breakfast">朝食</option>
-          <option value="lunch">昼食</option>
-          <option value="dinner">夕食</option>
-        </select>
+        {/* 選択ボックス（ scoreBoxと同等の横並びデザインに統合、またはscoreBoxを流用可能 ） */}
+        <div className={styles.scoreBox}>
+          <select
+            value={mealType}
+            onChange={(e) => setMealType(e.target.value)}
+            className={styles.mealSelect}
+          >
+            <option value="breakfast">朝食</option>
+            <option value="lunch">昼食</option>
+            <option value="dinner">夕食</option>
+          </select>
+        </div>
       </div>
+      {/* =================================================== */}
 
       {/* メイン2カラム */}
       <div className={styles.grid}>
@@ -268,7 +284,7 @@ export default function Record() {
                     <div className={styles.itemInfo}>
                       <span className={styles.itemName}>{item.name}</span>
                       <span className={styles.itemPfc}>
-                        P:{item.pro} F:{item.fat} C:{item.car}　{item.cal}kcal
+                        P:{item.pro} F:{item.fat} C:{item.car} {item.cal}kcal
                       </span>
                     </div>
                     <button className={styles.addButton} onClick={() => addFood(item)}>
@@ -300,7 +316,7 @@ export default function Record() {
                     <div className={styles.itemInfo}>
                       <span className={styles.itemName}>{set.name}</span>
                       <span className={styles.itemPfc}>
-                        P:{set.totalPro} F:{set.totalFat} C:{set.totalCar}　{set.totalCal}kcal
+                        P:{set.totalPro} F:{set.totalFat} C:{set.totalCar} {set.totalCal}kcal
                       </span>
                     </div>
                     <button className={styles.addButton} onClick={() => addSet(set)}>
@@ -330,7 +346,7 @@ export default function Record() {
                   <div className={styles.itemInfo}>
                     <span className={styles.itemName}>{rec.name}</span>
                     <span className={styles.itemPfc}>
-                      P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar}　{rec.totalCal}kcal
+                      P:{rec.totalPro} F:{rec.totalFat} C:{rec.totalCar} {rec.totalCal}kcal
                     </span>
                   </div>
                   <button className={styles.addButton} onClick={() => addRecommendation(rec)}>
@@ -377,7 +393,7 @@ export default function Record() {
                       </div>
 
                       <span className={styles.itemPfc}>
-                        P:{s.pro} F:{s.fat} C:{s.car}　{s.cal}kcal
+                        P:{s.pro} F:{s.fat} C:{s.car} {s.cal}kcal
                       </span>
                     </div>
                   </div>
