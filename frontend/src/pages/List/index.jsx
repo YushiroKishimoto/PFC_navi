@@ -41,8 +41,8 @@ export default function List() {
       const resultItems = itemRes?.data?.items ?? [];
       const resultSets = setRes?.data?.sets ?? [];
 
-      setItems(resultItems.slice(0, 5));
-      setSets(resultSets.slice(0, 5));
+      setItems(resultItems);
+      setSets(resultSets);
     } catch (e) {
       console.error(e);
       setMessage("初期データの取得に失敗しました");
