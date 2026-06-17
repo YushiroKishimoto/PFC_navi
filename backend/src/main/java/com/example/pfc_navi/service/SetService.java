@@ -99,7 +99,7 @@ public class SetService {
     List<MealSet> mealSets;
 
     if (searchKeyword.isEmpty()) {
-        mealSets = mealSetRepository.findTop5ByUserIdOrderByIdDesc(userId);
+        mealSets = mealSetRepository.findByUserIdOrderByIdDesc(userId);
     } else {
         mealSets = mealSetRepository.findByNameContainingAndUserId(searchKeyword, userId);
     }

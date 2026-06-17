@@ -99,7 +99,7 @@ public class ItemService {
     List<CustomFood> customFoods;
 
     if (searchKeyword.isEmpty()) {
-        customFoods = customFoodRepository.findTop5ByUserIdOrderByIdDesc(userId);
+        customFoods = customFoodRepository.findByUserIdOrderByIdDesc(userId);
     } else {
         customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
     }

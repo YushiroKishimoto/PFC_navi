@@ -39,8 +39,8 @@ const AppOverview = () => {
             url: "http://localhost:5173/list"
         },
         {
-            name: "分析（週間分析）",
-            desc: "選択した日付から1週間前までの記録の分析をみることができます",
+            name: "分析（週間分析・月間分析）",
+            desc: "選択した日付から1週間前までの記録の分析、および、選択した月の月間記録の分析を見ることができます",
             url: "http://localhost:5173/analysis"
         }
     ];
