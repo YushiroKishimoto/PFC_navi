@@ -92,6 +92,7 @@ export default function Dashboard() {
       p: safe(dashboard?.targetPro),
       f: safe(dashboard?.targetFat),
       c: safe(dashboard?.targetCar),
+      k: safe(dashboard?.targetCal),
     },
     intake: {
       p: safe(dashboard?.actualPro),
@@ -165,11 +166,10 @@ export default function Dashboard() {
           <DatePicker selected={date} onChange={handleChange} inline />
         </div>
 
-        {/* サマリー（4分割に変更） */}
         <div className={styles.summaryGrid}>
           <div className={styles.summaryCard}>
 
-            <strong>総カロリー{safe(dashboard?.actualCal)} kcal</strong>
+            <strong>総カロリー：{safe(dashboard?.actualCal)}/{pfc.target.k} kcal</strong>
           </div>
 
           <div className={styles.summaryCard}>
@@ -189,7 +189,7 @@ export default function Dashboard() {
           </div>
           <div className={styles.summaryCard}>
             <strong>
-              C:{pfc.intake.c} / {pfc.target.f} g
+              C:{pfc.intake.c} / {pfc.target.c} g
             </strong>
           </div>
         </div>
