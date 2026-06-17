@@ -8,7 +8,7 @@ body {
 
 .container {
   height: 100vh;
-  width: 97%;
+  width: 100%;
 
   display: flex;
   flex-direction: column;
@@ -162,8 +162,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  height: 290px;
-  /* 追加：固定 */
+  height: 300px;
   min-height: 0;
   overflow: hidden;
 
