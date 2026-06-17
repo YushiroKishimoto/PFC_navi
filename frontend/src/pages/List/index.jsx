@@ -122,13 +122,13 @@ export default function List() {
       prev.map((s) =>
         s.id === setId
           ? {
-              ...s,
-              items: (s.items ?? []).map((i) =>
-                i.id === itemRowId
-                  ? { ...i, [field]: value }
-                  : i
-              ),
-            }
+            ...s,
+            items: (s.items ?? []).map((i) =>
+              i.id === itemRowId
+                ? { ...i, [field]: value }
+                : i
+            ),
+          }
           : s
       )
     );
@@ -136,9 +136,10 @@ export default function List() {
 
   const handleSaveItem = async (item) => {
     try {
+      // API送信時に空文字なら0にフォールバックする
       const payload = {
         name: item.name,
-        amount: Number(item.amount),
+        amount: Number(item.amount || 0),
         pro: Number(item.pro ?? item.p ?? 0),
         fat: Number(item.fat ?? item.f ?? 0),
         car: Number(item.car ?? item.c ?? 0),
@@ -185,7 +186,7 @@ export default function List() {
         items: (set.items ?? []).map((item) => ({
           source: item.itemType,
           itemId: item.itemId,
-          amount: Number(item.amount),
+          amount: Number(item.amount || 0),
         })),
       };
 
@@ -227,9 +228,9 @@ export default function List() {
       prev.map((s) =>
         s.id === setId
           ? {
-              ...s,
-              items: (s.items ?? []).filter((i) => i.id !== itemRowId),
-            }
+            ...s,
+            items: (s.items ?? []).filter((i) => i.id !== itemRowId),
+          }
           : s
       )
     );
@@ -309,7 +310,8 @@ export default function List() {
                       >
                         編集
                       </button>
-                    )}
+                    )
+                    }
 
                     <button
                       className={styles.deleteBtn}
@@ -322,17 +324,17 @@ export default function List() {
 
                 <div className={styles.itemEditArea}>
                   <div className={styles.inputWithUnit}>
-                    
                     <input
                       type="number"
                       disabled={editItemId !== item.id}
                       className={styles.nutrientInput}
-                      value={item.cal ?? 0}
+                      // 0の場合は編集しやすくするために空文字で見せる。それ以外は値をそのまま表示
+                      value={item.cal === 0 ? "" : (item.cal ?? "")}
                       onChange={(e) =>
                         updateItem(
                           item.id,
                           "cal",
-                          e.target.value === "" ? 0 : Number(e.target.value)
+                          e.target.value === "" ? "" : Number(e.target.value)
                         )
                       }
                     />
@@ -345,12 +347,12 @@ export default function List() {
                       type="number"
                       disabled={editItemId !== item.id}
                       className={styles.nutrientInput}
-                      value={item.pro ?? 0}
+                      value={item.pro === 0 ? "" : (item.pro ?? "")}
                       onChange={(e) =>
                         updateItem(
                           item.id,
                           "pro",
-                          e.target.value === "" ? 0 : Number(e.target.value)
+                          e.target.value === "" ? "" : Number(e.target.value)
                         )
                       }
                     />
@@ -363,12 +365,12 @@ export default function List() {
                       type="number"
                       disabled={editItemId !== item.id}
                       className={styles.nutrientInput}
-                      value={item.fat ?? 0}
+                      value={item.fat === 0 ? "" : (item.fat ?? "")}
                       onChange={(e) =>
                         updateItem(
                           item.id,
                           "fat",
-                          e.target.value === "" ? 0 : Number(e.target.value)
+                          e.target.value === "" ? "" : Number(e.target.value)
                         )
                       }
                     />
@@ -381,12 +383,12 @@ export default function List() {
                       type="number"
                       disabled={editItemId !== item.id}
                       className={styles.nutrientInput}
-                      value={item.car ?? 0}
+                      value={item.car === 0 ? "" : (item.car ?? "")}
                       onChange={(e) =>
                         updateItem(
                           item.id,
                           "car",
-                          e.target.value === "" ? 0 : Number(e.target.value)
+                          e.target.value === "" ? "" : Number(e.target.value)
                         )
                       }
                     />
@@ -399,12 +401,12 @@ export default function List() {
                       type="number"
                       disabled={editItemId !== item.id}
                       className={styles.amountInput}
-                      value={item.amount ?? 0}
+                      value={item.amount === 0 ? "" : (item.amount ?? "")}
                       onChange={(e) =>
                         updateItem(
                           item.id,
                           "amount",
-                          e.target.value === "" ? 0 : Number(e.target.value)
+                          e.target.value === "" ? "" : Number(e.target.value)
                         )
                       }
                     />
@@ -473,13 +475,13 @@ export default function List() {
                           type="number"
                           disabled={editSetId !== set.id}
                           className={styles.nutrientInput}
-                          value={item.cal ?? 0}
+                          value={item.cal === 0 ? "" : (item.cal ?? "")}
                           onChange={(e) =>
                             updateSetItem(
                               set.id,
                               item.id,
                               "cal",
-                              e.target.value === "" ? 0 : Number(e.target.value)
+                              e.target.value === "" ? "" : Number(e.target.value)
                             )
                           }
                         />
@@ -491,13 +493,13 @@ export default function List() {
                           type="number"
                           disabled={editSetId !== set.id}
                           className={styles.nutrientInput}
-                          value={item.pro ?? 0}
+                          value={item.pro === 0 ? "" : (item.pro ?? "")}
                           onChange={(e) =>
                             updateSetItem(
                               set.id,
                               item.id,
                               "pro",
-                              e.target.value === "" ? 0 : Number(e.target.value)
+                              e.target.value === "" ? "" : Number(e.target.value)
                             )
                           }
                         />
@@ -509,13 +511,13 @@ export default function List() {
                           type="number"
                           disabled={editSetId !== set.id}
                           className={styles.nutrientInput}
-                          value={item.fat ?? 0}
+                          value={item.fat === 0 ? "" : (item.fat ?? "")}
                           onChange={(e) =>
                             updateSetItem(
                               set.id,
                               item.id,
                               "fat",
-                              e.target.value === "" ? 0 : Number(e.target.value)
+                              e.target.value === "" ? "" : Number(e.target.value)
                             )
                           }
                         />
@@ -527,13 +529,13 @@ export default function List() {
                           type="number"
                           disabled={editSetId !== set.id}
                           className={styles.nutrientInput}
-                          value={item.car ?? 0}
+                          value={item.car === 0 ? "" : (item.car ?? "")}
                           onChange={(e) =>
                             updateSetItem(
                               set.id,
                               item.id,
                               "car",
-                              e.target.value === "" ? 0 : Number(e.target.value)
+                              e.target.value === "" ? "" : Number(e.target.value)
                             )
                           }
                         />
@@ -545,13 +547,13 @@ export default function List() {
                           type="number"
                           disabled={editSetId !== set.id}
                           className={styles.amountInput}
-                          value={item.amount ?? 0}
+                          value={item.amount === 0 ? "" : (item.amount ?? "")}
                           onChange={(e) =>
                             updateSetItem(
                               set.id,
                               item.id,
                               "amount",
-                              e.target.value === "" ? 0 : Number(e.target.value)
+                              e.target.value === "" ? "" : Number(e.target.value)
                             )
                           }
                         />
