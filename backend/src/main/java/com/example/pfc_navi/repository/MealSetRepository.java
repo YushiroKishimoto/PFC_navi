@@ -14,5 +14,5 @@ public interface MealSetRepository extends JpaRepository<MealSet, Integer> {
     List<MealSet> findByNameContainingAndUserId(String keyword, Integer userId);
     Optional<MealSet> findByIdAndUserId(Integer id, Integer userId);
 
-    List<MealSet> findTop5ByUserIdOrderByIdDesc(Integer userId);
+    List<MealSet> findByUserIdOrderByIdDesc(Integer userId);
 }
