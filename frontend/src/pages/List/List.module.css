@@ -1,6 +1,7 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr; /* ← 1画面にする */
+  grid-template-columns: 1fr;
+  /* ← 1画面にする */
   height: 100vh;
   gap: 12px;
   padding: 12px 12px 40px 12px;
@@ -22,7 +23,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
-  
+
 }
 
 .tab {
@@ -50,12 +51,15 @@
   gap: 8px;
   margin-bottom: 10px;
 
-  width: 100%;   /* ← 修正：親幅に追従 */
+  width: 100%;
+  /* ← 修正：親幅に追従 */
 }
 
 .input {
-  flex: 1;       /* ← 追加：横幅を伸ばす */
-  width: 100%;   /* ← 追加：確実に追従 */
+  flex: 1;
+  /* ← 追加：横幅を伸ばす */
+  width: 100%;
+  /* ← 追加：確実に追従 */
   padding: 8px 10px;
   border: 1px solid #C5E99B;
   border-radius: 8px;
@@ -76,7 +80,7 @@
 
   min-height: 0;
   overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 
 }
 
@@ -99,7 +103,7 @@
   margin-bottom: 8px;
   background: #fff;
 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .cardHeader {
@@ -135,8 +139,16 @@
 }
 
 .deleteBtn {
+  border: none;
   background: #ff6b6b;
-  color: #fff;
+  color: white;
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background: #ff4b4b;
 }
 
 /* =====================
@@ -210,6 +222,10 @@
   cursor: pointer;
 }
 
+.deleteSmallBtn:hover {
+  background: #ff4b4b;
+}
+
 /* =====================
    既存互換
 ===================== */
@@ -231,12 +247,14 @@
 .name {
   color: #666;
 }
+
 .setItemRow {
   display: flex;
   align-items: center;
   gap: 6px;
 
-  flex-wrap: wrap; /* 横幅不足時に折り返し */
+  flex-wrap: wrap;
+  /* 横幅不足時に折り返し */
 }
 
 /* 折り返し時の崩れ防止 */
@@ -253,6 +271,7 @@
 .amountInput {
   min-width: 60px;
 }
+
 .setNameInput {
   width: 100%;
   max-width: 100%;
@@ -263,5 +282,6 @@
   border: 1px solid #C5E99B;
   border-radius: 6px;
 
-  margin-right: 12px; /* ← 追加：ボタンとの間隔 */
+  margin-right: 12px;
+  /* ← 追加：ボタンとの間隔 */
 }
