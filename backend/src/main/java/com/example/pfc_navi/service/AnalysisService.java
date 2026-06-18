@@ -44,6 +44,9 @@ public class AnalysisService {
 
         int TotalCal = 0;
         int recordDays = 0;
+        int dailyAchievementTotal = 0;
+
+        int targetCal = safe(user.getTargetCal());
 
         for (int i = 0; i < 7; i++) {
             LocalDate targetDate = startDate.plusDays(i);
@@ -64,6 +67,16 @@ public class AnalysisService {
 
             if (totalCal > 0) {
                 recordDays++;
+
+                if (targetCal > 0) {
+                    int dailyAchievement =
+                            Math.round((totalCal * 100.0f) / targetCal);
+
+                    // 1日ごとの達成率は最大100%
+                    dailyAchievement = Math.min(dailyAchievement, 100);
+
+                    dailyAchievementTotal += dailyAchievement;
+                }
             }
 
             TotalCal += totalCal;
@@ -78,12 +91,11 @@ public class AnalysisService {
 
         int averageCal = Math.round(TotalCal / 7.0f);
 
-        int targetCal = safe(user.getTargetCal());
-        int weeklyTargetCal = targetCal * 7;
-
         int achievementRate = 0;
-        if (weeklyTargetCal > 0) {
-            achievementRate = Math.round((TotalCal * 100.0f) / weeklyTargetCal);
+
+        if (recordDays > 0) {
+            achievementRate =
+                    Math.round(dailyAchievementTotal / (float) recordDays);
         }
 
         return new AnalysisResponse(
@@ -120,6 +132,10 @@ public class AnalysisService {
 
         int TotalCal = 0;
         int recordDays = 0;
+        int dailyAchievementTotal = 0;
+
+        int targetCal = safe(user.getTargetCal());
+        
 
         for (int i = 0; i < startDate.lengthOfMonth(); i++) {
             LocalDate targetDate = startDate.plusDays(i);
@@ -138,9 +154,18 @@ public class AnalysisService {
                 }
             }
 
-            if (totalCal > 0) {
-                recordDays++;
-            }
+                if (totalCal > 0) {
+                    recordDays++;
+
+                    if (targetCal > 0) {
+                        int dailyAchievement =
+                                Math.round((totalCal * 100.0f) / targetCal);
+
+                        dailyAchievement = Math.min(dailyAchievement, 100);
+
+                        dailyAchievementTotal += dailyAchievement;
+                    }
+                }
 
             TotalCal += totalCal;
 
@@ -155,12 +180,11 @@ public class AnalysisService {
         int daysInMonth = startDate.lengthOfMonth();
         int averageCal = Math.round(TotalCal / (float) daysInMonth);
 
-        int targetCal = safe(user.getTargetCal());
-        int monthlyTargetCal = targetCal * daysInMonth;
-
         int achievementRate = 0;
-        if (monthlyTargetCal > 0) {
-            achievementRate = Math.round((TotalCal * 100.0f) / monthlyTargetCal);
+
+        if (recordDays > 0) {
+            achievementRate =
+                    Math.round(dailyAchievementTotal / (float) recordDays);
         }
 
         return new AnalysisResponse(
