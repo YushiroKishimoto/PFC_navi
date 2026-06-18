@@ -200,7 +200,7 @@ export default function Record() {
       const res = await createMealRecord(payload);
 
       if (res?.resultCode === "SUCCESS") {
-        navigate(`/${currentDate}`);
+        navigate(`/dashboard?date=${currentDate}`, { replace: true });
       } else {
         setMessage(res?.message || "保存失敗");
       }

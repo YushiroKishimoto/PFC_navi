@@ -2,7 +2,7 @@ import styles from "./Dashboard.module.css";
 import { useState, useEffect } from "react";
 import { getDashboard } from "../../api/dashboard";
 import { getMealRecords, deleteMealRecordItem } from "../../api/mealRecord";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -33,11 +33,38 @@ const normalize = (v) => String(v ?? "").trim().toLowerCase();
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [date, setDate] = useState(new Date());
+  // 1. URLの文字列（YYYY-MM-DD）をローカル時刻の日付オブジェクトに安全に変換する関数
+  const parseQueryDate = (search) => {
+    const params = new URLSearchParams(search);
+    const dateParam = params.get("date");
+    if (dateParam) {
+      const parts = dateParam.split("-");
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const parsed = new Date(year, month, day);
+        if (!isNaN(parsed.getTime())) {
+          return parsed;
+        }
+      }
+    }
+    return new Date(); // 無ければ「今日」
+  };
+
+  // 2. dateステートは URL の値と常に同期させる
+  const [date, setDate] = useState(() => parseQueryDate(location.search));
   const [dashboard, setDashboard] = useState({});
   const [meals, setMeals] = useState([]);
 
+  // URL（location.search）が変わったら最優先で date ステートを更新する
+  useEffect(() => {
+    setDate(parseQueryDate(location.search));
+  }, [location.search]);
+
+  // データ取得ロジック（dateの変更を検知してAPIを叩く）
   useEffect(() => {
     let ignore = false;
 
@@ -62,7 +89,6 @@ export default function Dashboard() {
         setMeals(mealRes?.data?.meals ?? mealRes?.meals ?? []);
       } catch (e) {
         console.error(e);
-
         if (!ignore) {
           setDashboard({});
           setMeals([]);
@@ -77,9 +103,8 @@ export default function Dashboard() {
     };
   }, [date]);
 
+  // 3. カレンダー変更時：URLを書き換える。これによって上の useEffect が走り、date も自動で切り替わります
   const handleChange = (newDate) => {
-    setDate(newDate);
-
     const y = newDate.getFullYear();
     const m = String(newDate.getMonth() + 1).padStart(2, "0");
     const d = String(newDate.getDate()).padStart(2, "0");
@@ -137,19 +162,21 @@ export default function Dashboard() {
       alert("記録の削除に失敗しました");
     }
   };
+
   return (
     <div className={styles.container}>
       {/* ヘッダー */}
       <div className={styles.header}>
-        <h2 className={styles.headerTitle}>{
-          date.toLocaleDateString("ja-JP", {
+        <h2 className={styles.headerTitle}>
+          {date.toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
             weekday: "long",
-          })}の記録</h2>
-        <div>
-        </div>
+          })}
+          の記録
+        </h2>
+        <div></div>
 
         <div className={styles.scoreBox}>
           達成率{" "}
@@ -168,8 +195,9 @@ export default function Dashboard() {
 
         <div className={styles.summaryGrid}>
           <div className={styles.summaryCard}>
-
-            <strong>総カロリー：{safe(dashboard?.actualCal)}/{pfc.target.k} kcal</strong>
+            <strong>
+              総カロリー：{safe(dashboard?.actualCal)}/{pfc.target.k} kcal
+            </strong>
           </div>
 
           <div className={styles.summaryCard}>
@@ -194,10 +222,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-
         {/* 円＋棒グラフ */}
         <div className={styles.chartCard}>
-
           <ResponsiveContainer width="100%" height={180}>
             <BarChart
               data={barData}
@@ -207,7 +233,6 @@ export default function Dashboard() {
               <XAxis type="number" />
               <YAxis type="category" dataKey="name" />
               <Tooltip />
-
               <Bar dataKey="target" fill="#e0e0e0" barSize={16} />
               <Bar dataKey="intake" fill="#82ca9d" barSize={16} />
             </BarChart>
@@ -225,7 +250,6 @@ export default function Dashboard() {
                   <Cell key={i} fill={COLORS[i]} />
                 ))}
               </Pie>
-
               <text
                 x="50%"
                 y="50%"
@@ -241,7 +265,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 食事 */}
+      {/* 食事リスト */}
       <div className={styles.bottomGrid}>
         {MEAL_TYPES.map(({ key, label }) => {
           const items = meals
@@ -268,7 +292,6 @@ export default function Dashboard() {
             <div key={key} className={styles.mealCard}>
               <div className={styles.mealHeader}>
                 <h4>{label}</h4>
-
                 <div className={styles.mealTotal}>
                   {mealTotal.cal}kcal / P:{mealTotal.pro} F:{mealTotal.fat} C:
                   {mealTotal.car}
