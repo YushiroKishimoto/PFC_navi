@@ -421,11 +421,17 @@ export default function Record() {
           保存
         </button>
 
-        <button className={styles.primary} onClick={() => navigate("/items")}>
+        <button
+          className={styles.primary}
+          onClick={() => navigate("/items", { state: { from: window.location.pathname + window.location.search } })}
+        >
           食材登録
         </button>
 
-        <button className={styles.secondary} onClick={() => navigate("/set")}>
+        <button
+          className={styles.secondary}
+          onClick={() => navigate("/set", { state: { from: window.location.pathname + window.location.search } })}
+        >
           セット登録
         </button>
       </div>

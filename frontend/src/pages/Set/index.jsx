@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // 👈 useLocation を追加
 import styles from "./Set.module.css";
 import { createSetitem } from "../../api/set";
 import { searchItems } from "../../api/item";
 
 export default function Set() {
   const navigate = useNavigate();
+  const location = useLocation(); // 👈 追加
 
   const [search, setSearch] = useState("");
   const [setName, setSetName] = useState("");
@@ -38,23 +39,23 @@ export default function Set() {
   // =========================
   // 追加
   // =========================
-const addItem = (item) => {
-  setSelected((prev) => {
-    if (prev.some((i) => i.id === item.id)) return prev;
+  const addItem = (item) => {
+    setSelected((prev) => {
+      if (prev.some((i) => i.id === item.id)) return prev;
 
-    return [
-      ...prev,
-      {
-        ...item,
-        amount: 100,
-        baseCal: item.cal,
-        basePro: item.pro,
-        baseFat: item.fat,
-        baseCar: item.car,
-      },
-    ];
-  });
-};
+      return [
+        ...prev,
+        {
+          ...item,
+          amount: 100,
+          baseCal: item.cal,
+          basePro: item.pro,
+          baseFat: item.fat,
+          baseCar: item.car,
+        },
+      ];
+    });
+  };
 
   // =========================
   // 更新
@@ -66,13 +67,13 @@ const addItem = (item) => {
       )
     );
   };
-  
-// =========================
-// 削除
-// =========================
-const removeItem = (id) => {
-  setSelected((prev) => prev.filter((item) => item.id !== id));
-};
+
+  // =========================
+  // 削除
+  // =========================
+  const removeItem = (id) => {
+    setSelected((prev) => prev.filter((item) => item.id !== id));
+  };
 
   // =========================
   // 合計
@@ -93,7 +94,7 @@ const removeItem = (id) => {
     );
   }, [selected]);
 
-    const createPayload = () => {
+  const createPayload = () => {
     return {
       name: setName,
       items: selected.map(({ name, cal, pro, fat, car, id, ...rest }) => ({
@@ -102,6 +103,7 @@ const removeItem = (id) => {
       }))
     };
   };
+
   // =========================
   // 登録
   // =========================
@@ -113,36 +115,34 @@ const removeItem = (id) => {
 
     const payload = createPayload();
 
-    const res = await createSetitem(payload);
-    console.log("SET_DB_REGISTER:", payload);
+    try {
+      const res = await createSetitem(payload);
+      console.log("SET_DB_REGISTER:", payload);
 
-    alert("セット登録完了");
+      alert("セット登録完了");
 
-    // 安全遷移（戻れるなら戻る / 無理ならホーム）
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate("/");
+      // 👈 修正：Record画面の state があればそこへ、無ければダッシュボード（ホーム）へ
+      if (location.state?.from) {
+        navigate(location.state.from, { replace: true });
+      } else {
+        navigate("/");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("登録に失敗しました");
     }
   };
 
   return (
     <div className={styles.container}>
-
-      {/* =========================
-          左
-      ========================= */}
       <div className={styles.left}>
-
         <h2>セット登録</h2>
-
         <input
           className={styles.input}
           placeholder="セット名"
           value={setName}
           onChange={(e) => setSetName(e.target.value)}
         />
-
         <input
           className={styles.input}
           placeholder="食材検索"
@@ -150,105 +150,59 @@ const removeItem = (id) => {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* =========================
-            検索結果（スクロール）
-        ========================= */}
         <div className={styles.searchList}>
           {filteredItems.map((item) => (
             <div key={item.id} className={styles.card}>
-
               <div className={styles.cardHeader}>
-                <div className={styles.name}>
-                  {item.name}
-                </div>
-
-                <button
-                  className={styles.addButton}
-                  onClick={() => addItem(item)}
-                >
-                  追加
-                </button>
+                <div className={styles.name}>{item.name}</div>
+                <button className={styles.addButton} onClick={() => addItem(item)}>追加</button>
               </div>
-
               <div className={styles.nutritionRow}>
                 <div className={styles.col}>Cal: {item.cal}</div>
                 <div className={styles.col}>P: {item.pro}</div>
                 <div className={styles.col}>F: {item.fat}</div>
                 <div className={styles.col}>C: {item.car}</div>
               </div>
-
             </div>
           ))}
         </div>
-
       </div>
 
-      {/* =========================
-          右
-      ========================= */}
       <div className={styles.right}>
-
         <h3>選択済み</h3>
-
         <div className={styles.table}>
           {selected.map((item) => (
             <div key={item.id} className={styles.card}>
-
-            <div className={styles.cardHeader}>
-              <div className={styles.name}>
-                {item.name}
+              <div className={styles.cardHeader}>
+                <div className={styles.name}>{item.name}</div>
+                <button className={styles.deleteButton} onClick={() => removeItem(item.id)}>削除</button>
               </div>
-
-              <button
-                className={styles.deleteButton}
-                onClick={() => removeItem(item.id)}
-              >
-                削除
-              </button>
-            </div>
               <div className={styles.nutritionRow}>
-
-<div className={styles.col}>
-  <span>量（ｇ）</span>
-  <input
-    type="number"
-    value={item.amount || 0}
-    onChange={(e) =>
-      updateItem(item.id, "amount", Number(e.target.value))
-    }
-  />
-</div>
-
-<div className={styles.col}>
-  <span>Cal</span>
-  <div>
-    {((item.baseCal || item.cal || 0) * (item.amount || 0) / 100).toFixed(1)}
-  </div>
-</div>
-
-<div className={styles.col}>
-  <span>P</span>
-  <div>
-    {((item.basePro || item.pro || 0) * (item.amount || 0) / 100).toFixed(1)}
-  </div>
-</div>
-
-<div className={styles.col}>
-  <span>F</span>
-  <div>
-    {((item.baseFat || item.fat || 0) * (item.amount || 0) / 100).toFixed(1)}
-  </div>
-</div>
-
-<div className={styles.col}>
-  <span>C</span>
-  <div>
-    {((item.baseCar || item.car || 0) * (item.amount || 0) / 100).toFixed(1)}
-  </div>
-</div>
-
+                <div className={styles.col}>
+                  <span>量（ｇ）</span>
+                  <input
+                    type="number"
+                    value={item.amount || 0}
+                    onChange={(e) => updateItem(item.id, "amount", Number(e.target.value))}
+                  />
+                </div>
+                <div className={styles.col}>
+                  <span>Cal</span>
+                  <div>{((item.baseCal || item.cal || 0) * (item.amount || 0) / 100).toFixed(1)}</div>
+                </div>
+                <div className={styles.col}>
+                  <span>P</span>
+                  <div>{((item.basePro || item.pro || 0) * (item.amount || 0) / 100).toFixed(1)}</div>
+                </div>
+                <div className={styles.col}>
+                  <span>F</span>
+                  <div>{((item.baseFat || item.fat || 0) * (item.amount || 0) / 100).toFixed(1)}</div>
+                </div>
+                <div className={styles.col}>
+                  <span>C</span>
+                  <div>{((item.baseCar || item.car || 0) * (item.amount || 0) / 100).toFixed(1)}</div>
+                </div>
               </div>
-
             </div>
           ))}
         </div>
@@ -256,11 +210,7 @@ const removeItem = (id) => {
         <div className={styles.total}>
           Cal:{total.cal.toFixed(1)}kcal P:{total.pro.toFixed(1)}g F:{total.fat.toFixed(1)}g C:{total.car.toFixed(1)}g
         </div>
-
-        <button className={styles.Button} onClick={handleRegister}>
-          セットを登録
-        </button>
-
+        <button className={styles.Button} onClick={handleRegister}>セットを登録</button>
       </div>
     </div>
   );

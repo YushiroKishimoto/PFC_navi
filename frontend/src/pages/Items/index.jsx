@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // 👈 useLocation を追加
 import styles from "./Items.module.css";
 import { createItem } from "../../api/item";
 
 export default function Items() {
   const navigate = useNavigate();
+  const location = useLocation(); // 👈 追加
 
   const [form, setForm] = useState({
     name: "",
@@ -31,29 +32,23 @@ export default function Items() {
     if (!form.name.trim()) {
       newErrors.name = "食材名を入力してください";
     }
-
     if (form.amount === "" || Number(form.amount) <= 0) {
       newErrors.amount = "標準量は1以上で入力してください";
     }
-
     if (form.cal === "" || Number(form.cal) < 0) {
       newErrors.cal = "カロリーは0以上で入力してください";
     }
-
     if (form.pro === "" || Number(form.pro) < 0) {
       newErrors.pro = "Pは0以上で入力してください";
     }
-
     if (form.fat === "" || Number(form.fat) < 0) {
       newErrors.fat = "Fは0以上で入力してください";
     }
-
     if (form.car === "" || Number(form.car) < 0) {
       newErrors.car = "Cは0以上で入力してください";
     }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -78,19 +73,22 @@ export default function Items() {
       console.log("register response:", res);
 
       if (res?.resultCode === "SUCCESS") {
-        setMessage("登録しました");
+        alert("登録に成功しました");
 
-        setForm({
-          name: "",
-          amount: "",
-          pro: "",
-          fat: "",
-          car: "",
-          cal: "",
-        });
-
-        // 登録後にホームへ戻したい場合だけ使う
-        // navigate("/");
+        // 👈 修正：Record画面から来た情報があればそこへ戻り、無ければ初期化してホームへ
+        if (location.state?.from) {
+          navigate(location.state.from, { replace: true });
+        } else {
+          setForm({
+            name: "",
+            amount: "",
+            pro: "",
+            fat: "",
+            car: "",
+            cal: "",
+          });
+          navigate("/");
+        }
       } else {
         setMessage(res?.message || "登録に失敗しました");
       }
@@ -131,12 +129,7 @@ export default function Items() {
 
           <div>
             <label>単位</label>
-            <input
-              value="g"
-              className={styles.input}
-              disabled
-              readOnly
-            />
+            <input value="g" className={styles.input} disabled readOnly />
           </div>
         </div>
 
@@ -145,57 +138,27 @@ export default function Items() {
         <div className={styles.grid}>
           <div>
             <label>カロリー</label>
-            <input
-              name="cal"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.cal}
-            />
+            <input name="cal" type="number" className={styles.input} onChange={handleChange} value={form.cal} />
             {errors.cal && <p className={styles.error}>{errors.cal}</p>}
           </div>
-
           <div>
             <label>P</label>
-            <input
-              name="pro"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.pro}
-            />
+            <input name="pro" type="number" className={styles.input} onChange={handleChange} value={form.pro} />
             {errors.pro && <p className={styles.error}>{errors.pro}</p>}
           </div>
-
           <div>
             <label>F</label>
-            <input
-              name="fat"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.fat}
-            />
+            <input name="fat" type="number" className={styles.input} onChange={handleChange} value={form.fat} />
             {errors.fat && <p className={styles.error}>{errors.fat}</p>}
           </div>
-
           <div>
             <label>C</label>
-            <input
-              name="car"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.car}
-            />
+            <input name="car" type="number" className={styles.input} onChange={handleChange} value={form.car} />
             {errors.car && <p className={styles.error}>{errors.car}</p>}
           </div>
         </div>
 
-        <button className={styles.button} onClick={handleSubmit}>
-          登録
-        </button>
-
+        <button className={styles.button} onClick={handleSubmit}>登録</button>
         {message && <p>{message}</p>}
       </div>
     </div>
