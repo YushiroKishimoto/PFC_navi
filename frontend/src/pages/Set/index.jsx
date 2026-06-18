@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // 👈 useLocation を追加
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Set.module.css";
 import { createSetitem } from "../../api/set";
 import { searchItems } from "../../api/item";
 
 export default function Set() {
   const navigate = useNavigate();
-  const location = useLocation(); // 👈 追加
+  const location = useLocation();
 
   const [search, setSearch] = useState("");
   const [setName, setSetName] = useState("");
@@ -121,11 +121,13 @@ export default function Set() {
 
       alert("セット登録完了");
 
-      // 👈 修正：Record画面の state があればそこへ、無ければダッシュボード（ホーム）へ
       if (location.state?.from) {
         navigate(location.state.from, { replace: true });
       } else {
-        navigate("/");
+        // 👈 Record以外からの場合は入力内容をクリアして画面にとどまる
+        setSetName("");
+        setSelected([]);
+        setSearch("");
       }
     } catch (e) {
       console.error(e);

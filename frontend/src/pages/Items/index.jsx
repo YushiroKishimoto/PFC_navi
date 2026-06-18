@@ -26,13 +26,11 @@ export default function Items() {
   };
 
   const validate = () => {
-    // 1. 食材名の未入力チェック（内容に不備があります）
     if (!form.name.trim()) {
       alert("内容に不備があります");
       return false;
     }
 
-    // 2. 数値系のバリデーションチェック（数値が〜以上です）
     const isAmountInvalid = form.amount === "" || Number(form.amount) <= 0;
     const isCalInvalid = form.cal === "" || Number(form.cal) < 0;
     const isProInvalid = form.pro === "" || Number(form.pro) < 0;
@@ -70,9 +68,8 @@ export default function Items() {
       if (res?.resultCode === "SUCCESS") {
         alert("登録に成功しました");
 
-        if (location.state?.from) {
-          navigate(location.state.from, { replace: true });
-        } else {
+        // フォームをクリアする共通処理
+        const clearForm = () => {
           setForm({
             name: "",
             amount: "",
@@ -81,10 +78,15 @@ export default function Items() {
             car: "",
             cal: "",
           });
-          navigate("/");
+        };
+
+        if (location.state?.from) {
+          navigate(location.state.from, { replace: true });
+        } else {
+          // 👈 Record以外からの場合はフォームをクリアして画面にとどまる
+          clearForm();
         }
       } else {
-        // API側からのエラーもアラートで表示
         alert(res?.message || "登録に失敗しました");
       }
     } catch (e) {
