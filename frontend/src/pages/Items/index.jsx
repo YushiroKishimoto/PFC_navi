@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Items.module.css";
 import { createItem } from "../../api/item";
 
 export default function Items() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     name: "",
@@ -15,7 +16,6 @@ export default function Items() {
     cal: "",
   });
 
-  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -26,35 +26,23 @@ export default function Items() {
   };
 
   const validate = () => {
-    const newErrors = {};
-
     if (!form.name.trim()) {
-      newErrors.name = "食材名を入力してください";
+      alert("内容に不備があります");
+      return false;
     }
 
-    if (form.amount === "" || Number(form.amount) <= 0) {
-      newErrors.amount = "標準量は1以上で入力してください";
+    const isAmountInvalid = form.amount === "" || Number(form.amount) <= 0;
+    const isCalInvalid = form.cal === "" || Number(form.cal) < 0;
+    const isProInvalid = form.pro === "" || Number(form.pro) < 0;
+    const isFatInvalid = form.fat === "" || Number(form.fat) < 0;
+    const isCarInvalid = form.car === "" || Number(form.car) < 0;
+
+    if (isAmountInvalid || isCalInvalid || isProInvalid || isFatInvalid || isCarInvalid) {
+      alert("数値は0以上（標準量は1以上）で入力してください");
+      return false;
     }
 
-    if (form.cal === "" || Number(form.cal) < 0) {
-      newErrors.cal = "カロリーは0以上で入力してください";
-    }
-
-    if (form.pro === "" || Number(form.pro) < 0) {
-      newErrors.pro = "Pは0以上で入力してください";
-    }
-
-    if (form.fat === "" || Number(form.fat) < 0) {
-      newErrors.fat = "Fは0以上で入力してください";
-    }
-
-    if (form.car === "" || Number(form.car) < 0) {
-      newErrors.car = "Cは0以上で入力してください";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
   const handleSubmit = async () => {
@@ -78,25 +66,32 @@ export default function Items() {
       console.log("register response:", res);
 
       if (res?.resultCode === "SUCCESS") {
-        setMessage("登録しました");
+        alert("登録に成功しました");
 
-        setForm({
-          name: "",
-          amount: "",
-          pro: "",
-          fat: "",
-          car: "",
-          cal: "",
-        });
+        // フォームをクリアする共通処理
+        const clearForm = () => {
+          setForm({
+            name: "",
+            amount: "",
+            pro: "",
+            fat: "",
+            car: "",
+            cal: "",
+          });
+        };
 
-        // 登録後にホームへ戻したい場合だけ使う
-        // navigate("/");
+        if (location.state?.from) {
+          navigate(location.state.from, { replace: true });
+        } else {
+          // 👈 Record以外からの場合はフォームをクリアして画面にとどまる
+          clearForm();
+        }
       } else {
-        setMessage(res?.message || "登録に失敗しました");
+        alert(res?.message || "登録に失敗しました");
       }
     } catch (e) {
       console.error(e);
-      setMessage("登録に失敗しました");
+      alert("通信エラーにより登録に失敗しました");
     }
   };
 
@@ -113,7 +108,6 @@ export default function Items() {
           onChange={handleChange}
           value={form.name}
         />
-        {errors.name && <p className={styles.error}>{errors.name}</p>}
 
         <div className={styles.row}>
           <div>
@@ -126,17 +120,11 @@ export default function Items() {
               onChange={handleChange}
               value={form.amount}
             />
-            {errors.amount && <p className={styles.error}>{errors.amount}</p>}
           </div>
 
           <div>
             <label>単位</label>
-            <input
-              value="g"
-              className={styles.input}
-              disabled
-              readOnly
-            />
+            <input value="g" className={styles.input} disabled readOnly />
           </div>
         </div>
 
@@ -145,57 +133,23 @@ export default function Items() {
         <div className={styles.grid}>
           <div>
             <label>カロリー</label>
-            <input
-              name="cal"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.cal}
-            />
-            {errors.cal && <p className={styles.error}>{errors.cal}</p>}
+            <input name="cal" type="number" className={styles.input} onChange={handleChange} value={form.cal} />
           </div>
-
           <div>
             <label>P</label>
-            <input
-              name="pro"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.pro}
-            />
-            {errors.pro && <p className={styles.error}>{errors.pro}</p>}
+            <input name="pro" type="number" className={styles.input} onChange={handleChange} value={form.pro} />
           </div>
-
           <div>
             <label>F</label>
-            <input
-              name="fat"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.fat}
-            />
-            {errors.fat && <p className={styles.error}>{errors.fat}</p>}
+            <input name="fat" type="number" className={styles.input} onChange={handleChange} value={form.fat} />
           </div>
-
           <div>
             <label>C</label>
-            <input
-              name="car"
-              type="number"
-              className={styles.input}
-              onChange={handleChange}
-              value={form.car}
-            />
-            {errors.car && <p className={styles.error}>{errors.car}</p>}
+            <input name="car" type="number" className={styles.input} onChange={handleChange} value={form.car} />
           </div>
         </div>
 
-        <button className={styles.button} onClick={handleSubmit}>
-          登録
-        </button>
-
+        <button className={styles.button} onClick={handleSubmit}>登録</button>
         {message && <p>{message}</p>}
       </div>
     </div>

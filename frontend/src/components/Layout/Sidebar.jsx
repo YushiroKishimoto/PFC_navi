@@ -91,6 +91,7 @@ export default function Sidebar({ open, setOpen }) {
           className={styles.logoutButton}
           onClick={handleLogout}
         >
+          <span>🚪</span>
           {open && "ログアウト"}
         </button>
       </div>

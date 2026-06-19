@@ -50,11 +50,12 @@ public class ItemController {
 
                 List<ItemSearchResponse> items = new ArrayList<>();
 
-                List<DefaultFood> defaultFoods = defaultFoodRepository.findByNameContaining(searchKeyword);
+                List<CustomFood> customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword,
+                                userId);
 
-                for (DefaultFood food : defaultFoods) {
+                for (CustomFood food : customFoods) {
                         items.add(new ItemSearchResponse(
-                                        "default",
+                                        "custom",
                                         food.getId(),
                                         food.getName(),
                                         food.getAmount(),
@@ -63,12 +64,11 @@ public class ItemController {
                                         food.getCar(),
                                         food.getCal()));
                 }
+                List<DefaultFood> defaultFoods = defaultFoodRepository.findByNameContaining(searchKeyword);
 
-                List<CustomFood> customFoods = customFoodRepository.findByNameContainingAndUserId(searchKeyword, userId);
-
-                for (CustomFood food : customFoods) {
+                for (DefaultFood food : defaultFoods) {
                         items.add(new ItemSearchResponse(
-                                        "custom",
+                                        "default",
                                         food.getId(),
                                         food.getName(),
                                         food.getAmount(),
@@ -125,15 +125,14 @@ public class ItemController {
         }
 
         @GetMapping("/custom/search")
-public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
-        @RequestParam(required = false, defaultValue = "") String keyword,
-        Authentication authentication) {
+        public ApiResponse<Map<String, List<ItemSearchResponse>>> searchCustomItems(
+                        @RequestParam(required = false, defaultValue = "") String keyword,
+                        Authentication authentication) {
 
-    Integer userId = Integer.parseInt(authentication.getName());
+                Integer userId = Integer.parseInt(authentication.getName());
 
-    return ApiResponse.success(
-            "自前食材・料理の検索完了",
-            Map.of("items", itemService.searchCustomItems(keyword, userId))
-    );
-}
+                return ApiResponse.success(
+                                "自前食材・料理の検索完了",
+                                Map.of("items", itemService.searchCustomItems(keyword, userId)));
+        }
 }
